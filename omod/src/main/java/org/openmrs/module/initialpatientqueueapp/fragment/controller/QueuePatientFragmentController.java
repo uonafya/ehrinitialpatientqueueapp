@@ -52,6 +52,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -166,8 +167,11 @@ public class QueuePatientFragmentController {
 		    GlobalPropertyUtil.getString(InitialPatientQueueConstants.PROPERTY_CHILDLESSTHANFIVEYEAR_REGISTRATION_FEE, ""));
 		model.addAttribute("specialClinicRegFee",
 		    GlobalPropertyUtil.getString(InitialPatientQueueConstants.PROPERTY_SPECIALCLINIC_REGISTRATION_FEE, ""));
-		List<Visit> patientVisit = Context.getVisitService().getActiveVisitsByPatient(patient);
 		KenyaEmrService kenyaEmrService = Context.getService(KenyaEmrService.class);
+		List<Visit> patientVisit = Context.getVisitService().getVisits(
+		    Arrays.asList(Context.getVisitService().getVisitTypeByUuid("3371a4d4-f66f-4454-a86d-92c7b3da990c")),
+		    Arrays.asList(patient), Arrays.asList(kenyaEmrService.getDefaultLocation()), null, null, null, null, null, null,
+		    false, false);
 		model.addAttribute("userLocation", kenyaEmrService.getDefaultLocation().getName());
 		model.addAttribute("receiptDate", new Date());
 		consolidateAllPersonalAttributes(parameters, patient);
@@ -400,16 +404,14 @@ public class QueuePatientFragmentController {
 	private void hasActiveVisit(List<Visit> visits, Patient patient, Encounter encounter) {
 		VisitService visitService = Context.getVisitService();
 		KenyaEmrService kenyaEmrService = Context.getService(KenyaEmrService.class);
-		if (visits.size() > 0) {
-			System.out.println("There is an existing visit we can use");
+		if (visits.size() > 0 && visits.get(0).getStopDatetime() == null) {
 			visits.get(0).addEncounter(encounter);
 		} else {
-			System.out.println("This patient has no open visit at all - we are creating new one");
 			Visit visit = new Visit();
 			visit.addEncounter(encounter);
 			visit.setPatient(patient);
 			visit.setVisitType(visitService.getVisitTypeByUuid("3371a4d4-f66f-4454-a86d-92c7b3da990c"));
-			visit.setStartDatetime(new Date());
+			visit.setStartDatetime(getAminuteBefore());
 			visit.setLocation(kenyaEmrService.getDefaultLocation());
 			visit.setCreator(Context.getAuthenticatedUser());
 			visitService.saveVisit(visit);
@@ -691,5 +693,12 @@ public class QueuePatientFragmentController {
 			}
 		}
 		
+	}
+	
+	private Date getAminuteBefore() {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.MINUTE, -1);
+		return cal.getTime();
 	}
 }
