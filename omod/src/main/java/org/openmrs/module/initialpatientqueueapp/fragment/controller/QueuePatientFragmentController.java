@@ -18,6 +18,7 @@ import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
@@ -31,6 +32,7 @@ import org.openmrs.module.hospitalcore.PatientDashboardService;
 import org.openmrs.module.hospitalcore.model.BillableService;
 import org.openmrs.module.hospitalcore.model.DepartmentConcept;
 import org.openmrs.module.hospitalcore.model.OpdTestOrder;
+import org.openmrs.module.hospitalcore.model.PatientSearch;
 import org.openmrs.module.hospitalcore.util.GlobalPropertyUtil;
 import org.openmrs.module.hospitalcore.util.HospitalCoreUtils;
 import org.openmrs.module.initialpatientqueueapp.EhrRegistrationUtils;
@@ -49,6 +51,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -176,6 +179,8 @@ public class QueuePatientFragmentController {
 		model.addAttribute("receiptDate", new Date());
 		consolidateAllPersonalAttributes(parameters, patient);
 		try {
+			//create a patient search here
+			savePatientSearch(patient);
 			// create encounter for the visit here
 			Encounter encounter = createEncounter(patient, parameters);
 			hasActiveVisit(patientVisit, patient, encounter);
@@ -700,5 +705,45 @@ public class QueuePatientFragmentController {
 		cal.setTime(new Date());
 		cal.add(Calendar.MINUTE, -1);
 		return cal.getTime();
+	}
+	
+	private void savePatientSearch(Patient patient) {
+		HospitalCoreService hospitalCoreService = Context.getService(HospitalCoreService.class);
+		PatientSearch patientSearch = new PatientSearch();
+		String givenName = "";
+		String fullname = "";
+		String middleName = "";
+		String familyName = "";
+		Timestamp birtDate = null;
+		PatientIdentifier patientIdentifier;
+		if (patient != null && hospitalCoreService.getPatientByPatientId(patient.getPatientId()) == null) {
+			//log.error("Starting with patient>>" + patient.getPatientId());
+			givenName = patient.getGivenName();
+			familyName = patient.getFamilyName();
+			if (patient.getMiddleName() != null) {
+				middleName = patient.getMiddleName();
+			}
+			fullname = givenName + " " + middleName + " " + familyName;
+			birtDate = new Timestamp(patient.getBirthdate().getTime());
+			patientIdentifier = patient.getPatientIdentifier();
+			
+			if (patientIdentifier != null) {
+				patientSearch.setPatientId(patient.getPatientId());
+				patientSearch.setIdentifier(patientIdentifier.getIdentifier());
+				patientSearch.setFullname(fullname);
+				patientSearch.setGivenName(givenName);
+				patientSearch.setMiddleName(middleName);
+				patientSearch.setFamilyName(familyName);
+				patientSearch.setGender(patient.getGender());
+				patientSearch.setBirthdate(birtDate);
+				patientSearch.setAge(patient.getAge());
+				patientSearch.setPersonNameId(patient.getPersonName().getPersonNameId());
+				patientSearch.setDead(false);
+				patientSearch.setAdmitted(false);
+				//commit the patient object in the patient_search table
+				hospitalCoreService.savePatientSearch(patientSearch);
+			}
+			
+		}
 	}
 }
