@@ -99,4 +99,8 @@ public class InitialPatientQueueConstants {
 	
 	public static final String FORM_FIELD_SELECTED_PAYMENT_SUBCATEGORY = "patient.selectedPaymentSubCategory";
 	
+	public static final String REASONS_FOR_REFERRAL = "1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	
+	public static final String FACILITY_TYPE_REFERRED_FROM = "160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	
 }

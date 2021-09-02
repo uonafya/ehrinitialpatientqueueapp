@@ -200,7 +200,9 @@
             payingCategoryMap: _payingCategoryMap,
             nonPayingCategoryMap: _nonPayingCategoryMap,
             specialSchemeMap: _specialSchemeMap,
-            universities: "${universities}"
+            universities: "${universities}",
+            referralType: "${referralReasons}",
+
         }
         jq("#modesummary").blur(function () {
             var select1 = jq('input[name=paym_1]:checked', '#patientRegistrationForm').val();
@@ -1103,7 +1105,7 @@
     function LoadReferralCases() {
         jq('#referredFrom').empty();
         jq('#referralType').empty();
-        if (jq("#refer1").val() === 1) {
+        if (jq("#refer1").val() == 1) {
             PAGE.fillOptions("#referredFrom", {
                 data: MODEL.referredFrom,
                 delimiter: ",",
@@ -1123,7 +1125,7 @@
             jq('#forReferredFrom span').text('*');
             jq('#referralDescription').removeClass("disabled");
         }
-        else if (jq("#refer1").val() === 2) {
+        else if (jq("#refer1").val() ==2) {
             var myOptions = {" ": 'N/A'};
             var mySelect = jq('#referredFrom');
             jq.each(myOptions, function (val, text) {
