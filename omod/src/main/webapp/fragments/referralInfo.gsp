@@ -1,29 +1,5 @@
-<h2>Legal Information</h2>
-<table>
-    <tr>
-<div class="onerow">
-    <td>
-    <div class="col4">
-        <span class="select-arrow" style="width: 100%">
-            <select id="legal1" name="legal1" onchange="LoadLegalCases();">
-                <option value="0">&nbsp;</option>
-                <option value="1">AVAILABLE</option>
-                <option value="2">NOT AVAILABLE</option>
-            </select>
-        </span>
-    </div>
-    </td>
-
-    <td>
-    <div class="col4">
-        <span class="select-arrow" style="width: 100%">
-            <select id="legal2" name="legal2">
-            </select>
-        </span>
-    </div>
-    </td>
- </div>
- </tr>
+<h2>Visit Information</h2>
+<table cellpadding="0" cellspacing="0" border="0">
     <tr>
         <td>
             <div class="col4">
@@ -36,34 +12,38 @@
             </div>
         </td>
     </div>
-        <div class="onerow">
     </tr>
+    <tr>
+    <td>
+        <span class="select-arrow" style="width: 100%">
+            <select id="legal1" name="legal1" onchange="LoadLegalCases();">
+                <option value="0">&nbsp;</option>
+                <option value="1">AVAILABLE</option>
+                <option value="2">NOT AVAILABLE</option>
+            </select>
+        </span>
+    </td>
+    <td>
+        <span class="select-arrow" style="width: 100%">
+            <select id="legal2" name="legal2">
+            </select>
+        </span>
+    </td>
+ </tr>
 </table>
 
-<h2>Referral Information</h2>
 <table cellpadding="0" cellspacing="0" border="0">
 <tr>
-<div class="onerow">
 <td>
-<div class="col4">
     <label for="refer1" style="margin:0px;">Patient Referred<span>*</span></label>
-</div>
 </td>
 <td>
-<div class="col4">
     <label id="forReferralType" for="referralType"
            style="margin:0px;">Referral Type<span></span></label>
-</div>
 </td>
-<td>
-<div class="col4 last">
-    &nbsp;
-</div>
-</td>
-</div>
+
 </tr>
 <tr>
-<div class="onerow">
 <td>
 <div class="col4">
     <span class="select-arrow" style="width: 100%">
@@ -86,12 +66,8 @@
         </field>
     </span>
 </div>
-
-<div class="col4 last">
-    &nbsp;
-</div>
 </td>
-</div>
+
 
 </tr>
 <tr>
