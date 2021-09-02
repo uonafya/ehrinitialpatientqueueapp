@@ -1103,7 +1103,7 @@
     function LoadReferralCases() {
         jq('#referredFrom').empty();
         jq('#referralType').empty();
-        if (jq("#refer1").val() == 1) {
+        if (jq("#refer1").val() === 1) {
             PAGE.fillOptions("#referredFrom", {
                 data: MODEL.referredFrom,
                 delimiter: ",",
@@ -1123,7 +1123,7 @@
             jq('#forReferredFrom span').text('*');
             jq('#referralDescription').removeClass("disabled");
         }
-        else if (jq("#refer1").val() == 2) {
+        else if (jq("#refer1").val() === 2) {
             var myOptions = {" ": 'N/A'};
             var mySelect = jq('#referredFrom');
             jq.each(myOptions, function (val, text) {
@@ -1734,6 +1734,9 @@ a.tooltip span {
             </tr>
         </table>
 
+        ${ui.includeFragment("initialpatientqueueapp","referralInfo")}
+
+
         <div class="onerow" style="display:none!important;">
             <div class="col4">
                 <input id="paying" type="checkbox" name="person.attribute.14" value="Paying"
@@ -1795,7 +1798,6 @@ a.tooltip span {
                 </span>
             </div>
         </div>
-
 
         <div class="onerow" style="margin-top: 100px">
 
