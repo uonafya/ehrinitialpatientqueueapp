@@ -392,9 +392,14 @@ public class QueuePatientFragmentController {
 		    "2af60550-f291-11ea-b725-9753b5f685ae");
 		EncounterType opdEncounter = Context.getEncounterService().getEncounterTypeByUuid(
 		    "ba45c278-f290-11ea-9666-1b3e6e848887");
+		EncounterType registrationInitial = Context.getEncounterService().getEncounterTypeByUuid(
+		    "8efa1534-f28f-11ea-b25f-af56118cf21b");
+		EncounterType revisitInitial = Context.getEncounterService().getEncounterTypeByUuid(
+		    "98d42234-f28f-11ea-b609-bbd062a0383b");
 		List<Encounter> filteredVisits = Context.getEncounterService().getEncounters(patient,
 		    kenyaEmrService.getDefaultLocation(), null, null, null,
-		    Arrays.asList(patientQueueEncounter, triageEncounter, opdEncounter), null, null, null, false);
+		    Arrays.asList(patientQueueEncounter, triageEncounter, opdEncounter, registrationInitial, revisitInitial), null,
+		    null, null, false);
 		
 		if (filteredVisits.size() > 0) {
 			Encounter encounterVisit = filteredVisits.get(0);
