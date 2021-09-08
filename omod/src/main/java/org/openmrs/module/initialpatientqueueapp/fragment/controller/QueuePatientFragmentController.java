@@ -700,7 +700,7 @@ public class QueuePatientFragmentController {
 			if (hasRevisits(encounter.getPatient())) {
 				//check if the patient is having an MOPC clinic either at triage or opd
 				if (Context.getConceptService().getConcept(department).equals(mopcTriage)
-				        && Context.getConceptService().getConcept(department).equals(mopcopd)) {
+				        || Context.getConceptService().getConcept(department).equals(mopcopd)) {
 					sendPatientsToBilling(mopcRevisitFess, encounter);
 				} else if (roomToVisit == 3 && EhrRegistrationUtils.hasSpecialClinicVisit(encounter.getPatient())) {
 					sendPatientsToBilling(specialClinicRevisitFeeConcept, encounter);
@@ -711,7 +711,7 @@ public class QueuePatientFragmentController {
 			} else {
 				//check if the patient is having an MOPC clinic either at triage or opd
 				if (Context.getConceptService().getConcept(department).equals(mopcTriage)
-				        && Context.getConceptService().getConcept(department).equals(mopcopd)) {
+				        || Context.getConceptService().getConcept(department).equals(mopcopd)) {
 					sendPatientsToBilling(mopcRegistartionFess, encounter);
 				} else if (roomToVisit == 3 && !EhrRegistrationUtils.hasSpecialClinicVisit(encounter.getPatient())) {
 					sendPatientsToBilling(specialClinicFeeConcept, encounter);
