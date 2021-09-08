@@ -123,8 +123,10 @@ public class QueuePatientFragmentController {
 	}
 	
 	public String post(HttpServletRequest request, PageModel model, UiUtils uiUtils, HttpServletResponse response,
-	        @RequestParam("patientId") Patient patient, @RequestParam("paym_1") String paymentCategory) throws IOException,
-	        ParseException {
+	        @RequestParam("patientId") Patient patient, @RequestParam("paym_1") String paymentCategory,
+	        @RequestParam(value = "rooms1", required = false) String room1Options,
+	        @RequestParam(value = "rooms2", required = false) String department,
+	        @RequestParam(value = "rooms3", required = false) String fileNumber) throws IOException, ParseException {
 		
 		Map<String, String> parameters = RegistrationWebUtils.optimizeParameters(request);
 		int roomToVisit = Integer.parseInt(parameters.get("rooms1"));
@@ -187,7 +189,7 @@ public class QueuePatientFragmentController {
 			//encounter = Context.getEncounterService().saveEncounter(encounter);
 			//encounter.setVisit(getLastVisitForPatient(patient));
 			//try sending this patient as an opd test order such that it can be seen at the billing point
-			sendToBillingDependingOnTheBill(parameters, encounter, payCat);
+			sendToBillingDependingOnTheBill(parameters, encounter, payCat, Integer.parseInt(department));
 			response.setContentType("text/html;charset=UTF-8");
 			PrintWriter out = response.getWriter();
 			out.print("success");
@@ -208,7 +210,7 @@ public class QueuePatientFragmentController {
 		return "redirect:"
 		        + uiUtils.pageLink("initialpatientqueueapp", "showPatientInfo?patientId=" + patient.getPatientId()
 		                + "&visit=" + hasRevisits(patient) + "&payCategory=" + paymentCategory + "&roomToVisit="
-		                + roomToVisit);
+		                + roomToVisit + "&departiment=" + department + "&fileNumber=" + fileNumber);
 	}
 	
 	/**
@@ -675,8 +677,8 @@ public class QueuePatientFragmentController {
 		}
 	}
 	
-	private void sendToBillingDependingOnTheBill(Map<String, String> parameters, Encounter encounter, int payCat)
-	        throws ParseException {
+	private void sendToBillingDependingOnTheBill(Map<String, String> parameters, Encounter encounter, int payCat,
+	        int department) throws ParseException {
 		Concept registrationFeesConcept = Context.getConceptService().getConcept(
 		    InitialPatientQueueConstants.CONCEPT_NAME_REGISTRATION_FEE);
 		Concept revisitFeeConcept = Context.getConceptService().getConcept(
@@ -685,21 +687,37 @@ public class QueuePatientFragmentController {
 		    InitialPatientQueueConstants.CONCEPT_NAME_SPECIAL_CLINIC_FEES);
 		Concept specialClinicRevisitFeeConcept = Context.getConceptService().getConceptByUuid(
 		    InitialPatientQueueConstants.SPECIAL_CLINIC_REVISIT_FEES_UUID);
+		Concept mopcRegistartionFess = Context.getConceptService().getConceptByUuid(
+		    InitialPatientQueueConstants.MOPC_REGISTARTION_FEE);
+		Concept mopcRevisitFess = Context.getConceptService()
+		        .getConceptByUuid(InitialPatientQueueConstants.MOPC_REVISIT_FEE);
+		Concept mopcTriage = Context.getConceptService().getConceptByUuid("98f596cc-5ad1-4c58-91e8-d1ea0329c89d");
+		Concept mopcopd = Context.getConceptService().getConceptByUuid("66710a6d-5894-4f7d-a874-b449df77314d");
 		//find the special clinic
 		int roomToVisit = Integer.parseInt(parameters.get("rooms1"));
 		if (payCat == 1) {
 			//check if is a revisit or a new patient
 			if (hasRevisits(encounter.getPatient())) {
-				sendPatientsToBilling(revisitFeeConcept, encounter);
+				//check if the patient is having an MOPC clinic either at triage or opd
+				if (Context.getConceptService().getConcept(department).equals(mopcTriage)
+				        && Context.getConceptService().getConcept(department).equals(mopcopd)) {
+					sendPatientsToBilling(mopcRevisitFess, encounter);
+				} else if (roomToVisit == 3 && EhrRegistrationUtils.hasSpecialClinicVisit(encounter.getPatient())) {
+					sendPatientsToBilling(specialClinicRevisitFeeConcept, encounter);
+				} else {
+					//just bill everyone else the same revisit fee
+					sendPatientsToBilling(revisitFeeConcept, encounter);
+				}
 			} else {
-				// just save the registration fees
-				sendPatientsToBilling(registrationFeesConcept, encounter);
-			}
-			//check if this patient is going for any special clinic
-			if (roomToVisit == 3 && EhrRegistrationUtils.hasSpecialClinicVisit(encounter.getPatient())) {
-				sendPatientsToBilling(specialClinicRevisitFeeConcept, encounter);
-			} else if (roomToVisit == 3 && !EhrRegistrationUtils.hasSpecialClinicVisit(encounter.getPatient())) {
-				sendPatientsToBilling(specialClinicFeeConcept, encounter);
+				//check if the patient is having an MOPC clinic either at triage or opd
+				if (Context.getConceptService().getConcept(department).equals(mopcTriage)
+				        && Context.getConceptService().getConcept(department).equals(mopcopd)) {
+					sendPatientsToBilling(mopcRegistartionFess, encounter);
+				} else if (roomToVisit == 3 && !EhrRegistrationUtils.hasSpecialClinicVisit(encounter.getPatient())) {
+					sendPatientsToBilling(specialClinicFeeConcept, encounter);
+				} else {
+					sendPatientsToBilling(registrationFeesConcept, encounter);
+				}
 			}
 		}
 		
