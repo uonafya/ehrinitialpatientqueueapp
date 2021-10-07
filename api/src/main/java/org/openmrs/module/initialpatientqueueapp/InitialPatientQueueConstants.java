@@ -87,8 +87,6 @@ public class InitialPatientQueueConstants {
 	
 	public static final String PROPERTY_NUMBER_OF_DATE_VALIDATION = MODULE_ID_EHR_CONFIGS + ".numberOfDateValidation";
 	
-	public static final String CONCEPT_NAME_MEDICO_LEGAL_CASE = "MEDICO LEGAL CASE";
-	
 	public static final String PROPERTY_REVISIT_REGISTRATION_FEE = MODULE_ID_EHR_CONFIGS + ".reVisitRegistrationFee";
 	
 	public static final String FORM_FIELD_PATIENT_MLC = "patient.mlc";
@@ -102,5 +100,7 @@ public class InitialPatientQueueConstants {
 	public static final String REASONS_FOR_REFERRAL = "1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	
 	public static final String FACILITY_TYPE_REFERRED_FROM = "160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	
+	public static final String CONCEPT_NAME_MEDICO_LEGAL_CASE = "127925AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"; //holder for Med
 	
 }
