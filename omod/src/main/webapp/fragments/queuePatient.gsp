@@ -398,6 +398,15 @@
         jq("#opdWardField").hide();
         jq("#specialClinicField").hide();
         jq("#fileNumberField").hide();
+
+        //hide fields unless a YES is selected
+        jq("#mlcCaseNo").prop('checked', true);
+        jq("#mlc").hide();
+        jq("#referredNo").prop('checked', true);
+        jq("#forReferralType").hide();
+        jq("#referralType").hide();
+
+        jq("")
         // binding
         jq("#paying").click(function () {
             VALIDATORS.payingCheck();
@@ -805,7 +814,40 @@
                 jq("#specialClinicField").hide();
                 jq("#fileNumberField").hide();
             }
+        },
+        /**CHECK MLC*/
+        mlcYesCheck: function () {
+            if (jQuery("#mlcCaseYes").is(':checked')) {
+                jQuery("#mlcCaseNo").removeAttr("checked");
+                jQuery("#mlc").show();
+            }
+            else {
+                jQuery("#mlc").hide();
+            }
+        },
+        mlcNoCheck: function () {
+            if (jQuery("#mlcCaseNo").is(':checked')) {
+                jQuery("#mlcCaseYes").removeAttr("checked");
+                jQuery("#mlc").hide();
+            }
+        },
+        referredYesCheck: function (){
+            if(jQuery("#referredYes").is(':checked')){
+                jQuery("#referredNo").removeAttr("checked");
+                jQuery("#forReferralType").show();
+                jQuery("#referralType").show();
+                jq(".referraldiv").show();
+            }
+        },
+        referredNoCheck: function (){
+            if(jQuery("#referredNo").is(':checked')){
+                jQuery("#referredYes").removeAttr("checked");
+                jQuery("#forReferralType").hide();
+                jQuery("#referralType").hide();
+                jq(".referraldiv").hide();
+            }
         }
+
     };
     function payingCategorySelection() {
         var select1 = jq('input[name=paym_1]:checked', '#patientRegistrationForm').val();
@@ -1067,45 +1109,20 @@
     }
     function LoadLegalCases() {
         jq('#mlc').empty();
-        if (jq("#legal1").val() == 1) {
+        if (jQuery("#mlcCaseYes").is(':checked')) {
             PAGE.fillOptions("#mlc", {
                 data: MODEL.TEMPORARYCAT,
                 delimiter: ",",
                 optionDelimiter: "|"
             });
-            jq("#mlcCaseYes").attr('checked', 'checked');
-            jq("#mlcCaseNo").attr('checked', false);
-            jq('#formlc span').text('*');
-        }
-        else if (jq("#legal1").val() == 2) {
-            var myOptions = {" ": 'N/A'};
-            var mySelect = jq('#mlc');
-            jq.each(myOptions, function (val, text) {
-                mySelect.append(
-                    jq('<option></option>').val(val).html(text)
-                );
-            });
-            jq("#mlcCaseYes").attr('checked', false);
-            jq("#mlcCaseNo").attr('checked', 'checked');
-            jq('#formlc span').text('');
-        }
-        else {
-            var myOptions = {" ": 'N/A'};
-            var mySelect = jq('#mlc');
-            jq.each(myOptions, function (val, text) {
-                mySelect.append(
-                    jq('<option></option>').val(val).html(text)
-                );
-            });
-            jq("#mlcCaseYes").attr('checked', false);
-            jq("#mlcCaseNo").attr('checked', false);
-            jq('#formlc span').text('');
+        }else {
+            VALIDATORS.mlcNoCheck();
         }
     }
     function LoadReferralCases() {
         jq('#referredFrom').empty();
         jq('#referralType').empty();
-        if (jq("#refer1").val() == 1) {
+        if (jQuery("#referredYes").is(':checked')) {
             PAGE.fillOptions("#referredFrom", {
                 data: MODEL.referredFrom,
                 delimiter: ",",
@@ -1121,53 +1138,10 @@
             jq("#referredYes").attr('checked', 'checked');
             jq("#referredNo").attr('checked', false);
             jq(".referraldiv").show();
-            jq('#forReferralType span').text('*');
-            jq('#forReferredFrom span').text('*');
             jq('#referralDescription').removeClass("disabled");
         }
-        else if (jq("#refer1").val() ==2) {
-            var myOptions = {" ": 'N/A'};
-            var mySelect = jq('#referredFrom');
-            jq.each(myOptions, function (val, text) {
-                mySelect.append(
-                    jq('<option></option>').val(val).html(text)
-                );
-            });
-            mySelect = jq('#referralType');
-            jq.each(myOptions, function (val, text) {
-                mySelect.append(
-                    jq('<option></option>').val(val).html(text)
-                );
-            });
-            jq("#referralDescription").attr("readonly", true);
-            jq("#referralDescription").val("N/A");
-            jq(".referraldiv").hide();
-            jq('#forReferralType span').text('');
-            jq('#forReferredFrom span').text('');
-            jq("#referredNo").attr('checked', 'checked');
-            jq("#referredYes").attr('checked', false);
-            jq('#referralDescription').addClass("disabled");
-        }
         else {
-            var myOptions = {" ": 'N/A'};
-            var mySelect = jq('#referredFrom');
-            jq.each(myOptions, function (val, text) {
-                mySelect.append(
-                    jq('<option></option>').val(val).html(text)
-                );
-            });
-            mySelect = jq('#referralType');
-            jq.each(myOptions, function (val, text) {
-                mySelect.append(
-                    jq('<option></option>').val(val).html(text)
-                );
-            });
-            jq("#referralDescription").attr("readonly", true);
-            jq("#referralDescription").val("N/A");
-            jq(".referraldiv").hide();
-            jq("#referredNo").attr('checked', false);
-            jq("#referredYes").attr('checked', false);
-            jq('#referralDescription').addClass("disabled");
+            VALIDATORS.referredNoCheck();
         }
     }
     function LoadRoomsTypes() {
@@ -1801,7 +1775,7 @@ a.tooltip span {
             </div>
         </div>
 
-        <div class="onerow" style="margin-top: 100px">
+        <div class="onerow" style="margin-top: 60px">
 
             <a class="button confirm" onclick="PAGE.submit();"
                style="float:right; display:inline-block; margin-left: 5px;">
@@ -1810,8 +1784,8 @@ a.tooltip span {
 
             <a class="button cancel" onclick="window.location.href = window.location.href"
                style="float:right; display:inline-block;"/>
-            <span>RESET</span>
-        </a>
+                <span>RESET</span>
+            </a>
         </div>
     </form>
 </div>

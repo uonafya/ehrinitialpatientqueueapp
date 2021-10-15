@@ -8,7 +8,7 @@
                     <input type="radio" name="mlcCaseYes" id="mlcCaseYes"/> YES
                 </label>
                  <label for="mlcCaseNo" class="checks">
-                    <input type="radio" name="mlcCaseYes" id="mlcCaseNo" checked=""/> NO
+                    <input type="radio" name="mlcCaseYes" id="mlcCaseNo"/> NO
                 </label>
             </div>
         </td>
@@ -19,7 +19,7 @@
     </tr>
     <tr>
         <td>
-            <label for="refer1" style="margin:0px;">Patient Referred<span>*</span></label>
+            <label style="margin:0px;">Patient Referred<span>*</span></label>
         </td>
         <td>
             <label id="forReferralType" for="referralType"
@@ -30,26 +30,12 @@
     <tr>
         <td>
             <div class="col4">
-                <div class="select-arrow" style="width: 100%">
-                    <field>
-                        <select id="refer1" name="refer1" onchange="LoadReferralCases();">
-                            <option value="0">Select Option</option>
-                            <option value="1">YES</option>
-                            <option value="2">NO</option>
-                        </select>
-                    </field>
-                </div>
+                <label class="checks"><input id="referredYes" type="radio" name="referredYes"/>YES</label>
+                <label class="checks"><input id="referredNo" type="radio" name="referredNo"/>NO</label>
             </div>
         </td>
         <td>
-            <div class="col4">
-                <div class="select-arrow" style="width: 100%">
-                    <field>
-                        <select id="referralType" name="patient.referred.reason">
-                        </select>
-                    </field>
-                </div>
-            </div>
+            <select id="referralType" name="patient.referred.reason"></select>
         </td>
     </tr>
 </table>
@@ -59,7 +45,7 @@
         <div class="onerow referraldiv  ">
             <td>
                 <div class="col4">
-                    <label for="refer1" style="margin:0px;">Referred From</label>
+                    <label  style="margin:0px;">Referred From</label>
                 </div>
             </td>
             <td>
@@ -69,7 +55,7 @@
                 </div>
             </td>
             <td>
-                <div class="col4 last">
+                <div class="col4 last referraldiv">
                     <label for="referralType" style="margin:0px;">Facility Name</label>
                 </div>
             </td>
@@ -80,7 +66,7 @@
         <div class="onerow referraldiv">
             <td>
                 <div class="col4">
-                    <div class="select-arrow" style="width: 100%">
+                    <div class="select-arrow">
                         <field>
                             <select id="referredCounty" name="patient.referred.county">
                                 <option value="0">Select County</option>
@@ -93,11 +79,8 @@
 
             <td>
                 <div class="col4">
-                    <div class="select-arrow" style="width: 100%">
-                        <field>
-                            <select id="referredFrom" name="patient.referred.from">
-                            </select>
-                        </field>
+                    <div class="select-arrow">
+                            <select id="referredFrom" name="patient.referred.from"></select>
                     </div>
                 </div>
             </td>
