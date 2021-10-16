@@ -40,7 +40,6 @@ import org.openmrs.module.initialpatientqueueapp.InitialPatientQueueConstants;
 import org.openmrs.module.initialpatientqueueapp.includable.validator.attribute.PatientAttributeValidatorService;
 import org.openmrs.module.initialpatientqueueapp.web.controller.utils.RegistrationWebUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.reporting.dataset.definition.evaluator.MergingDataSetEvaluator;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -54,7 +53,6 @@ import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -85,6 +83,18 @@ public class QueuePatientFragmentController {
 		model.addAttribute("universities",
 		    RegistrationWebUtils.getSubConceptsWithName(InitialPatientQueueConstants.CONCEPT_NAME_LIST_OF_UNIVERSITIES));
 		model.addAttribute("age", patient.getAge());
+		model.addAttribute(
+		    "medicalLegalCases",
+		    RegistrationWebUtils.getSubConcepts(Context.getConceptService()
+		            .getConceptByUuid(InitialPatientQueueConstants.CONCEPT_NAME_MEDICO_LEGAL_CASE).getName().getName()));
+		model.addAttribute(
+		    "referralReasons",
+		    RegistrationWebUtils.getSubConcepts(Context.getConceptService()
+		            .getConceptByUuid(InitialPatientQueueConstants.REASONS_FOR_REFERRAL).getName().getName()));
+		model.addAttribute(
+		    "facilityTypeReferredFrom",
+		    RegistrationWebUtils.getSubConcepts(Context.getConceptService()
+		            .getConceptByUuid(InitialPatientQueueConstants.FACILITY_TYPE_REFERRED_FROM).getName().getName()));
 		
 		Map<Integer, String> payingCategoryMap = new LinkedHashMap<Integer, String>();
 		Concept payingCategory = Context.getConceptService().getConcept(
@@ -108,14 +118,6 @@ public class QueuePatientFragmentController {
 			specialSchemeMap.put(ca.getAnswerConcept().getConceptId(), ca.getAnswerConcept().getName().getName());
 		}
 		
-		Map<Integer, String> referralReasonsMap = new LinkedHashMap<Integer, String>();
-		Concept referralReasonsConcept = Context.getConceptService().getConceptByUuid(
-		    InitialPatientQueueConstants.REASONS_FOR_REFERRAL);
-		for (ConceptAnswer ca : referralReasonsConcept.getAnswers()) {
-			referralReasonsMap.put(ca.getAnswerConcept().getConceptId(), ca.getAnswerConcept().getName().getName());
-		}
-		
-		model.addAttribute("referralReasons", referralReasonsMap);
 		model.addAttribute("payingCategoryMap", payingCategoryMap);
 		model.addAttribute("nonPayingCategoryMap", nonPayingCategoryMap);
 		model.addAttribute("specialSchemeMap", specialSchemeMap);

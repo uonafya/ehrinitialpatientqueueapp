@@ -201,7 +201,9 @@
             nonPayingCategoryMap: _nonPayingCategoryMap,
             specialSchemeMap: _specialSchemeMap,
             universities: "${universities}",
+            TEMPORARYCAT:"${medicalLegalCases}",
             referralType: "${referralReasons}",
+            referredFrom: "${facilityTypeReferredFrom}"
 
         }
         jq("#modesummary").blur(function () {

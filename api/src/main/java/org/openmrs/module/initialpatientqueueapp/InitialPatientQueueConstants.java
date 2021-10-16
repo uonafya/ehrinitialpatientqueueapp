@@ -101,6 +101,6 @@ public class InitialPatientQueueConstants {
 	
 	public static final String FACILITY_TYPE_REFERRED_FROM = "160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	
-	public static final String CONCEPT_NAME_MEDICO_LEGAL_CASE = "127925AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"; //holder for Med
+	public static final String CONCEPT_NAME_MEDICO_LEGAL_CASE = "17b33cd3-1af9-4a1b-a65b-b5e30540b189";
 	
 }
