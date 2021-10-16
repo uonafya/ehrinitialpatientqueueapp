@@ -1,3 +1,12 @@
+<%
+    def fields = [
+            [
+                    label: "",
+                    formFieldName: "defaultLocation",
+                    class: org.openmrs.Location
+            ]
+    ]
+%>
 <h2>Visit Information</h2>
 <table cellpadding="0" cellspacing="0" border="0">
     <tr>
@@ -70,7 +79,9 @@
                         <field>
                             <select id="referredCounty" name="patient.referred.county">
                                 <option value="0">Select County</option>
-
+                                <%countyList.each { %>
+                                <option value="${it}">${it}</option>
+                                <%}%>
                             </select>
                         </field>
                     </div>
@@ -87,8 +98,9 @@
             <td>
                 <div class="col4 last">
                     <field>
-                        <input id="referredInstitute" name="patient.referred.facility"
-                               class="form-textbox1 focused" type="text" placeholder="Institution Name">
+                        <% fields.each { %>
+                        ${ ui.includeFragment("kenyaui", "widget/labeledField", it) }
+                        <% } %>
                     </field>
                 </div>
             </td>
