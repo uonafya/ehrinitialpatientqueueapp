@@ -55,8 +55,6 @@ public class InitialPatientQueueConstants {
 	
 	public static final String FORM_FIELD_PATIENT_SPECIAL_CLINIC = "patient.specialClinic";
 	
-	public static final String FORM_FIELD_PATIENT_REFERRED_FROM = "patient.referred.from";
-	
 	public static final String FORM_FIELD_PAYMENT_CATEGORY = "person.attribute.14";
 	
 	public static final String CONCEPT_NEW_PATIENT = "New client";
@@ -99,8 +97,15 @@ public class InitialPatientQueueConstants {
 	
 	public static final String REASONS_FOR_REFERRAL = "1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	
+	public static final String FORM_FIELD_PATIENT_REFERRED_FROM = "patient.referred.from"; //type of facility referred from
+	
+	public static final String FORM_FIELD_COUNTY_REFERRED_FROM = "patient.referred.county";
+	
 	public static final String FACILITY_TYPE_REFERRED_FROM = "160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	
-	public static final String CONCEPT_NAME_MEDICO_LEGAL_CASE = "17b33cd3-1af9-4a1b-a65b-b5e30540b189";
+	public static final String CONCEPT_MEDICO_LEGAL_CASE = "17b33cd3-1af9-4a1b-a65b-b5e30540b189";
 	
+	public static final String FORM_FIELD_PATIENT_REFERRED_REASON = "patient.referred.reason";
+	
+	public static final String FORM_FIELD_PATIENT_REFERRED_DESCRIPTION = "patient.referred.description";
 }

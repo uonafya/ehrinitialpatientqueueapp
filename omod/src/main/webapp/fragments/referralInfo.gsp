@@ -1,8 +1,9 @@
 <%
     def fields = [
             [
+                    id: "facilityReferredFrom",
                     label: "",
-                    formFieldName: "defaultLocation",
+                    formFieldName: "facilityReferredFrom",
                     class: org.openmrs.Location
             ]
     ]

@@ -12,17 +12,7 @@ package org.openmrs.module.initialpatientqueueapp.fragment.controller;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Concept;
-import org.openmrs.ConceptAnswer;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
-import org.openmrs.Person;
-import org.openmrs.PersonAttribute;
-import org.openmrs.PersonAttributeType;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ehrconfigs.metadata.EhrCommonMetadata;
@@ -86,7 +76,7 @@ public class QueuePatientFragmentController {
 		model.addAttribute(
 		    "medicalLegalCases",
 		    RegistrationWebUtils.getSubConcepts(Context.getConceptService()
-		            .getConceptByUuid(InitialPatientQueueConstants.CONCEPT_NAME_MEDICO_LEGAL_CASE).getName().getName()));
+		            .getConceptByUuid(InitialPatientQueueConstants.CONCEPT_MEDICO_LEGAL_CASE).getName().getName()));
 		model.addAttribute(
 		    "referralReasons",
 		    RegistrationWebUtils.getSubConcepts(Context.getConceptService()
@@ -380,6 +370,64 @@ public class QueuePatientFragmentController {
 			double doubleVal = Double.parseDouble(GlobalPropertyUtil.getString(
 			    InitialPatientQueueConstants.PROPERTY_SPECIALCLINIC_REGISTRATION_FEE, "0.0"));
 			obsn.setValueNumeric(doubleVal);
+		}
+		
+		String medicalLegalCase = null, referralType = null, referralCounty = null, typeOfFacilityReferredFrom = null, facilityReferredFrom = null, referralDescription = null;
+		//if mlc is not empty then is a mlc otherwise NOT an mlc
+		if (StringUtils.isNotEmpty(parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_MLC))) {
+			medicalLegalCase = parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_MLC);
+			Concept mlcConcept = Context.getConceptService().getConceptByUuid(
+			    InitialPatientQueueConstants.CONCEPT_MEDICO_LEGAL_CASE);
+			
+			Obs mlcObs = new Obs();
+			if (!StringUtils.isBlank(medicalLegalCase)) {
+				Concept selectedMlcConcept = Context.getConceptService().getConceptByName(medicalLegalCase);
+				mlcObs.setConcept(mlcConcept);
+				mlcObs.setValueCoded(selectedMlcConcept);
+				encounter.addObs(mlcObs);
+			}
+			
+		}
+		
+		/*
+		 * REFERRAL INFORMATION
+		 */
+		Obs referralObs = new Obs();
+		
+		//if referral reason/type is empty the NOT referred
+		if (StringUtils.isNotEmpty(parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_REASON))) {
+			
+			Concept referralConcept = Context.getConceptService().getConcept(
+			    InitialPatientQueueConstants.CONCEPT_NAME_PATIENT_REFERRED_TO_HOSPITAL);
+			referralObs.setConcept(referralConcept);
+			encounter.addObs(referralObs);
+			
+			referralType = parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_REASON);
+			referralCounty = parameters.get(InitialPatientQueueConstants.FORM_FIELD_COUNTY_REFERRED_FROM);
+			typeOfFacilityReferredFrom = parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_FROM);
+			facilityReferredFrom = parameters.get("facilityReferredFrom");//Location
+			referralDescription = parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_DESCRIPTION);
+			referralObs.setValueCoded(Context.getConceptService().getConcept("YES"));
+			// referred from
+			Obs referredFromObs = new Obs();
+			Concept referredFromConcept = Context.getConceptService().getConceptByUuid(
+			    InitialPatientQueueConstants.FACILITY_TYPE_REFERRED_FROM);
+			referredFromObs.setConcept(referredFromConcept);
+			referredFromObs.setValueCoded(Context.getConceptService().getConceptByName(typeOfFacilityReferredFrom));
+			encounter.addObs(referredFromObs);
+			
+			// referred reason
+			Obs referredReasonObs = new Obs();
+			Concept referredReasonConcept = Context.getConceptService().getConceptByUuid(
+			    InitialPatientQueueConstants.REASONS_FOR_REFERRAL);// TODO review this
+			referredReasonObs.setConcept(referredReasonConcept);
+			referredReasonObs.setValueCoded(Context.getConceptService().getConceptByName(referralType));
+			// referral description
+			if (StringUtils.isNotEmpty(referralDescription)) {
+				referredReasonObs.setValueText(referralDescription);
+			}
+			encounter.addObs(referredReasonObs);
+			
 		}
 		
 		obsn.setValueText(paymt3 + "/" + paymt2);//we can add the paying sub category if needed

@@ -310,11 +310,11 @@
             delimiter: ",",
             optionDelimiter: "|"
         });
-        PAGE.fillOptions("#referredCounty", {
+        /*PAGE.fillOptions("#referredCounty", {
             data: MODEL.districts,
             delimiter: ",",
             optionDelimiter: "|"
-        });
+        });*/
         jq("#districts").change();
         selectedDistrict = jq("#districts option:checked").val();
         selectedUpazila = jq("#upazilas option:checked").val();
@@ -684,6 +684,48 @@
             else {
                 jq('#rooms3').removeClass("red-border");
             }
+
+            if(jq("#mlcCaseYes").is(":checked")){
+                if (jq("#mlc").val() === 0 || jq("#mlc").val() === "" || jq("#mlc").val() == null) {
+                    jq('#mlc').addClass("red-border");
+                    i++;
+                }else {
+                    jq('#mlc').removeClass("red-border");
+
+                }
+            }
+                //TODO Rewrite a js funtion that take one parameter(selector name i.e #referralType" ) and does the validation on it
+            if(jq("#referredYes").is(":checked")){
+                if (jq("#referralType").val() === 0 || jq("#referralType").val() === "" || jq("#referralType").val() == null) {
+                    jq('#referralType').addClass("red-border");
+                    i++;
+                }else {
+                    jq('#referralType').removeClass("red-border");
+
+                }
+                if (jq("#referredCounty :selected").text()==="Select County" || jq("#referredCounty").val() === "" || jq("#referredCounty").val() == null) {
+                    jq('#referredCounty').addClass("red-border");
+                    i++;
+                }else {
+                    jq('#referredCounty').removeClass("red-border");
+
+                }
+                if (jq("#referredFrom").val() === 0 || jq("#referredFrom").val() === "" || jq("#referredFrom").val() == null) {
+                    jq('#referredFrom').addClass("red-border");
+                    i++;
+                }else {
+                    jq('#referredFrom').removeClass("red-border");
+
+                }
+                if (jq("#facilityReferredFrom").val() === "" || jq("#facilityReferredFrom").val() == null) {
+                    jq('#facilityReferredFrom').addClass("red-border");
+                    i++;
+                }else {
+                    jq('#facilityReferredFrom').removeClass("red-border");
+
+                }
+            }
+
             if (i === 0) {
                 return true;
             }
