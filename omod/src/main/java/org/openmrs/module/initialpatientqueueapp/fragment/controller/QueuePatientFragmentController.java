@@ -53,7 +53,6 @@ import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -84,6 +83,18 @@ public class QueuePatientFragmentController {
 		model.addAttribute("universities",
 		    RegistrationWebUtils.getSubConceptsWithName(InitialPatientQueueConstants.CONCEPT_NAME_LIST_OF_UNIVERSITIES));
 		model.addAttribute("age", patient.getAge());
+		model.addAttribute(
+		    "medicalLegalCases",
+		    RegistrationWebUtils.getSubConcepts(Context.getConceptService()
+		            .getConceptByUuid(InitialPatientQueueConstants.CONCEPT_MEDICO_LEGAL_CASE).getName().getName()));
+		model.addAttribute(
+		    "referralReasons",
+		    RegistrationWebUtils.getSubConcepts(Context.getConceptService()
+		            .getConceptByUuid(InitialPatientQueueConstants.REASONS_FOR_REFERRAL).getName().getName()));
+		model.addAttribute(
+		    "facilityTypeReferredFrom",
+		    RegistrationWebUtils.getSubConcepts(Context.getConceptService()
+		            .getConceptByUuid(InitialPatientQueueConstants.FACILITY_TYPE_REFERRED_FROM).getName().getName()));
 		
 		Map<Integer, String> payingCategoryMap = new LinkedHashMap<Integer, String>();
 		Concept payingCategory = Context.getConceptService().getConcept(
@@ -106,6 +117,7 @@ public class QueuePatientFragmentController {
 		for (ConceptAnswer ca : specialScheme.getAnswers()) {
 			specialSchemeMap.put(ca.getAnswerConcept().getConceptId(), ca.getAnswerConcept().getName().getName());
 		}
+		
 		model.addAttribute("payingCategoryMap", payingCategoryMap);
 		model.addAttribute("nonPayingCategoryMap", nonPayingCategoryMap);
 		model.addAttribute("specialSchemeMap", specialSchemeMap);
@@ -370,6 +382,64 @@ public class QueuePatientFragmentController {
 			double doubleVal = Double.parseDouble(GlobalPropertyUtil.getString(
 			    InitialPatientQueueConstants.PROPERTY_SPECIALCLINIC_REGISTRATION_FEE, "0.0"));
 			obsn.setValueNumeric(doubleVal);
+		}
+		
+		String medicalLegalCase = null, referralType = null, referralCounty = null, typeOfFacilityReferredFrom = null, facilityReferredFrom = null, referralDescription = null;
+		//if mlc is not empty then is a mlc otherwise NOT an mlc
+		if (StringUtils.isNotEmpty(parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_MLC))) {
+			medicalLegalCase = parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_MLC);
+			Concept mlcConcept = Context.getConceptService().getConceptByUuid(
+			    InitialPatientQueueConstants.CONCEPT_MEDICO_LEGAL_CASE);
+			
+			Obs mlcObs = new Obs();
+			if (!StringUtils.isBlank(medicalLegalCase)) {
+				Concept selectedMlcConcept = Context.getConceptService().getConceptByName(medicalLegalCase);
+				mlcObs.setConcept(mlcConcept);
+				mlcObs.setValueCoded(selectedMlcConcept);
+				encounter.addObs(mlcObs);
+			}
+			
+		}
+		
+		/*
+		 * REFERRAL INFORMATION
+		 */
+		Obs referralObs = new Obs();
+		
+		//if referral reason/type is empty the NOT referred
+		if (StringUtils.isNotEmpty(parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_REASON))) {
+			
+			Concept referralConcept = Context.getConceptService().getConcept(
+			    InitialPatientQueueConstants.CONCEPT_NAME_PATIENT_REFERRED_TO_HOSPITAL);
+			referralObs.setConcept(referralConcept);
+			encounter.addObs(referralObs);
+			
+			referralType = parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_REASON);
+			referralCounty = parameters.get(InitialPatientQueueConstants.FORM_FIELD_COUNTY_REFERRED_FROM);
+			typeOfFacilityReferredFrom = parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_FROM);
+			facilityReferredFrom = parameters.get("facilityReferredFrom");//Location
+			referralDescription = parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_DESCRIPTION);
+			referralObs.setValueCoded(Context.getConceptService().getConcept("YES"));
+			// referred from
+			Obs referredFromObs = new Obs();
+			Concept referredFromConcept = Context.getConceptService().getConceptByUuid(
+			    InitialPatientQueueConstants.FACILITY_TYPE_REFERRED_FROM);
+			referredFromObs.setConcept(referredFromConcept);
+			referredFromObs.setValueCoded(Context.getConceptService().getConceptByName(typeOfFacilityReferredFrom));
+			encounter.addObs(referredFromObs);
+			
+			// referred reason
+			Obs referredReasonObs = new Obs();
+			Concept referredReasonConcept = Context.getConceptService().getConceptByUuid(
+			    InitialPatientQueueConstants.REASONS_FOR_REFERRAL);// TODO review this
+			referredReasonObs.setConcept(referredReasonConcept);
+			referredReasonObs.setValueCoded(Context.getConceptService().getConceptByName(referralType));
+			// referral description
+			if (StringUtils.isNotEmpty(referralDescription)) {
+				referredReasonObs.setValueText(referralDescription);
+			}
+			encounter.addObs(referredReasonObs);
+			
 		}
 		
 		obsn.setValueText(paymt3 + "/" + paymt2);//we can add the paying sub category if needed

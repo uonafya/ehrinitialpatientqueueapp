@@ -55,8 +55,6 @@ public class InitialPatientQueueConstants {
 	
 	public static final String FORM_FIELD_PATIENT_SPECIAL_CLINIC = "patient.specialClinic";
 	
-	public static final String FORM_FIELD_PATIENT_REFERRED_FROM = "patient.referred.from";
-	
 	public static final String FORM_FIELD_PAYMENT_CATEGORY = "person.attribute.14";
 	
 	public static final String CONCEPT_NEW_PATIENT = "New client";
@@ -87,8 +85,6 @@ public class InitialPatientQueueConstants {
 	
 	public static final String PROPERTY_NUMBER_OF_DATE_VALIDATION = MODULE_ID_EHR_CONFIGS + ".numberOfDateValidation";
 	
-	public static final String CONCEPT_NAME_MEDICO_LEGAL_CASE = "MEDICO LEGAL CASE";
-	
 	public static final String PROPERTY_REVISIT_REGISTRATION_FEE = MODULE_ID_EHR_CONFIGS + ".reVisitRegistrationFee";
 	
 	public static final String FORM_FIELD_PATIENT_MLC = "patient.mlc";
@@ -98,6 +94,20 @@ public class InitialPatientQueueConstants {
 	public static final String FORM_FIELD_SELECTED_PAYMENT_CATEGORY = "patient.selectedPaymentCategory";
 	
 	public static final String FORM_FIELD_SELECTED_PAYMENT_SUBCATEGORY = "patient.selectedPaymentSubCategory";
+	
+	public static final String REASONS_FOR_REFERRAL = "1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	
+	public static final String FORM_FIELD_PATIENT_REFERRED_FROM = "patient.referred.from"; //type of facility referred from
+	
+	public static final String FORM_FIELD_COUNTY_REFERRED_FROM = "patient.referred.county";
+	
+	public static final String FACILITY_TYPE_REFERRED_FROM = "160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	
+	public static final String CONCEPT_MEDICO_LEGAL_CASE = "17b33cd3-1af9-4a1b-a65b-b5e30540b189";
+	
+	public static final String FORM_FIELD_PATIENT_REFERRED_REASON = "patient.referred.reason";
+	
+	public static final String FORM_FIELD_PATIENT_REFERRED_DESCRIPTION = "patient.referred.description";
 	
 	public static final String MOPC_REGISTARTION_FEE = "cecc12d2-4308-4567-9bd1-92011b1648df";
 	
