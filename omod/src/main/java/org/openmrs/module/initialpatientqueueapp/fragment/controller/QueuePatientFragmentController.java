@@ -459,6 +459,9 @@ public class QueuePatientFragmentController {
 		PersonAttributeType paymentCategoryPaymentAttribute = Context.getPersonService().getPersonAttributeTypeByUuid(
 		    EhrCommonMetadata._EhrPersonAttributeType.PAYMENT_CATEGORY);
 		
+		PersonAttributeType paymentSubCategoryAttribute = Context.getPersonService().getPersonAttributeTypeByUuid(
+		    EhrCommonMetadata._EhrPersonAttributeType.PAYMENT_CATEGORY_SUB_TYPE);
+		
 		PersonAttribute checkIfExists = patient.getAttribute(paymentCategoryPaymentAttribute);
 		//set value to be used
 		String valueParam1 = "";
@@ -473,6 +476,7 @@ public class QueuePatientFragmentController {
 		if (checkIfExists == null) {
 			checkIfExists = new PersonAttribute();
 			checkIfExists.setAttributeType(paymentCategoryPaymentAttribute);
+			checkIfExists.setAttributeType(paymentSubCategoryAttribute);
 			checkIfExists.setCreator(Context.getAuthenticatedUser());
 			checkIfExists.setDateCreated(new Date());
 			checkIfExists.setPerson(patient);
@@ -516,6 +520,10 @@ public class QueuePatientFragmentController {
 				param2Value = "Delivery case";
 			} else if (paymt2 == 3) {
 				param2Value = "Student";
+			} else if (paymt2 == 4) {
+				param2Value = "Civil servant";
+			} else if (paymt2 == 5) {
+				param2Value = "NHIF patient";
 			}
 		}
 		PersonAttributeType paymentCategorySubTypePaymentAttribute = Context.getPersonService()
