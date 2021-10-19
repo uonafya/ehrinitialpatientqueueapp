@@ -34,7 +34,8 @@ public class ShowPatientInfoPageController {
 	        @RequestParam(value = "encounterId", required = false) Integer encounterId,
 	        @RequestParam(value = "payCategory", required = false) String payCategory,
 	        @RequestParam(value = "roomToVisit", required = false) Integer roomToVisit,
-	        @RequestParam(value = "visit", required = false) boolean visit, PageModel model) throws IOException,
+	        @RequestParam(value = "visit", required = false) boolean visit,
+	        @RequestParam(value = "departiment", required = false) String departiment, PageModel model) throws IOException,
 	        ParseException {
 		
 		SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM/yyyy kk:mm");
@@ -85,22 +86,62 @@ public class ShowPatientInfoPageController {
 		BillableService specialClinicRevisitFeesAmount = Context.getService(BillingService.class).getServiceByConceptId(
 		    specialClinicRevisitFeeConcept.getId());
 		
+		Concept mopcTriage = Context.getConceptService().getConceptByUuid("98f596cc-5ad1-4c58-91e8-d1ea0329c89d");
+		Concept mopcopd = Context.getConceptService().getConceptByUuid("66710a6d-5894-4f7d-a874-b449df77314d");
+		
+		Concept mopcRegistartionFess = Context.getConceptService().getConceptByUuid(
+		    InitialPatientQueueConstants.MOPC_REGISTARTION_FEE);
+		Concept mopcRevisitFeesConcept = Context.getConceptService().getConceptByUuid(
+		    InitialPatientQueueConstants.MOPC_REVISIT_FEE);
+		
+		BillableService mopcRegistrationFee = Context.getService(BillingService.class).getServiceByConceptId(
+		    mopcRegistartionFess.getId());
+		
+		BillableService mopcRevisitFee = Context.getService(BillingService.class).getServiceByConceptId(
+		    mopcRevisitFeesConcept.getId());
+		
 		String WhatToBePaid = "";
 		String specialClinicFees = "";
 		if (!visit) {
-			//This a new patient and might be required to pay registration fees
-			WhatToBePaid = "Registration fees:		" + registrationFee.getPrice();
+			
+			if (Context.getConceptService().getConcept(Integer.parseInt(departiment)).equals(mopcTriage)
+			        || Context.getConceptService().getConcept(Integer.parseInt(departiment)).equals(mopcopd)) {
+				WhatToBePaid = "Registration fees:		" + mopcRegistrationFee.getPrice();
+			} else if (roomToVisit == 3 && !EhrRegistrationUtils.hasSpecialClinicVisit(patient)) {
+				WhatToBePaid = "Registration fees:		" + specialClinicFeesAmount.getPrice();
+			} else {
+				//This a new patient and might be required to pay registration fees
+				WhatToBePaid = "Registration fees:		" + registrationFee.getPrice();
+			}
 		} else {
-			WhatToBePaid = "Revisit fees:		" + revisitFees.getPrice();
-		}
-		if (roomToVisit != null && roomToVisit == 3 && !EhrRegistrationUtils.hasSpecialClinicVisit(patient)) {
-			specialClinicFees = "Special Clinic fees:		" + specialClinicFeesAmount.getPrice();
-		} else if (roomToVisit != null && roomToVisit == 3 && EhrRegistrationUtils.hasSpecialClinicVisit(patient)) {
-			specialClinicFees = "Special Clinic revisit fees:		" + specialClinicRevisitFeesAmount.getPrice();
+			
+			if (Context.getConceptService().getConcept(Integer.parseInt(departiment)).equals(mopcTriage)
+			        || Context.getConceptService().getConcept(Integer.parseInt(departiment)).equals(mopcopd)) {
+				WhatToBePaid = "Revisit fees:		" + mopcRevisitFee.getPrice();
+			} else if (roomToVisit == 3 && EhrRegistrationUtils.hasSpecialClinicVisit(patient)) {
+				WhatToBePaid = "Revisit fees:		" + specialClinicRevisitFeesAmount.getPrice();
+			} else {
+				//This a new patient and might be required to pay registration fees
+				WhatToBePaid = "Revisit fees:		" + revisitFees.getPrice();
+			}
+			
 		}
 		
 		model.addAttribute("WhatToBePaid", WhatToBePaid);
 		model.addAttribute("specialClinicFees", specialClinicFees);
+		
+		//poppulate the major rooms to visit
+		String visitingRoom = "";
+		if (roomToVisit != null && roomToVisit == 1) {
+			visitingRoom = "Triage Room";
+		} else if (roomToVisit != null && roomToVisit == 2) {
+			visitingRoom = "OPD Room";
+		} else if (roomToVisit != null && roomToVisit == 3) {
+			visitingRoom = "Special Clinic";
+		}
+		model.addAttribute("roomToVisit", visitingRoom);
+		model.addAttribute("department", Context.getConceptService().getConcept(Integer.parseInt(departiment)).getName()
+		        .getName());
 		
 	}
 	

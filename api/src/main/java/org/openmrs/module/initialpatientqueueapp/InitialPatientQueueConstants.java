@@ -108,4 +108,9 @@ public class InitialPatientQueueConstants {
 	public static final String FORM_FIELD_PATIENT_REFERRED_REASON = "patient.referred.reason";
 	
 	public static final String FORM_FIELD_PATIENT_REFERRED_DESCRIPTION = "patient.referred.description";
+	
+	public static final String MOPC_REGISTARTION_FEE = "cecc12d2-4308-4567-9bd1-92011b1648df";
+	
+	public static final String MOPC_REVISIT_FEE = "509a7862-de5a-47e4-8837-4851024dbccf";
+	
 }
