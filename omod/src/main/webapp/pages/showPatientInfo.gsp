@@ -94,6 +94,11 @@
             <b>Gender:</b></div>
             <div class="col2" align="left" style="display:inline-block;"><span id="gender"></span>${gender}</div>
         </div>
+        <div>
+            <div class="col2" align="float" style="display:inline-block; width: 150px">
+                <b>Room to visit:</b></div>
+            <div class="col2" align="left" style="display:inline-block;"><span id="roomToVisit"></span>${roomToVisit}-${department}</div>
+        </div>
         <% if(paying){ %>
             <div>
                 <div class="col2" align="float" style="display:inline-block; width: 150px">

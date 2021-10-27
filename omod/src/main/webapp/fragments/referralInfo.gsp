@@ -1,139 +1,129 @@
+<%
+    def fields = [
+            [
+                    id: "facilityReferredFrom",
+                    label: "",
+                    formFieldName: "facilityReferredFrom",
+                    class: org.openmrs.Location
+            ]
+    ]
+%>
 <h2>Visit Information</h2>
 <table cellpadding="0" cellspacing="0" border="0">
     <tr>
         <td>
-            <div class="col4">
-                <label for="legal1" style="margin:0px;">Medical Legal Case</label>
+            <label>Medical Legal Case:<span>*</span></label>
+            <div class=" onerow ">
+                <label for="mlcCaseYes" class="checks">
+                    <input type="radio" name="mlcCaseYes" id="mlcCaseYes"/> YES
+                </label>
+                 <label for="mlcCaseNo" class="checks">
+                    <input type="radio" name="mlcCaseYes" id="mlcCaseNo"/> NO
+                </label>
             </div>
         </td>
         <td>
-            <div class="col4">
-                <label for="legal2" style="margin:0px;">Description</label>
-            </div>
+            <select id="mlc" name="patient.mlc" style='width: 152px; display:inline-block;'></select>
         </td>
-    </div>
+
     </tr>
     <tr>
-    <td>
-        <span class="select-arrow" style="width: 100%">
-            <select id="legal1" name="legal1" onchange="LoadLegalCases();">
-                <option value="0">&nbsp;</option>
-                <option value="1">AVAILABLE</option>
-                <option value="2">NOT AVAILABLE</option>
-            </select>
-        </span>
-    </td>
-    <td>
-        <span class="select-arrow" style="width: 100%">
-            <select id="legal2" name="legal2">
-            </select>
-        </span>
-    </td>
- </tr>
+        <td>
+            <label style="margin:0px;">Patient Referred<span>*</span></label>
+        </td>
+        <td>
+            <label id="forReferralType" for="referralType"
+                   style="margin:0px;">Referral Type<span></span></label>
+        </td>
+
+    </tr>
+    <tr>
+        <td>
+            <div class="col4">
+                <label class="checks"><input id="referredYes" type="radio" name="referredYes"/>YES</label>
+                <label class="checks"><input id="referredNo" type="radio" name="referredNo"/>NO</label>
+            </div>
+        </td>
+        <td>
+            <select id="referralType" name="patient.referred.reason"></select>
+        </td>
+    </tr>
 </table>
+<div class="onerow referraldiv" id="referraldiv" style="padding-top:-0px; display:none;">
+<table cellpadding="0" cellspacing="0" border="0" >
+    <tr>
+        <div class="onerow referraldiv  ">
+            <td>
+                <div class="col4">
+                    <label  style="margin:0px;">Referred From</label>
+                </div>
+            </td>
+            <td>
+                <div class="col4">
+                    <label id="forReferredFrom" for="referredFrom"
+                           style="margin:0px;">Facility Type<span></span></label>
+                </div>
+            </td>
+            <td>
+                <div class="col4 last referraldiv">
+                    <label for="referralType" style="margin:0px;">Facility Name</label>
+                </div>
+            </td>
+        </div>
+    </tr>
 
-<table cellpadding="0" cellspacing="0" border="0">
-<tr>
-<td>
-    <label for="refer1" style="margin:0px;">Patient Referred<span>*</span></label>
-</td>
-<td>
-    <label id="forReferralType" for="referralType"
-           style="margin:0px;">Referral Type<span></span></label>
-</td>
+    <tr>
+        <div class="onerow referraldiv">
+            <td>
+                <div class="col4">
+                    <div class="select-arrow">
+                        <field>
+                            <select id="referredCounty" name="patient.referred.county">
+                                <option value="0">Select County</option>
+                                <%countyList.each { %>
+                                <option value="${it}">${it}</option>
+                                <%}%>
+                            </select>
+                        </field>
+                    </div>
+                </div>
+            </td>
 
-</tr>
-<tr>
-<td>
-<div class="col4">
-    <span class="select-arrow" style="width: 100%">
-        <field>
-            <select id="refer1" name="refer1" onchange="LoadReferralCases();">
-                <option value="0">Select Option</option>
-                <option value="1">YES</option>
-                <option value="2">NO</option>
-            </select>
-        </field>
-    </span>
-</div>
-</td>
-<td>
-<div class="col4">
-    <span class="select-arrow" style="width: 100%">
-        <field>
-            <select id="referralType" name="patient.referred.reason">
-            </select>
-        </field>
-    </span>
-</div>
-</td>
+            <td>
+                <div class="col4">
+                    <div class="select-arrow">
+                            <select id="referredFrom" name="patient.referred.from"></select>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="col4 last">
+                    <field>
+                        <% fields.each { %>
+                        ${ ui.includeFragment("kenyaui", "widget/labeledField", it) }
+                        <% } %>
+                    </field>
+                </div>
+            </td>
 
-
-</tr>
-<tr>
-<div class="onerow referraldiv" style="margin-top:50px;">
-<td>
-<div class="col4">
-    <label for="refer1" style="margin:0px;">Referred From</label>
-</div></td>
-<td>
-<div class="col4">
-    <label id="forReferredFrom" for="referredFrom"
-           style="margin:0px;">Facility Type<span></span></label>
-</div>
-</td>
-<td>
-<div class="col4 last">
-    <label for="referralType" style="margin:0px;">Facility Name</label>
-</div>
-</td>
-</div>
-</tr>
-
-<tr>
-<div class="onerow referraldiv">
-<td>
-<div class="col4">
-    <span class="select-arrow" style="width: 100%">
-        <field>
-            <select id="referredCounty" name="patient.referred.county">
-                <option value="0">Select County</option>
-
-            </select>
-        </field>
-    </span>
-</div>
-</td>
-
-<td>
-<div class="col4">
-    <span class="select-arrow" style="width: 100%">
-        <field>
-            <select id="referredFrom" name="patient.referred.from">
-            </select>
-        </field>
-    </span>
-</div>
-</td>
-<td>
-<div class="col4 last">
-    <field>
-        <input id="referredInstitute" name="patient.referred.facility"
-               class="form-textbox1 focused" type="text" placeholder="Institution Name">
-    </field>
-</div>
-</td>
-
-</div>
-</tr>
-<tr>
-<td>
-<div class="onerow referraldiv" id="referraldiv" style="padding-top:-5px; display:none;">
-<label for="referralDescription" style="margin-top:20px;">Comments</label>
-<field><textarea type="text" id="referralDescription" name="patient.referred.description"
-                 value="N/A" placeholder="COMMENTS" readonly=""
-                 style="height: 80px; width: 700px;"></textarea></field>
-</div>
-</td>
-</tr>
+        </div>
+    </tr>
 </table>
+<table  cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <div class="onerow referraldiv">
+            <td>
+                <div class="onerow referraldiv" >
+                    <label for="referralDescription" style="margin-top:25px;">Comments</label>
+                    <field>
+                        <textarea type="text" id="referralDescription" name="patient.referred.description"
+                                  value="N/A" placeholder="COMMENTS" readonly=""
+                                  style="height: 80px; width: 700px;">
+                        </textarea>
+                    </field>
+                </div>
+            </td>
+        </div>
+    </tr>
+</table>
+</div>
