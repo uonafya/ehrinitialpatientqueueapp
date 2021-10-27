@@ -19,7 +19,6 @@ import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
-import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.Visit;
@@ -34,10 +33,8 @@ import org.openmrs.module.hospitalcore.model.DepartmentConcept;
 import org.openmrs.module.hospitalcore.model.OpdTestOrder;
 import org.openmrs.module.hospitalcore.model.PatientSearch;
 import org.openmrs.module.hospitalcore.util.GlobalPropertyUtil;
-import org.openmrs.module.hospitalcore.util.HospitalCoreUtils;
 import org.openmrs.module.initialpatientqueueapp.EhrRegistrationUtils;
 import org.openmrs.module.initialpatientqueueapp.InitialPatientQueueConstants;
-import org.openmrs.module.initialpatientqueueapp.includable.validator.attribute.PatientAttributeValidatorService;
 import org.openmrs.module.initialpatientqueueapp.web.controller.utils.RegistrationWebUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.UiUtils;
@@ -49,14 +46,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -144,46 +139,6 @@ public class QueuePatientFragmentController {
 		int roomToVisit = Integer.parseInt(parameters.get("rooms1"));
 		int payCat = Integer.parseInt(paymentCategory);
 		
-		Map<String, Object> redirectParams = new HashMap<String, Object>();
-		Map<Integer, String> payingCategoryMap = new LinkedHashMap<Integer, String>();
-		Concept payingCategory = Context.getConceptService().getConcept(
-		    InitialPatientQueueConstants.CONCEPT_NAME_PAYING_CATEGORY);
-		for (ConceptAnswer ca : payingCategory.getAnswers()) {
-			payingCategoryMap.put(ca.getAnswerConcept().getConceptId(), ca.getAnswerConcept().getName().getName());
-		}
-		Map<Integer, String> nonPayingCategoryMap = new LinkedHashMap<Integer, String>();
-		Concept nonPayingCategory = Context.getConceptService().getConcept(
-		    InitialPatientQueueConstants.CONCEPT_NAME_NONPAYING_CATEGORY);
-		for (ConceptAnswer ca : nonPayingCategory.getAnswers()) {
-			nonPayingCategoryMap.put(ca.getAnswerConcept().getConceptId(), ca.getAnswerConcept().getName().getName());
-		}
-		Map<Integer, String> specialSchemeMap = new LinkedHashMap<Integer, String>();
-		Concept specialScheme = Context.getConceptService().getConcept(
-		    InitialPatientQueueConstants.CONCEPT_NAME_SPECIAL_SCHEME);
-		for (ConceptAnswer ca : specialScheme.getAnswers()) {
-			specialSchemeMap.put(ca.getAnswerConcept().getConceptId(), ca.getAnswerConcept().getName().getName());
-		}
-		model.addAttribute("payingCategoryMap", payingCategoryMap);
-		model.addAttribute("nonPayingCategoryMap", nonPayingCategoryMap);
-		model.addAttribute("specialSchemeMap", specialSchemeMap);
-		model.addAttribute("TRIAGE", RegistrationWebUtils.getSubConcepts(InitialPatientQueueConstants.CONCEPT_NAME_TRIAGE));
-		model.addAttribute("OPDs", RegistrationWebUtils.getSubConcepts(InitialPatientQueueConstants.CONCEPT_NAME_OPD_WARD));
-		model.addAttribute("SPECIALCLINIC",
-		    RegistrationWebUtils.getSubConcepts(InitialPatientQueueConstants.CONCEPT_NAME_SPECIAL_CLINIC));
-		model.addAttribute("payingCategory",
-		    RegistrationWebUtils.getSubConceptsWithName(InitialPatientQueueConstants.CONCEPT_NAME_PAYING_CATEGORY));
-		model.addAttribute("nonPayingCategory",
-		    RegistrationWebUtils.getSubConceptsWithName(InitialPatientQueueConstants.CONCEPT_NAME_NONPAYING_CATEGORY));
-		model.addAttribute("specialScheme",
-		    RegistrationWebUtils.getSubConceptsWithName(InitialPatientQueueConstants.CONCEPT_NAME_SPECIAL_SCHEME));
-		model.addAttribute("universities",
-		    RegistrationWebUtils.getSubConceptsWithName(InitialPatientQueueConstants.CONCEPT_NAME_LIST_OF_UNIVERSITIES));
-		model.addAttribute("initialRegFee",
-		    GlobalPropertyUtil.getString(InitialPatientQueueConstants.PROPERTY_INITIAL_REGISTRATION_FEE, ""));
-		model.addAttribute("childLessThanFiveYearRegistrationFee",
-		    GlobalPropertyUtil.getString(InitialPatientQueueConstants.PROPERTY_CHILDLESSTHANFIVEYEAR_REGISTRATION_FEE, ""));
-		model.addAttribute("specialClinicRegFee",
-		    GlobalPropertyUtil.getString(InitialPatientQueueConstants.PROPERTY_SPECIALCLINIC_REGISTRATION_FEE, ""));
 		KenyaEmrService kenyaEmrService = Context.getService(KenyaEmrService.class);
 		List<Visit> patientVisit = Context.getVisitService().getVisits(
 		    Arrays.asList(Context.getVisitService().getVisitTypeByUuid("3371a4d4-f66f-4454-a86d-92c7b3da990c")),
@@ -198,16 +153,7 @@ public class QueuePatientFragmentController {
 			// create encounter for the visit here
 			Encounter encounter = createEncounter(patient, parameters);
 			hasActiveVisit(patientVisit, patient, encounter);
-			//encounter = Context.getEncounterService().saveEncounter(encounter);
-			//encounter.setVisit(getLastVisitForPatient(patient));
-			//try sending this patient as an opd test order such that it can be seen at the billing point
 			sendToBillingDependingOnTheBill(parameters, encounter, payCat, Integer.parseInt(department));
-			response.setContentType("text/html;charset=UTF-8");
-			PrintWriter out = response.getWriter();
-			out.print("success");
-			redirectParams.put("status", "success");
-			redirectParams.put("patientId", patient.getPatientId());
-			redirectParams.put("encounterId", encounter.getId());
 			//ADD PERSON ATTRIBUTE SET
 			model.addAttribute("status", "success");
 			model.addAttribute("patientId", patient.getPatientId());
@@ -329,35 +275,30 @@ public class QueuePatientFragmentController {
 			
 			Concept selectedTRIAGEConcept = Context.getConceptService().getConcept(tNTriage);
 			
-			String selectedCategory = paymt3;
 			Obs triageObs = new Obs();
 			triageObs.setConcept(triageConcept);
 			triageObs.setValueCoded(selectedTRIAGEConcept);
 			encounter.addObs(triageObs);
-			RegistrationWebUtils.sendPatientToTriageQueue(patient, selectedTRIAGEConcept, hasRevisits(patient),
-			    selectedCategory);
+			RegistrationWebUtils.sendPatientToTriageQueue(patient, selectedTRIAGEConcept, hasRevisits(patient), paymt3);
 		} else if (!StringUtils.isBlank(oNOpd)) {
 			Concept opdConcept = Context.getConceptService().getConceptByUuid("03880388-07ce-4961-abe7-0e58f787dd23");
 			Concept selectedOPDConcept = Context.getConceptService().getConcept(oNOpd);
-			String selectedCategory = paymt3;
 			Obs opdObs = new Obs();
 			opdObs.setConcept(opdConcept);
 			opdObs.setValueCoded(selectedOPDConcept);
 			encounter.addObs(opdObs);
-			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedOPDConcept, hasRevisits(patient), selectedCategory);
+			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedOPDConcept, hasRevisits(patient), paymt3);
 			
 		} else {
 			Concept specialClinicConcept = Context.getConceptService().getConceptByUuid(
 			    "b5e0cfd3-1009-4527-8e36-83b5e902b3ea");
 			Concept selectedSpecialClinicConcept = Context.getConceptService().getConcept(sNSpecial);
-			String selectedCategory = paymt3;
 			Obs opdObs = new Obs();
 			opdObs.setConcept(specialClinicConcept);
 			opdObs.setValueCoded(selectedSpecialClinicConcept);
 			encounter.addObs(opdObs);
 			
-			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedSpecialClinicConcept, hasRevisits(patient),
-			    selectedCategory);
+			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedSpecialClinicConcept, hasRevisits(patient), paymt3);
 			
 		}
 		
@@ -454,8 +395,7 @@ public class QueuePatientFragmentController {
 			
 		}
 		
-		obsn.setValueText(paymt3 + "/" + paymt2);//we can add the paying sub category if needed
-		System.out.println(paymt3 + " " + paymt2);
+		obsn.setValueText(paymt3 + "/" + nPayn + " " + nNotpayn + " " + nScheme);//we can add the paying sub category if needed
 		
 		if (paymt3 != null && paymt3.equals("Paying")) {
 			obsn.setComment(nPayn);
@@ -540,7 +480,6 @@ public class QueuePatientFragmentController {
 		}
 		checkIfExists.setValue(valueParam1);
 		patient.addAttribute(checkIfExists);
-		System.out.println("Patient category is >>" + valueParam1);
 		
 	}
 	
@@ -602,7 +541,6 @@ public class QueuePatientFragmentController {
 		}
 		checkIfParam2Exists.setValue(param2Value);
 		patient.addAttribute(checkIfParam2Exists);
-		System.out.println("Payment category is >>" + param2Value);
 	}
 	
 	private void getFileNumberPersonAttribute(Map<String, String> attributes, Patient patient) {
