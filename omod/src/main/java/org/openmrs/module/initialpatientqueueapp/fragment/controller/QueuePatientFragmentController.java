@@ -267,25 +267,32 @@ public class QueuePatientFragmentController {
 					nPayn = "Special clinic";
 				} else if (paymt2 == 2) {
 					nPayn = "General patient";
+				} else if (paymt2 == 3) {
+					nPayn = "Insurance patient";
 				}
 				
 				break;
 			}
 			case 2: {
 				paymt3 = "Non-Paying";
-				
 				if (paymt2 == 1) {
-					nNotpayn = "NHIF CIVIL SERVANT";
-					nNHIFnumb = parameters.get("modesummary");
+					nNotpayn = "Child under 5";
 				} else if (paymt2 == 2) {
-					nNotpayn = "CCC PATIENT";
+					nNotpayn = "Currently pregnant";
 				} else if (paymt2 == 3) {
-					nNotpayn = "TB PATIENT";
+					nNotpayn = "TB case";
 				} else if (paymt2 == 4) {
-					nNotpayn = "PRISIONER";
+					nNotpayn = "CCC patient";
+				} else if (paymt2 == 5) {
+					nNotpayn = "Patient in prison";
 				} else if (paymt2 == 6) {
-					nNotpayn = "NHIF PATIENT";
-					nNHIFnumb = parameters.get("modesummary");
+					nNotpayn = "Mental case";
+				} else if (paymt2 == 7) {
+					nNotpayn = "Patient with disability";
+				} else if (paymt2 == 8) {
+					nNotpayn = "GBV patient";
+				} else if (paymt2 == 9) {
+					nNotpayn = "Vulnerable case patients";
 				}
 				break;
 			}
@@ -301,6 +308,11 @@ public class QueuePatientFragmentController {
 					nUniID = parameters.get("university");
 					nStuID = parameters.get("modesummary");
 					nScheme = "STUDENT SCHEME";
+				} else if (paymt2 == 4) {
+					nScheme = "Civil servant";
+				} else if (paymt2 == 5) {
+					nNotpayn = "NHIF PATIENT";
+					nNHIFnumb = parameters.get("modesummary");
 				}
 				if (rooms1 == 1) {
 					nFNumber = parameters.get("rooms3");
@@ -443,6 +455,7 @@ public class QueuePatientFragmentController {
 		}
 		
 		obsn.setValueText(paymt3 + "/" + paymt2);//we can add the paying sub category if needed
+		System.out.println(paymt3 + " " + paymt2);
 		
 		if (paymt3 != null && paymt3.equals("Paying")) {
 			obsn.setComment(nPayn);
@@ -500,37 +513,12 @@ public class QueuePatientFragmentController {
 		}
 	}
 	
-	private Person setAttributes(Patient patient, Map<String, String> attributes) throws Exception {
-		PatientAttributeValidatorService validator = new PatientAttributeValidatorService();
-		Map<String, Object> parameters = HospitalCoreUtils.buildParameters("patient", patient, "attributes", attributes);
-		String validateResult = validator.validate(parameters);
-		logger.info("Attirubte validation: " + validateResult);
-		if (StringUtils.isBlank(validateResult)) {
-			for (String name : attributes.keySet()) {
-				if ((name.contains(".attribute.")) && (!StringUtils.isBlank(attributes.get(name)))) {
-					String[] parts = name.split("\\.");
-					String idText = parts[parts.length - 1];
-					Integer id = Integer.parseInt(idText);
-					PersonAttribute attribute = EhrRegistrationUtils.getPersonAttribute(id, attributes.get(name));
-					patient.addAttribute(attribute);
-				}
-			}
-		} else {
-			throw new Exception(validateResult);
-		}
-		
-		return patient;
-	}
-	
 	private void getPatientCategoryPersonAttributesPerTheSession(Map<String, String> attributes, Patient patient) {
 		
 		int paymt1 = Integer.parseInt(attributes.get("paym_1"));
 		
 		PersonAttributeType paymentCategoryPaymentAttribute = Context.getPersonService().getPersonAttributeTypeByUuid(
 		    EhrCommonMetadata._EhrPersonAttributeType.PAYMENT_CATEGORY);
-		
-		PersonAttributeType paymentSubCategoryAttribute = Context.getPersonService().getPersonAttributeTypeByUuid(
-		    EhrCommonMetadata._EhrPersonAttributeType.PAYMENT_CATEGORY_SUB_TYPE);
 		
 		PersonAttribute checkIfExists = patient.getAttribute(paymentCategoryPaymentAttribute);
 		//set value to be used
@@ -546,13 +534,13 @@ public class QueuePatientFragmentController {
 		if (checkIfExists == null) {
 			checkIfExists = new PersonAttribute();
 			checkIfExists.setAttributeType(paymentCategoryPaymentAttribute);
-			checkIfExists.setAttributeType(paymentSubCategoryAttribute);
 			checkIfExists.setCreator(Context.getAuthenticatedUser());
 			checkIfExists.setDateCreated(new Date());
 			checkIfExists.setPerson(patient);
 		}
 		checkIfExists.setValue(valueParam1);
 		patient.addAttribute(checkIfExists);
+		System.out.println("Patient category is >>" + valueParam1);
 		
 	}
 	
@@ -566,22 +554,28 @@ public class QueuePatientFragmentController {
 				param2Value = "Special clinic";
 			} else if (paymt2 == 2) {
 				param2Value = "General patient";
+			} else if (paymt2 == 3) {
+				param2Value = "Insurance";
 			}
 		} else if (paymt1 == 2) {
 			if (paymt2 == 1) {
 				param2Value = "Child under 5";
-			} else if (paymt2 == 2 || paymt2 == 3) {
+			} else if (paymt2 == 2) {
 				param2Value = "Currently pregnant";
-			} else if (paymt2 == 4 || paymt2 == 5) {
+			} else if (paymt2 == 3) {
+				param2Value = "TB case";
+			} else if (paymt2 == 4) {
 				param2Value = "CCC patient";
-			} else if (paymt2 == 6 || paymt2 == 7) {
-				param2Value = "TB patient";
-			} else if (paymt2 == 8) {
+			} else if (paymt2 == 5) {
 				param2Value = "Patient in prison";
+			} else if (paymt2 == 6) {
+				param2Value = "Mental case";
+			} else if (paymt2 == 7) {
+				param2Value = "Patient with disability";
+			} else if (paymt2 == 8) {
+				param2Value = "GBV patient";
 			} else if (paymt2 == 9) {
-				param2Value = "NHIF patient";
-			} else if (paymt2 == 10) {
-				param2Value = "Civil servant";
+				param2Value = "Vulnerable case patients";
 			}
 		} else if (paymt1 == 3) {
 			if (paymt2 == 1) {
@@ -608,6 +602,7 @@ public class QueuePatientFragmentController {
 		}
 		checkIfParam2Exists.setValue(param2Value);
 		patient.addAttribute(checkIfParam2Exists);
+		System.out.println("Payment category is >>" + param2Value);
 	}
 	
 	private void getFileNumberPersonAttribute(Map<String, String> attributes, Patient patient) {
@@ -652,7 +647,7 @@ public class QueuePatientFragmentController {
 	}
 	
 	private void getNhifNumberPersonAttribute(Map<String, String> attributes, Patient patient) {
-		String nhifNumber = attributes.get("nhifNumber");
+		String nhifNumber = attributes.get("modesummary");
 		PersonAttributeType nhifNumberAttributeType = Context.getPersonService().getPersonAttributeTypeByUuid(
 		    EhrCommonMetadata._EhrPersonAttributeType.NHIF_CARD_NUMBER);
 		PersonAttribute nhifNumberAttribute = patient.getAttribute(nhifNumberAttributeType);
