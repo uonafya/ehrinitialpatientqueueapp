@@ -138,6 +138,7 @@ public class QueuePatientFragmentController {
 		Map<String, String> parameters = RegistrationWebUtils.optimizeParameters(request);
 		int roomToVisit = Integer.parseInt(parameters.get("rooms1"));
 		int payCat = Integer.parseInt(paymentCategory);
+		System.out.println("All attributes are >>" + parameters);
 		
 		KenyaEmrService kenyaEmrService = Context.getService(KenyaEmrService.class);
 		List<Visit> patientVisit = Context.getVisitService().getVisits(
@@ -152,6 +153,8 @@ public class QueuePatientFragmentController {
 			savePatientSearch(patient);
 			// create encounter for the visit here
 			Encounter encounter = createEncounter(patient, parameters);
+			//save other obs here
+			saveAllOtherAttributesAsObs(encounter, getPatientCategory(payCat), null, null, null, null, null, null);
 			hasActiveVisit(patientVisit, patient, encounter);
 			sendToBillingDependingOnTheBill(parameters, encounter, payCat, Integer.parseInt(department));
 			//ADD PERSON ATTRIBUTE SET
@@ -461,15 +464,6 @@ public class QueuePatientFragmentController {
 		    EhrCommonMetadata._EhrPersonAttributeType.PAYMENT_CATEGORY);
 		
 		PersonAttribute checkIfExists = patient.getAttribute(paymentCategoryPaymentAttribute);
-		//set value to be used
-		String valueParam1 = "";
-		if (paymt1 == 1) {
-			valueParam1 = "Paying";
-		} else if (paymt1 == 2) {
-			valueParam1 = "Non paying";
-		} else if (paymt1 == 3) {
-			valueParam1 = "Special scheme";
-		}
 		//set up the person attribute for the payment category
 		if (checkIfExists == null) {
 			checkIfExists = new PersonAttribute();
@@ -478,7 +472,7 @@ public class QueuePatientFragmentController {
 			checkIfExists.setDateCreated(new Date());
 			checkIfExists.setPerson(patient);
 		}
-		checkIfExists.setValue(valueParam1);
+		checkIfExists.setValue(getPatientCategory(paymt1));
 		patient.addAttribute(checkIfExists);
 		
 	}
@@ -779,5 +773,22 @@ public class QueuePatientFragmentController {
 			}
 			
 		}
+	}
+	
+	private String getPatientCategory(int cat) {
+		String results = "";
+		if (cat == 1) {
+			results = "Paying";
+		} else if (cat == 2) {
+			results = "Non paying";
+		} else if (cat == 3) {
+			results = "Special scheme";
+		}
+		return results;
+	}
+	
+	private void saveAllOtherAttributesAsObs(Encounter encounter, String patientCategory, String payingCategory,
+	        String fileNumber, String learningInstitution, String studentId, String nhifNumber, String waiverNumber) {
+		//TO DO privide logic here that will save all the obs in one transaction
 	}
 }
