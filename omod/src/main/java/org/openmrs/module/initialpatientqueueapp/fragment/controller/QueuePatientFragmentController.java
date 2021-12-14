@@ -138,7 +138,6 @@ public class QueuePatientFragmentController {
 		Map<String, String> parameters = RegistrationWebUtils.optimizeParameters(request);
 		int roomToVisit = Integer.parseInt(parameters.get("rooms1"));
 		int payCat = Integer.parseInt(paymentCategory);
-		System.out.println("All attributes are >>" + parameters);
 		
 		KenyaEmrService kenyaEmrService = Context.getService(KenyaEmrService.class);
 		List<Visit> patientVisit = Context.getVisitService().getVisits(
@@ -678,6 +677,7 @@ public class QueuePatientFragmentController {
 					break;
 				}
 			}
+			opdTestOrder.setBillingStatus(1);
 			Context.getService(PatientDashboardService.class).saveOrUpdateOpdOrder(opdTestOrder);
 		}
 	}
