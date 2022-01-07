@@ -273,6 +273,6 @@
 		<uilibraryVersion>2.0.4</uilibraryVersion>
 		<hospitalcoreVersion>1.0.7-SNAPSHOT</hospitalcoreVersion>
 		<ehrconfigsVersion>1.0.10-SNAPSHOT</ehrconfigsVersion>
-		<legacyUiVersion>1.8.2</legacyUiVersion>
+		<legacyUiVersion>1.5.0</legacyUiVersion>
     </properties>
 </project>
