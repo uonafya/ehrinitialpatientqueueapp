@@ -9,7 +9,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>initialpatientqueueapp</artifactId>
-	<version>2.0.0-SNAPSHOT</version>
+	<version>2.0.0</version>
 	<packaging>pom</packaging>
 	<name>Initial Patient Queue App</name>
 	<description>EHR Initial patient queue app</description>
@@ -20,7 +20,7 @@
 		<connection>scm:git:https://github.com/uonafya/initialpatientqueueapp.git</connection>
 		<developerConnection>scm:git:https://github.com/uonafya/initialpatientqueueapp.git</developerConnection>
 		<url>https://github.com/uonafya/initialpatientqueueapp.git</url>
-		<tag>HEAD</tag>
+		<tag>2.0.0</tag>
 	</scm>
 
 	<modules>
