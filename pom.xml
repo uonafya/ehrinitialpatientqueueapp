@@ -9,7 +9,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>initialpatientqueueapp</artifactId>
-	<version>1.0.6-SNAPSHOT</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Initial Patient Queue App</name>
 	<description>EHR Initial patient queue app</description>
@@ -271,8 +271,8 @@
 		<jodaTimeVersion>2.9.1</jodaTimeVersion>
 		<webservices.restVersion>2.1</webservices.restVersion>
 		<uilibraryVersion>2.0.4</uilibraryVersion>
-		<hospitalcoreVersion>1.0.7-SNAPSHOT</hospitalcoreVersion>
-		<ehrconfigsVersion>1.0.0</ehrconfigsVersion>
+		<hospitalcoreVersion>2.0.0</hospitalcoreVersion>
+		<ehrconfigsVersion>2.0.0</ehrconfigsVersion>
 		<legacyUiVersion>1.5.0</legacyUiVersion>
     </properties>
 </project>
