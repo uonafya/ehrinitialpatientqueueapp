@@ -9,7 +9,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>initialpatientqueueapp</artifactId>
-	<version>1.0.6-SNAPSHOT</version>
+	<version>1.0.7-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Initial Patient Queue App</name>
 	<description>EHR Initial patient queue app</description>
@@ -259,7 +259,7 @@
 		<webservices.restVersion>2.1</webservices.restVersion>
 		<logicVersion>0.5.2</logicVersion>
 		<uilibraryVersion>2.0.4</uilibraryVersion>
-		<hospitalcoreVersion>1.0.0</hospitalcoreVersion>
-		<ehrconfigsVersion>1.0.0</ehrconfigsVersion>
+		<hospitalcoreVersion>1.0.7</hospitalcoreVersion>
+		<ehrconfigsVersion>1.0.10</ehrconfigsVersion>
     </properties>
 </project>
