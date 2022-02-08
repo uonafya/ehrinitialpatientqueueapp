@@ -9,8 +9,10 @@
     jq(document).ready(function () {
         if (!${visitType}){
             jq("#visitType").append("<option value='1'>New Patient</option>");
+            jq("#visitType").append("<option value='2'>Revisit Patient</option>");
         }else {
             jq("#visitType").append("<option value='2'>Revisit Patient</option>");
+            jq("#visitType").append("<option value='1'>New Patient</option>");
         }
         jq("input[name='paym_1']:radio").change(function () {
             var index = jq(this, '#simple-form-ui').val();
@@ -1687,7 +1689,6 @@ a.tooltip span {
                 <td><h2>Visit type</h2></td>
                 <td><div>
                     <select id="visitType" name="visitType">
-
                     </select>
                 </div>
                 </td>
