@@ -96,7 +96,7 @@
                 }
             }
             var age = ${age};
-            if (age > 5 && jq("#paym_201").attr('data-name') === "CHILD UNDER 5YRS" && jq("#paym_201").is(':checked')){
+            if (age > 5 && jq("#paym_201").attr('data-name') === "Child Under 5" && jq("#paym_201").is(':checked')){
                 jq().toastmessage('showErrorToast', 'Selected Scheme should be for child at 5 years and below');
                 jq('#paym_201').attr('checked', false);
                 // jq('#paym_201').attr('disabled', 'disabled');
