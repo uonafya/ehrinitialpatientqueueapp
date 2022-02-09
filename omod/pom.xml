@@ -79,6 +79,10 @@
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>ehrconfigs-api</artifactId>
 		</dependency>
+		<dependency>
+		<groupId>org.openmrs.module</groupId>
+		<artifactId>ehrcashier-api</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.openmrs.web</groupId>

@@ -161,6 +161,13 @@
 				<classifier>tests</classifier>
 				<scope>test</scope>
 			</dependency>
+
+			<dependency>
+				<groupId>org.openmrs.module</groupId>
+				<artifactId>ehrcashier-api</artifactId>
+				<version>${ehrcashierVersion}</version>
+				<scope>provided</scope>
+			</dependency>
 			<!-- End OpenMRS modules -->
 
 			<!-- Begin OpenMRS core -->
@@ -261,5 +268,6 @@
 		<uilibraryVersion>2.0.4</uilibraryVersion>
 		<hospitalcoreVersion>1.0.7</hospitalcoreVersion>
 		<ehrconfigsVersion>1.0.10</ehrconfigsVersion>
+		<ehrcashierVersion>1.0.2</ehrcashierVersion>
     </properties>
 </project>
