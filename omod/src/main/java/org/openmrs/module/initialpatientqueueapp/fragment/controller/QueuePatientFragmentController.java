@@ -24,6 +24,7 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.Visit;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.ehrcashier.billcalculator.BillCalculatorForBDService;
 import org.openmrs.module.ehrconfigs.metadata.EhrCommonMetadata;
 import org.openmrs.module.hospitalcore.BillingService;
 import org.openmrs.module.hospitalcore.HospitalCoreService;
@@ -32,6 +33,8 @@ import org.openmrs.module.hospitalcore.model.BillableService;
 import org.openmrs.module.hospitalcore.model.DepartmentConcept;
 import org.openmrs.module.hospitalcore.model.OpdTestOrder;
 import org.openmrs.module.hospitalcore.model.PatientSearch;
+import org.openmrs.module.hospitalcore.model.PatientServiceBill;
+import org.openmrs.module.hospitalcore.model.PatientServiceBillItem;
 import org.openmrs.module.hospitalcore.util.GlobalPropertyUtil;
 import org.openmrs.module.initialpatientqueueapp.EhrRegistrationUtils;
 import org.openmrs.module.initialpatientqueueapp.InitialPatientQueueConstants;
@@ -707,21 +710,33 @@ public class QueuePatientFragmentController {
 				if (Context.getConceptService().getConcept(department).equals(mopcTriage)
 				        || Context.getConceptService().getConcept(department).equals(mopcopd)) {
 					sendPatientsToBilling(mopcRevisitFess, encounter);
+					saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "MOPC Revisit",
+					    mopcRevisitFess.getConceptId(), "MOPC Revisit");
 				} else if (roomToVisit == 3 && EhrRegistrationUtils.hasSpecialClinicVisit(encounter.getPatient())) {
 					sendPatientsToBilling(specialClinicRevisitFeeConcept, encounter);
+					saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Special clinic revisit fee",
+					    specialClinicRevisitFeeConcept.getConceptId(), "Special clinic revisit fee");
 				} else {
 					//just bill everyone else the same revisit fee
 					sendPatientsToBilling(revisitFeeConcept, encounter);
+					saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Revisit fee",
+					    revisitFeeConcept.getConceptId(), "Revisit fee");
 				}
 			} else {
 				//check if the patient is having an MOPC clinic either at triage or opd
 				if (Context.getConceptService().getConcept(department).equals(mopcTriage)
 				        || Context.getConceptService().getConcept(department).equals(mopcopd)) {
 					sendPatientsToBilling(mopcRegistartionFess, encounter);
+					saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "MOPC Registaration fees",
+					    mopcRegistartionFess.getConceptId(), "MOPC Registaration fees");
 				} else if (roomToVisit == 3 && !EhrRegistrationUtils.hasSpecialClinicVisit(encounter.getPatient())) {
 					sendPatientsToBilling(specialClinicFeeConcept, encounter);
+					saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Speciial Clinic fees",
+					    specialClinicFeeConcept.getConceptId(), "Special clinic fees");
 				} else {
 					sendPatientsToBilling(registrationFeesConcept, encounter);
+					saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Registration fees",
+					    registrationFeesConcept.getConceptId(), "Registration fees");
 				}
 			}
 		}
@@ -790,5 +805,40 @@ public class QueuePatientFragmentController {
 	private void saveAllOtherAttributesAsObs(Encounter encounter, String patientCategory, String payingCategory,
 	        String fileNumber, String learningInstitution, String studentId, String nhifNumber, String waiverNumber) {
 		//TO DO privide logic here that will save all the obs in one transaction
+	}
+	
+	private void saveFeesCollectedAtRegistrationDesk(Patient patient, String name, Integer serviceOffered, String comments) {
+		BillingService billingService = Context.getService(BillingService.class);
+		BillCalculatorForBDService calculator = new BillCalculatorForBDService();
+		PatientServiceBill bill = new PatientServiceBill();
+		bill.setCreatedDate(new Date());
+		bill.setPatient(patient);
+		bill.setCreator(Context.getAuthenticatedUser());
+		PatientServiceBillItem item;
+		BillableService service = billingService.getServiceByConceptId(serviceOffered);
+		
+		item = new PatientServiceBillItem();
+		item.setCreatedDate(new Date());
+		item.setName(name);
+		item.setPatientServiceBill(bill);
+		item.setQuantity(1);
+		item.setService(service);
+		item.setUnitPrice(service.getPrice());
+		item.setAmount(service.getPrice());
+		item.setActualAmount(service.getPrice());
+		bill.addBillItem(item);
+		
+		bill.setAmount(service.getPrice());
+		bill.setActualAmount(service.getPrice());
+		bill.setWaiverAmount(new BigDecimal(0));
+		
+		bill.setComment(comments);
+		HospitalCoreService hcs = Context.getService(HospitalCoreService.class);
+		bill.setPatientCategory("Paying");
+		bill.setPatientSubCategory("General Patient");
+		bill.setPaymentMode("Cash");
+		bill.setFreeBill(calculator.isFreeBill("free"));
+		bill.setReceipt(billingService.createReceipt());
+		billingService.savePatientServiceBill(bill);
 	}
 }
