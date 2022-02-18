@@ -8,11 +8,7 @@ import org.dom4j.XPath;
 import org.dom4j.io.SAXReader;
 import org.jaxen.JaxenException;
 import org.jaxen.dom4j.Dom4jXPath;
-import org.openmrs.Concept;
-import org.openmrs.ConceptAnswer;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Patient;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ehrconfigs.utils.EhrConfigsUtils;
 import org.openmrs.module.hospitalcore.PatientQueueService;
@@ -294,7 +290,7 @@ public class RegistrationWebUtils {
 	 * @param revisit
 	 * @return
 	 */
-	public static Encounter createEncounter(Patient patient, boolean revisit) {
+	public static Encounter createEncounter(Patient patient, boolean revisit, Visit visit) {
 		EncounterType encounterType = null;
 		KenyaEmrService kenyaEmrService = Context.getService(KenyaEmrService.class);
 		if (!revisit) {
@@ -316,6 +312,8 @@ public class RegistrationWebUtils {
 		encounter.setEncounterDatetime(new Date());
 		encounter.setPatient(patient);
 		encounter.setLocation(kenyaEmrService.getDefaultLocation());
+		encounter.setVisit(visit);
+		
 		return encounter;
 	}
 }

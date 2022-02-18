@@ -143,10 +143,9 @@ public class QueuePatientFragmentController {
 		int payCat = Integer.parseInt(paymentCategory);
 		
 		KenyaEmrService kenyaEmrService = Context.getService(KenyaEmrService.class);
-		List<Visit> patientVisit = Context.getVisitService().getVisits(
-		    Arrays.asList(Context.getVisitService().getVisitTypeByUuid("3371a4d4-f66f-4454-a86d-92c7b3da990c")),
-		    Arrays.asList(patient), Arrays.asList(kenyaEmrService.getDefaultLocation()), null, null, null, null, null, null,
-		    false, false);
+		Visit currentVisit;
+		List<Visit> patientVisit = Context.getVisitService().getActiveVisitsByPatient(patient);
+		
 		model.addAttribute("userLocation", kenyaEmrService.getDefaultLocation().getName());
 		model.addAttribute("receiptDate", new Date());
 		consolidateAllPersonalAttributes(parameters, patient);
@@ -154,10 +153,13 @@ public class QueuePatientFragmentController {
 			//create a patient search here
 			savePatientSearch(patient);
 			// create encounter for the visit here
-			Encounter encounter = createEncounter(patient, parameters);
+			Visit visit = hasActiveVisit(patientVisit, patient);
+			Encounter encounter = createEncounter(patient, parameters, visit);
+			//save the encounter here
+			Context.getEncounterService().saveEncounter(encounter);
 			//save other obs here
 			saveAllOtherAttributesAsObs(encounter, getPatientCategory(payCat), null, null, null, null, null, null);
-			hasActiveVisit(patientVisit, patient, encounter);
+			
 			sendToBillingDependingOnTheBill(parameters, encounter, payCat, Integer.parseInt(department));
 			//ADD PERSON ATTRIBUTE SET
 			model.addAttribute("status", "success");
@@ -183,7 +185,7 @@ public class QueuePatientFragmentController {
 	 * @param parameters
 	 * @return
 	 */
-	private Encounter createEncounter(Patient patient, Map<String, String> parameters) throws ParseException {
+	private Encounter createEncounter(Patient patient, Map<String, String> parameters, Visit visit) throws ParseException {
 		int rooms1 = Integer.parseInt(parameters.get("rooms1"));
 		int paymt1 = Integer.parseInt(parameters.get("paym_1"));
 		int paymt2 = Integer.parseInt(parameters.get("paym_2"));
@@ -272,7 +274,7 @@ public class QueuePatientFragmentController {
 			}
 		}
 		
-		Encounter encounter = RegistrationWebUtils.createEncounter(patient, hasRevisits(patient));
+		Encounter encounter = RegistrationWebUtils.createEncounter(patient, hasRevisits(patient), visit);
 		
 		if (!StringUtils.isBlank(tNTriage)) {
 			
@@ -441,21 +443,22 @@ public class QueuePatientFragmentController {
 		return found;
 	}
 	
-	private void hasActiveVisit(List<Visit> visits, Patient patient, Encounter encounter) {
+	private Visit hasActiveVisit(List<Visit> visits, Patient patient) {
+		Visit currentVisit;
 		VisitService visitService = Context.getVisitService();
 		KenyaEmrService kenyaEmrService = Context.getService(KenyaEmrService.class);
 		if (visits.size() > 0 && visits.get(0).getStopDatetime() == null) {
-			visits.get(0).addEncounter(encounter);
+			currentVisit = visits.get(0);
 		} else {
-			Visit visit = new Visit();
-			visit.addEncounter(encounter);
-			visit.setPatient(patient);
-			visit.setVisitType(visitService.getVisitTypeByUuid("3371a4d4-f66f-4454-a86d-92c7b3da990c"));
-			visit.setStartDatetime(getAminuteBefore());
-			visit.setLocation(kenyaEmrService.getDefaultLocation());
-			visit.setCreator(Context.getAuthenticatedUser());
-			visitService.saveVisit(visit);
+			currentVisit = new Visit();
+			currentVisit.setPatient(patient);
+			currentVisit.setVisitType(visitService.getVisitTypeByUuid("3371a4d4-f66f-4454-a86d-92c7b3da990c"));
+			currentVisit.setStartDatetime(getAminuteBefore());
+			currentVisit.setLocation(kenyaEmrService.getDefaultLocation());
+			currentVisit.setCreator(Context.getAuthenticatedUser());
+			visitService.saveVisit(currentVisit);
 		}
+		return currentVisit;
 	}
 	
 	private void getPatientCategoryPersonAttributesPerTheSession(Map<String, String> attributes, Patient patient) {
