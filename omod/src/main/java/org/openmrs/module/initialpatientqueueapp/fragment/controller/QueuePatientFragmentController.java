@@ -439,7 +439,7 @@ public class QueuePatientFragmentController {
 			        .before(EhrRegistrationUtils.parseDate(EhrRegistrationUtils.formatDate(new Date())))) {
 				found = true;
 			}
-			if(Context.getVisitService().getActiveVisitsByPatient(patient).size() > 0) {
+			if (Context.getVisitService().getActiveVisitsByPatient(patient).size() > 0) {
 				found = true;
 			}
 		}
