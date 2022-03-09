@@ -309,7 +309,6 @@ public class QueuePatientFragmentController {
 			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedSpecialClinicConcept, hasRevisits(patient), paymt3);
 		}
 		
-		String referralType = null, referralCounty = null, typeOfFacilityReferredFrom = null, facilityReferredFrom = null, referralDescription = null;
 		//if mlc is not empty then is a mlc otherwise NOT an mlc
 		if (StringUtils.isNotEmpty(parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_MLC))) {
 			String medicalLegalCase = parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_MLC);
@@ -326,20 +325,30 @@ public class QueuePatientFragmentController {
 		}
 		
 		//if referral reason/type is empty the NOT referred
-		if (StringUtils.isNotEmpty(parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_REASON))) {
-			
-			Concept referralConcept = Context.getConceptService().getConcept(
-			    InitialPatientQueueConstants.CONCEPT_NAME_PATIENT_REFERRED_TO_HOSPITAL);
+		if (StringUtils.isNotBlank(parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_REASON))) {
+			System.out.println("The patient got into referal section>>"
+			        + parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_REASON));
+			Concept referralConcept = Context.getConceptService().getConceptByUuid("1788AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 			Obs referralObs = new Obs();
 			referralObs.setConcept(referralConcept);
-			//encounter.addObs(referralObs);
+			referralObs.setValueCoded(Context.getConceptService().getConceptByUuid("1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
+			encounterObs.addObs(referralObs);
 			
-			referralType = parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_REASON);
-			referralCounty = parameters.get(InitialPatientQueueConstants.FORM_FIELD_COUNTY_REFERRED_FROM);
-			typeOfFacilityReferredFrom = parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_FROM);
-			facilityReferredFrom = parameters.get("facilityReferredFrom");//Location
-			referralDescription = parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_DESCRIPTION);
-			referralObs.setValueCoded(Context.getConceptService().getConcept("YES"));
+			String referralType = parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_REASON);
+			String referralCounty = parameters.get(InitialPatientQueueConstants.FORM_FIELD_COUNTY_REFERRED_FROM);
+			String typeOfFacilityReferredFrom = parameters
+			        .get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_FROM);
+			String facilityReferredFrom = parameters.get("facilityReferredFrom");
+			String referralDescription = parameters
+			        .get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_DESCRIPTION);
+			
+			System.out.println("Referal type is >>" + referralType);
+			System.out.println("Referal county is >>" + referralCounty);
+			System.out.println("Referal facility from  >>" + typeOfFacilityReferredFrom);
+			System.out.println("Referal type facility from  >>" + typeOfFacilityReferredFrom);
+			System.out.println("Referal facility from  >>" + facilityReferredFrom);
+			System.out.println("Referal facility from description  >>" + referralDescription);
+			
 			// referred from
 			Obs referredFromObs = new Obs();
 			Concept referredFromConcept = Context.getConceptService().getConceptByUuid(
