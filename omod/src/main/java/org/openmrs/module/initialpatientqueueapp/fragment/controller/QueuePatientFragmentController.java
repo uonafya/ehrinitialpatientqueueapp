@@ -276,7 +276,7 @@ public class QueuePatientFragmentController {
 		
 		Encounter encounterObs = RegistrationWebUtils.createEncounter(patient, hasRevisits(patient), visit);
 		
-		if (!StringUtils.isBlank(tNTriage)) {
+		if (StringUtils.isNotBlank(tNTriage)) {
 			
 			Concept triageConcept = Context.getConceptService().getConceptByUuid("e8acf3d5-d451-475b-a3b5-37f0ce6a0260");
 			
@@ -287,26 +287,26 @@ public class QueuePatientFragmentController {
 			triageObs.setValueCoded(selectedTRIAGEConcept);
 			encounterObs.addObs(triageObs);
 			RegistrationWebUtils.sendPatientToTriageQueue(patient, selectedTRIAGEConcept, hasRevisits(patient), paymt3);
-		} else if (!StringUtils.isBlank(oNOpd)) {
+		}
+		if (StringUtils.isNotBlank(oNOpd)) {
 			Concept opdConcept = Context.getConceptService().getConceptByUuid("03880388-07ce-4961-abe7-0e58f787dd23");
 			Concept selectedOPDConcept = Context.getConceptService().getConcept(oNOpd);
 			Obs opdObs = new Obs();
 			opdObs.setConcept(opdConcept);
 			opdObs.setValueCoded(selectedOPDConcept);
-			//encounter.addObs(opdObs);
+			encounterObs.addObs(opdObs);
 			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedOPDConcept, hasRevisits(patient), paymt3);
 			
-		} else {
+		}
+		if (StringUtils.isNotBlank(sNSpecial)) {
 			Concept specialClinicConcept = Context.getConceptService().getConceptByUuid(
 			    "b5e0cfd3-1009-4527-8e36-83b5e902b3ea");
 			Concept selectedSpecialClinicConcept = Context.getConceptService().getConcept(sNSpecial);
 			Obs opdObs = new Obs();
 			opdObs.setConcept(specialClinicConcept);
 			opdObs.setValueCoded(selectedSpecialClinicConcept);
-			//encounter.addObs(opdObs);
-			
+			encounterObs.addObs(opdObs);
 			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedSpecialClinicConcept, hasRevisits(patient), paymt3);
-			
 		}
 		
 		// payment category and registration fee
