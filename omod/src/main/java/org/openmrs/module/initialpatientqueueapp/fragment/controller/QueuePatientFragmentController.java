@@ -274,7 +274,7 @@ public class QueuePatientFragmentController {
 			}
 		}
 		
-		Encounter encounter = RegistrationWebUtils.createEncounter(patient, hasRevisits(patient), visit);
+		Encounter encounterObs = RegistrationWebUtils.createEncounter(patient, hasRevisits(patient), visit);
 		
 		if (!StringUtils.isBlank(tNTriage)) {
 			
@@ -285,7 +285,7 @@ public class QueuePatientFragmentController {
 			Obs triageObs = new Obs();
 			triageObs.setConcept(triageConcept);
 			triageObs.setValueCoded(selectedTRIAGEConcept);
-			encounter.addObs(triageObs);
+			encounterObs.addObs(triageObs);
 			RegistrationWebUtils.sendPatientToTriageQueue(patient, selectedTRIAGEConcept, hasRevisits(patient), paymt3);
 		} else if (!StringUtils.isBlank(oNOpd)) {
 			Concept opdConcept = Context.getConceptService().getConceptByUuid("03880388-07ce-4961-abe7-0e58f787dd23");
@@ -293,7 +293,7 @@ public class QueuePatientFragmentController {
 			Obs opdObs = new Obs();
 			opdObs.setConcept(opdConcept);
 			opdObs.setValueCoded(selectedOPDConcept);
-			encounter.addObs(opdObs);
+			//encounter.addObs(opdObs);
 			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedOPDConcept, hasRevisits(patient), paymt3);
 			
 		} else {
@@ -303,7 +303,7 @@ public class QueuePatientFragmentController {
 			Obs opdObs = new Obs();
 			opdObs.setConcept(specialClinicConcept);
 			opdObs.setValueCoded(selectedSpecialClinicConcept);
-			encounter.addObs(opdObs);
+			//encounter.addObs(opdObs);
 			
 			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedSpecialClinicConcept, hasRevisits(patient), paymt3);
 			
@@ -356,7 +356,7 @@ public class QueuePatientFragmentController {
 				Concept selectedMlcConcept = Context.getConceptService().getConceptByName(medicalLegalCase);
 				mlcObs.setConcept(mlcConcept);
 				mlcObs.setValueCoded(selectedMlcConcept);
-				encounter.addObs(mlcObs);
+				//encounter.addObs(mlcObs);
 			}
 			
 		}
@@ -372,7 +372,7 @@ public class QueuePatientFragmentController {
 			Concept referralConcept = Context.getConceptService().getConcept(
 			    InitialPatientQueueConstants.CONCEPT_NAME_PATIENT_REFERRED_TO_HOSPITAL);
 			referralObs.setConcept(referralConcept);
-			encounter.addObs(referralObs);
+			//encounter.addObs(referralObs);
 			
 			referralType = parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_REASON);
 			referralCounty = parameters.get(InitialPatientQueueConstants.FORM_FIELD_COUNTY_REFERRED_FROM);
@@ -386,7 +386,7 @@ public class QueuePatientFragmentController {
 			    InitialPatientQueueConstants.FACILITY_TYPE_REFERRED_FROM);
 			referredFromObs.setConcept(referredFromConcept);
 			referredFromObs.setValueCoded(Context.getConceptService().getConceptByName(typeOfFacilityReferredFrom));
-			encounter.addObs(referredFromObs);
+			//encounter.addObs(referredFromObs);
 			
 			// referred reason
 			Obs referredReasonObs = new Obs();
@@ -398,7 +398,7 @@ public class QueuePatientFragmentController {
 			if (StringUtils.isNotEmpty(referralDescription)) {
 				referredReasonObs.setValueText(referralDescription);
 			}
-			encounter.addObs(referredReasonObs);
+			//encounter.addObs(referredReasonObs);
 			
 		}
 		
@@ -411,8 +411,8 @@ public class QueuePatientFragmentController {
 		} else {
 			obsn.setComment(nScheme);
 		}
-		encounter.addObs(obsn);
-		return encounter;
+		//encounter.addObs(obsn);
+		return encounterObs;
 	}
 	
 	private boolean hasRevisits(Patient patient) throws ParseException {
