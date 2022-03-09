@@ -309,68 +309,28 @@ public class QueuePatientFragmentController {
 			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedSpecialClinicConcept, hasRevisits(patient), paymt3);
 		}
 		
-		// payment category and registration fee
-		Concept cnrf = Context.getConceptService().getConcept(InitialPatientQueueConstants.CONCEPT_NAME_REGISTRATION_FEE);
-		Concept revisitFeeConcept = Context.getConceptService().getConcept(
-		    InitialPatientQueueConstants.CONCEPT_NAME_REVISIT_FEES);
-		Concept specialClinicFeeConcept = Context.getConceptService().getConceptByUuid(
-		    InitialPatientQueueConstants.CONCEPT_NAME_SPECIAL_CLINIC_FEES);
-		
-		Concept cnp = Context.getConceptService().getConcept(InitialPatientQueueConstants.CONCEPT_NEW_PATIENT);
-		Concept crp = Context.getConceptService().getConcept(InitialPatientQueueConstants.CONCEPT_REVISIT);
-		Concept csc = Context.getConceptService().getConcept(InitialPatientQueueConstants.CONCEPT_NAME_SPECIAL_CLINIC);
-		
-		Obs obsn = new Obs();
-		if (!hasRevisits(patient)) {
-			obsn.setConcept(cnrf);
-			obsn.setValueCoded(cnp);
-			double doubleVal = Double.parseDouble(GlobalPropertyUtil.getString(
-			    InitialPatientQueueConstants.FORM_FIELD_REGISTRATION_FEE, "0.0"));
-			obsn.setValueNumeric(doubleVal);
-			
-		} else {
-			obsn.setConcept(revisitFeeConcept);
-			obsn.setValueCoded(crp);
-			double doubleVal = Double.parseDouble(GlobalPropertyUtil.getString(
-			    InitialPatientQueueConstants.PROPERTY_REVISIT_REGISTRATION_FEE, "0.0"));
-			obsn.setValueNumeric(doubleVal);
-		}
-		
-		if (StringUtils.isNotEmpty(sNSpecial)) {
-			obsn.setConcept(specialClinicFeeConcept);
-			obsn.setValueCoded(csc);
-			double doubleVal = Double.parseDouble(GlobalPropertyUtil.getString(
-			    InitialPatientQueueConstants.PROPERTY_SPECIALCLINIC_REGISTRATION_FEE, "0.0"));
-			obsn.setValueNumeric(doubleVal);
-		}
-		
-		String medicalLegalCase = null, referralType = null, referralCounty = null, typeOfFacilityReferredFrom = null, facilityReferredFrom = null, referralDescription = null;
+		String referralType = null, referralCounty = null, typeOfFacilityReferredFrom = null, facilityReferredFrom = null, referralDescription = null;
 		//if mlc is not empty then is a mlc otherwise NOT an mlc
 		if (StringUtils.isNotEmpty(parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_MLC))) {
-			medicalLegalCase = parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_MLC);
+			String medicalLegalCase = parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_MLC);
 			Concept mlcConcept = Context.getConceptService().getConceptByUuid(
 			    InitialPatientQueueConstants.CONCEPT_MEDICO_LEGAL_CASE);
-			
 			Obs mlcObs = new Obs();
-			if (!StringUtils.isBlank(medicalLegalCase)) {
-				Concept selectedMlcConcept = Context.getConceptService().getConceptByName(medicalLegalCase);
+			if (StringUtils.isNotBlank(medicalLegalCase)) {
+				Concept selectedMlcConcept = Context.getConceptService().getConcept(Integer.parseInt(medicalLegalCase));
 				mlcObs.setConcept(mlcConcept);
 				mlcObs.setValueCoded(selectedMlcConcept);
-				//encounter.addObs(mlcObs);
+				encounterObs.addObs(mlcObs);
 			}
 			
 		}
-		
-		/*
-		 * REFERRAL INFORMATION
-		 */
-		Obs referralObs = new Obs();
 		
 		//if referral reason/type is empty the NOT referred
 		if (StringUtils.isNotEmpty(parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_REASON))) {
 			
 			Concept referralConcept = Context.getConceptService().getConcept(
 			    InitialPatientQueueConstants.CONCEPT_NAME_PATIENT_REFERRED_TO_HOSPITAL);
+			Obs referralObs = new Obs();
 			referralObs.setConcept(referralConcept);
 			//encounter.addObs(referralObs);
 			
@@ -401,7 +361,7 @@ public class QueuePatientFragmentController {
 			//encounter.addObs(referredReasonObs);
 			
 		}
-		
+		Obs obsn = new Obs();
 		obsn.setValueText(paymt3 + "/" + nPayn + " " + nNotpayn + " " + nScheme);//we can add the paying sub category if needed
 		
 		if (paymt3 != null && paymt3.equals("Paying")) {
