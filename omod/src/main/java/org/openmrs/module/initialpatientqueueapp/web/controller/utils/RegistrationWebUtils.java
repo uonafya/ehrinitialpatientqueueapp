@@ -13,6 +13,7 @@ import org.openmrs.ConceptAnswer;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ehrconfigs.utils.EhrConfigsUtils;
 import org.openmrs.module.hospitalcore.PatientQueueService;
@@ -28,7 +29,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -286,36 +286,38 @@ public class RegistrationWebUtils {
 			
 		}
 	}
-	
+
 	/**
 	 * Create a new encounter
-	 * 
+	 *
 	 * @param patient
 	 * @param revisit
 	 * @return
 	 */
-	public static Encounter createEncounter(Patient patient, boolean revisit) {
+	public static Encounter createEncounter(Patient patient, boolean revisit, Visit visit) {
 		EncounterType encounterType = null;
 		KenyaEmrService kenyaEmrService = Context.getService(KenyaEmrService.class);
 		if (!revisit) {
 			String encounterTypeName = GlobalPropertyUtil.getString(
-			    InitialPatientQueueConstants.PROPERTY_ENCOUNTER_TYPE_REGINIT, "REGINITIAL");
+							InitialPatientQueueConstants.PROPERTY_ENCOUNTER_TYPE_REGINIT, "REGINITIAL");
 			encounterType = Context.getEncounterService().getEncounterType(encounterTypeName);
 		} else {
 			String encounterTypeName = GlobalPropertyUtil.getString(
-			    InitialPatientQueueConstants.PROPERTY_ENCOUNTER_TYPE_REVISIT, "REGREVISIT");
+							InitialPatientQueueConstants.PROPERTY_ENCOUNTER_TYPE_REVISIT, "REGREVISIT");
 			encounterType = Context.getEncounterService().getEncounterType(encounterTypeName);
 		}
-		
+
 		// create encounter
 		Encounter encounter = new Encounter();
 		encounter.setEncounterType(encounterType);
 		encounter.setCreator(Context.getAuthenticatedUser());
 		encounter.setProvider(EhrConfigsUtils.getDefaultEncounterRole(),
-		    EhrConfigsUtils.getProvider(Context.getAuthenticatedUser().getPerson()));
+						EhrConfigsUtils.getProvider(Context.getAuthenticatedUser().getPerson()));
 		encounter.setEncounterDatetime(new Date());
 		encounter.setPatient(patient);
 		encounter.setLocation(kenyaEmrService.getDefaultLocation());
+		encounter.setVisit(visit);
+
 		return encounter;
 	}
 }

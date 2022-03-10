@@ -117,7 +117,6 @@
                     <label for="referralDescription" style="margin-top:25px;">Comments</label>
                     <field>
                         <textarea type="text" id="referralDescription" name="patient.referred.description"
-                                  value="N/A" placeholder="COMMENTS" readonly=""
                                   style="height: 80px; width: 700px;">
                         </textarea>
                     </field>
