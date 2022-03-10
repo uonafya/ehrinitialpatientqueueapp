@@ -383,17 +383,6 @@ public class QueuePatientFragmentController {
 			}
 			
 		}
-		Obs obsn = new Obs();
-		obsn.setValueText(paymt3 + "/" + nPayn + " " + nNotpayn + " " + nScheme);//we can add the paying sub category if needed
-		
-		if (paymt3 != null && paymt3.equals("Paying")) {
-			obsn.setComment(nPayn);
-		} else if (paymt3 != null && paymt3.equals("Non-Paying")) {
-			obsn.setComment(nNotpayn);
-		} else {
-			obsn.setComment(nScheme);
-		}
-		//encounter.addObs(obsn);
 		return encounterObs;
 	}
 	
