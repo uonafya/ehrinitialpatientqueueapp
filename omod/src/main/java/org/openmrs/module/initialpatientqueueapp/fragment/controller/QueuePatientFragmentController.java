@@ -316,7 +316,8 @@ public class QueuePatientFragmentController {
 			    InitialPatientQueueConstants.CONCEPT_MEDICO_LEGAL_CASE);
 			Obs mlcObs = new Obs();
 			if (StringUtils.isNotBlank(medicalLegalCase)) {
-				Concept selectedMlcConcept = Context.getConceptService().getConcept(Integer.parseInt(medicalLegalCase));
+				Concept selectedMlcConcept = Context.getConceptService().getConcept(
+				    Integer.parseInt(medicalLegalCase.trim()));
 				mlcObs.setConcept(mlcConcept);
 				mlcObs.setValueCoded(selectedMlcConcept);
 				encounterObs.addObs(mlcObs);
@@ -341,32 +342,45 @@ public class QueuePatientFragmentController {
 			String referralDescription = parameters
 			        .get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_DESCRIPTION);
 			
-			System.out.println("Referal type is >>" + referralType);
-			System.out.println("Referal county is >>" + referralCounty);
-			System.out.println("Referal facility from  >>" + typeOfFacilityReferredFrom);
-			System.out.println("Referal type facility from  >>" + typeOfFacilityReferredFrom);
-			System.out.println("Referal facility from  >>" + facilityReferredFrom);
-			System.out.println("Referal facility from description  >>" + referralDescription);
-			
 			// referred from
-			Obs referredFromObs = new Obs();
-			Concept referredFromConcept = Context.getConceptService().getConceptByUuid(
-			    InitialPatientQueueConstants.FACILITY_TYPE_REFERRED_FROM);
-			referredFromObs.setConcept(referredFromConcept);
-			referredFromObs.setValueCoded(Context.getConceptService().getConceptByName(typeOfFacilityReferredFrom));
-			//encounter.addObs(referredFromObs);
+			if (StringUtils.isNotBlank(typeOfFacilityReferredFrom)) {
+				Obs referredFromObs = new Obs();
+				Concept referredFromConcept = Context.getConceptService().getConceptByUuid(
+				    InitialPatientQueueConstants.FACILITY_TYPE_REFERRED_FROM);
+				referredFromObs.setConcept(referredFromConcept);
+				referredFromObs.setValueCoded(Context.getConceptService().getConcept(
+				    Integer.parseInt(typeOfFacilityReferredFrom.trim())));
+				encounterObs.addObs(referredFromObs);
+			}
 			
 			// referred reason
-			Obs referredReasonObs = new Obs();
-			Concept referredReasonConcept = Context.getConceptService().getConceptByUuid(
-			    InitialPatientQueueConstants.REASONS_FOR_REFERRAL);// TODO review this
-			referredReasonObs.setConcept(referredReasonConcept);
-			referredReasonObs.setValueCoded(Context.getConceptService().getConceptByName(referralType));
-			// referral description
-			if (StringUtils.isNotEmpty(referralDescription)) {
-				referredReasonObs.setValueText(referralDescription);
+			if (StringUtils.isNotBlank(referralType)) {
+				Obs referredReasonObs = new Obs();
+				Concept referredReasonConcept = Context.getConceptService().getConceptByUuid(
+				    InitialPatientQueueConstants.REASONS_FOR_REFERRAL);// TODO review this
+				referredReasonObs.setConcept(referredReasonConcept);
+				referredReasonObs.setValueCoded(Context.getConceptService()
+				        .getConcept(Integer.parseInt(referralType.trim())));
+				//county will be recorded here
+				if (StringUtils.isNotBlank(referralCounty)) {
+					referredReasonObs.setValueText(referralCounty.trim());
+				}
+				//location will be recorded here
+				if (StringUtils.isNotBlank(facilityReferredFrom)) {
+					referredReasonObs.setComment(Context.getLocationService()
+					        .getLocation(Integer.parseInt(facilityReferredFrom.trim())).getName());
+				}
+				encounterObs.addObs(referredReasonObs);
 			}
-			//encounter.addObs(referredReasonObs);
+			
+			// referral description
+			if (StringUtils.isNotBlank(referralDescription)) {
+				Obs referredDescription = new Obs();
+				referredDescription.setConcept(Context.getConceptService().getConceptByUuid(
+				    "164359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
+				referredDescription.setValueText(referralDescription.trim());
+				encounterObs.addObs(referredDescription);
+			}
 			
 		}
 		Obs obsn = new Obs();
