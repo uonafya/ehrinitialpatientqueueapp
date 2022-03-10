@@ -326,8 +326,7 @@ public class QueuePatientFragmentController {
 		
 		//if referral reason/type is empty the NOT referred
 		if (StringUtils.isNotBlank(parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_REASON))) {
-			System.out.println("The patient got into referal section>>"
-			        + parameters.get(InitialPatientQueueConstants.FORM_FIELD_PATIENT_REFERRED_REASON));
+			
 			Concept referralConcept = Context.getConceptService().getConceptByUuid("1788AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 			Obs referralObs = new Obs();
 			referralObs.setConcept(referralConcept);
