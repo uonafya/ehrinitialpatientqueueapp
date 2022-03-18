@@ -133,42 +133,6 @@
                 payingCategorySelection();
                 nonPayingCategorySelection();
             }
-            // if (select3.indexOf("National Health Insurance Fund Member") >= 0) {
-            //     jq("#modesummary").attr("readonly", false);
-            //     jq("#modesummary").attr("name", 'person.attribute.34');
-            //     jq("#modesummary").val("");
-            //     jq('#universitydiv').hide();
-            //     jq('#university option').eq(0).prop('selected', true);
-            //     jq('#summtitle1').text('NHIF Details');
-            //     jq('#modesummary').attr("placeholder", "NHIF Number");
-            // }
-            // else if (select3.indexOf("Student") >= 0) {
-            //     jq("#modesummary").attr("readonly", false);
-            //     jq("#modesummary").attr("name", 'person.attribute.42');
-            //     jq("#modesummary").val("");
-            //     jq('#universitydiv').show();
-            //     jq('#university option').eq(1).prop('selected', true);
-            //     jq('#summtitle1').text('Student Details');
-            //     jq('#modesummary').attr("placeholder", "Student Number");
-            // }
-            // else if (select3.toUpperCase().indexOf("HOSPITAL WAIVER") >= 0) {
-            //     jq("#modesummary").attr("readonly", false);
-            //     jq("#modesummary").attr("name", 'person.attribute.32');
-            //     jq("#modesummary").val("");
-            //     jq('#universitydiv').hide();
-            //     jq('#university option').eq(0).prop('selected', true);
-            //     jq('#summtitle1').text('Waiver Details');
-            //     jq('#modesummary').attr("placeholder", "Waiver Number");
-            // }
-            // else {
-            //     jq("#modesummary").attr("readonly", false);
-            //     jq("#modesummary").attr("name", 'modesummary');
-            //     jq("#modesummary").val("N/A");
-            //     jq('#universitydiv').hide();
-            //     jq('#university option').eq(0).prop('selected', true);
-            //     jq('#summtitle1').text('Details');
-            //     jq('#modesummary').attr("placeholder", "Enter Value");
-            // }
             jq('#summ_fees').text(jq('#selectedRegFeeValue').val() + '.00');
         }
         // Paying Category Map

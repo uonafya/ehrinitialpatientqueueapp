@@ -36,6 +36,7 @@ import org.openmrs.module.hospitalcore.model.PatientSearch;
 import org.openmrs.module.hospitalcore.model.PatientServiceBill;
 import org.openmrs.module.hospitalcore.model.PatientServiceBillItem;
 import org.openmrs.module.hospitalcore.util.GlobalPropertyUtil;
+import org.openmrs.module.hospitalcore.model.PatientCategoryDetails;
 import org.openmrs.module.initialpatientqueueapp.EhrRegistrationUtils;
 import org.openmrs.module.initialpatientqueueapp.InitialPatientQueueConstants;
 import org.openmrs.module.initialpatientqueueapp.web.controller.utils.RegistrationWebUtils;
@@ -157,8 +158,8 @@ public class QueuePatientFragmentController {
 			Encounter encounter = createEncounter(patient, parameters, visit);
 			//save the encounter here
 			Context.getEncounterService().saveEncounter(encounter);
-			//save other obs here
-			saveAllOtherAttributesAsObs(encounter, getPatientCategory(payCat), null, null, null, null, null, null);
+			//save patient details categories
+			saveAllOtherAttributesAsPatientDetails(patient, parameters);
 			
 			sendToBillingDependingOnTheBill(parameters, encounter, payCat, Integer.parseInt(department));
 			//ADD PERSON ATTRIBUTE SET
@@ -457,51 +458,6 @@ public class QueuePatientFragmentController {
 	}
 	
 	private void getPayingCategoryPersonAttribute(Map<String, String> attributes, Patient patient) {
-		int paymt1 = Integer.parseInt(attributes.get("paym_1"));
-		int paymt2 = Integer.parseInt(attributes.get("paym_2"));
-		String param2Value = "";
-		
-		if (paymt1 == 1) {
-			if (paymt2 == 1) {
-				param2Value = "Special clinic";
-			} else if (paymt2 == 2) {
-				param2Value = "General patient";
-			} else if (paymt2 == 3) {
-				param2Value = "Insurance";
-			}
-		} else if (paymt1 == 2) {
-			if (paymt2 == 1) {
-				param2Value = "Child under 5";
-			} else if (paymt2 == 2) {
-				param2Value = "Currently pregnant";
-			} else if (paymt2 == 3) {
-				param2Value = "TB case";
-			} else if (paymt2 == 4) {
-				param2Value = "CCC patient";
-			} else if (paymt2 == 5) {
-				param2Value = "Patient in prison";
-			} else if (paymt2 == 6) {
-				param2Value = "Mental case";
-			} else if (paymt2 == 7) {
-				param2Value = "Patient with disability";
-			} else if (paymt2 == 8) {
-				param2Value = "GBV patient";
-			} else if (paymt2 == 9) {
-				param2Value = "Vulnerable case patients";
-			}
-		} else if (paymt1 == 3) {
-			if (paymt2 == 1) {
-				param2Value = "Waiver";
-			} else if (paymt2 == 2) {
-				param2Value = "Delivery case";
-			} else if (paymt2 == 3) {
-				param2Value = "Student";
-			} else if (paymt2 == 4) {
-				param2Value = "Civil servant";
-			} else if (paymt2 == 5) {
-				param2Value = "NHIF patient";
-			}
-		}
 		PersonAttributeType paymentCategorySubTypePaymentAttribute = Context.getPersonService()
 		        .getPersonAttributeTypeByUuid(EhrCommonMetadata._EhrPersonAttributeType.PAYMENT_CATEGORY_SUB_TYPE);
 		PersonAttribute checkIfParam2Exists = patient.getAttribute(paymentCategorySubTypePaymentAttribute);
@@ -512,7 +468,7 @@ public class QueuePatientFragmentController {
 			checkIfParam2Exists.setDateCreated(new Date());
 			checkIfParam2Exists.setPerson(patient);
 		}
-		checkIfParam2Exists.setValue(param2Value);
+		checkIfParam2Exists.setValue(getPayingCategory(attributes));
 		patient.addAttribute(checkIfParam2Exists);
 	}
 	
@@ -723,7 +679,7 @@ public class QueuePatientFragmentController {
 	private Date getAminuteBefore() {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
-		cal.add(Calendar.MINUTE, -1);
+		cal.add(Calendar.MINUTE, -5);
 		return cal.getTime();
 	}
 	
@@ -779,9 +735,29 @@ public class QueuePatientFragmentController {
 		return results;
 	}
 	
-	private void saveAllOtherAttributesAsObs(Encounter encounter, String patientCategory, String payingCategory,
-	        String fileNumber, String learningInstitution, String studentId, String nhifNumber, String waiverNumber) {
-		//TO DO privide logic here that will save all the obs in one transaction
+	private void saveAllOtherAttributesAsPatientDetails(Patient patient, Map<String, String> parameters) {
+		String patientCategory = getPatientCategory(Integer.parseInt(parameters.get("paym_1")));
+		String payingCategory = getPayingCategory(parameters);
+		String studentNumber = parameters.get("studentId");
+		String visitType = parameters.get("visitType");
+		String waiverNumber = parameters.get("waiverNumber");
+		String nhifNumber = parameters.get("nhifNumber");
+		String fileNumber = parameters.get("rooms3");
+		
+		PatientCategoryDetails patientCategoryDetails = new PatientCategoryDetails();
+		patientCategoryDetails.setPatient(patient);
+		patientCategoryDetails.setPatientCategory(patientCategory);
+		patientCategoryDetails.setPayingCategory(payingCategory);
+		patientCategoryDetails.setCreatedOn(new Date());
+		patientCategoryDetails.setDateCreated(new Date());
+		patientCategoryDetails.setCreator(Context.getAuthenticatedUser());
+		patientCategoryDetails.setStudentNumber(studentNumber);
+		patientCategoryDetails.setVisitType(visitType);
+		patientCategoryDetails.setWaiverNumber(waiverNumber);
+		patientCategoryDetails.setNhifNumber(nhifNumber);
+		patientCategoryDetails.setFileNumber(fileNumber);
+		
+		Context.getService(HospitalCoreService.class).savePatientCategoryDetails(patientCategoryDetails);
 	}
 	
 	private void saveFeesCollectedAtRegistrationDesk(Patient patient, String name, Integer serviceOffered, String comments) {
@@ -817,5 +793,54 @@ public class QueuePatientFragmentController {
 		bill.setFreeBill(calculator.isFreeBill("free"));
 		bill.setReceipt(billingService.createReceipt());
 		billingService.savePatientServiceBill(bill);
+	}
+	
+	private String getPayingCategory(Map<String, String> attributes) {
+		int paymt1 = Integer.parseInt(attributes.get("paym_1"));
+		int paymt2 = Integer.parseInt(attributes.get("paym_2"));
+		String param2Value = "";
+		
+		if (paymt1 == 1) {
+			if (paymt2 == 1) {
+				param2Value = "Special clinic";
+			} else if (paymt2 == 2) {
+				param2Value = "General patient";
+			} else if (paymt2 == 3) {
+				param2Value = "Insurance";
+			}
+		} else if (paymt1 == 2) {
+			if (paymt2 == 1) {
+				param2Value = "Child under 5";
+			} else if (paymt2 == 2) {
+				param2Value = "Currently pregnant";
+			} else if (paymt2 == 3) {
+				param2Value = "TB case";
+			} else if (paymt2 == 4) {
+				param2Value = "CCC patient";
+			} else if (paymt2 == 5) {
+				param2Value = "Patient in prison";
+			} else if (paymt2 == 6) {
+				param2Value = "Mental case";
+			} else if (paymt2 == 7) {
+				param2Value = "Patient with disability";
+			} else if (paymt2 == 8) {
+				param2Value = "GBV patient";
+			} else if (paymt2 == 9) {
+				param2Value = "Vulnerable case patients";
+			}
+		} else if (paymt1 == 3) {
+			if (paymt2 == 1) {
+				param2Value = "Waiver";
+			} else if (paymt2 == 2) {
+				param2Value = "Delivery case";
+			} else if (paymt2 == 3) {
+				param2Value = "Student";
+			} else if (paymt2 == 4) {
+				param2Value = "Civil servant";
+			} else if (paymt2 == 5) {
+				param2Value = "NHIF patient";
+			}
+		}
+		return param2Value;
 	}
 }

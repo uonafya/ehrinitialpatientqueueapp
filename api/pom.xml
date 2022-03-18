@@ -28,11 +28,6 @@
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>htmlformentry-api</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
 			<artifactId>htmlwidgets-api</artifactId>
 		</dependency>
 
