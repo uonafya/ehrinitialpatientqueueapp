@@ -74,15 +74,11 @@ form textarea:focus, .form textarea:focus{
         <tr>
             <td width="30%" valign="top">
                 ${ ui.includeFragment("kenyaemr", "patient/patientSummary", [ patient: currentPatient ]) }
-                ${ ui.includeFragment("kenyaemr", "patient/patientRelationships", [ patient: currentPatient ]) }
             </td>
             <td valign="top" style="padding-left: 5px">
                 <div class="onepcssgrid-1000">
                 ${ ui.includeFragment("initialpatientqueueapp", "queuePatient", [patient: currentPatient])}
             </div>
-            </td>
-            <td width="15%" valign="top" style="padding-left: 5px">
-                ${ ui.includeFragment("kenyaemr", "providerAction/providerActions") }
             </td>
         </tr>
     </table>

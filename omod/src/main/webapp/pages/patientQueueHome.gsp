@@ -1,9 +1,13 @@
 <%
     ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
+    def menuItems = [
+            [ label: "View Queued Patients", extra: "Access queued patients for changes", iconProvider: "kenyaui", icon: "buttons/patient_add.png", href: ui.pageLink("initialpatientqueueapp", "viewQueuedPatients") ]
+    ]
 %>
 
     <div class="ke-page-sidebar">
         ${ ui.includeFragment("kenyaemr", "patient/patientSearchForm", [ defaultWhich: "all" ]) }
+        ${ ui.includeFragment("kenyaui", "widget/panelMenu", [ heading: "Tasks", items: menuItems ]) }
     </div>
 
     <div class="ke-page-content">
