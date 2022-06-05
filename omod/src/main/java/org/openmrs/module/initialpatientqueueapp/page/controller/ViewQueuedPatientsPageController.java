@@ -33,13 +33,14 @@ public class ViewQueuedPatientsPageController {
 			for (TriagePatientQueue triagePatientQueue : triagePatientQueueList) {
 				viewQueuedTriagePatients = new ViewQueuedPatients();
 				viewQueuedTriagePatients.setQueueId(triagePatientQueue.getId());
+				viewQueuedTriagePatients.setSex(triagePatientQueue.getSex());
 				viewQueuedTriagePatients.setStatus(triagePatientQueue.getStatus());
 				viewQueuedTriagePatients.setPatientNames(triagePatientQueue.getPatientName());
 				viewQueuedTriagePatients.setPatientIdentifier(triagePatientQueue.getPatientIdentifier());
 				viewQueuedTriagePatients.setVisitDate(EhrRegistrationUtils.formatDate(triagePatientQueue.getCreatedOn()));
 				viewQueuedTriagePatients.setVisitStatus(triagePatientQueue.getVisitStatus());
-				viewQueuedTriagePatients.setReferralConceptName(triagePatientQueue.getReferralConceptName());
 				viewQueuedTriagePatients.setServiceConceptName(triagePatientQueue.getTriageConceptName());
+				viewQueuedTriagePatients.setCategory(triagePatientQueue.getCategory());
 				
 				viewQueuedPatientsList.add(viewQueuedTriagePatients);
 				
@@ -49,13 +50,15 @@ public class ViewQueuedPatientsPageController {
 			for (OpdPatientQueue opdPatientQueue : opdPatientQueueList) {
 				viewQueuedOpdPatients = new ViewQueuedPatients();
 				viewQueuedOpdPatients.setQueueId(opdPatientQueue.getId());
+				viewQueuedOpdPatients.setSex(opdPatientQueue.getSex());
 				viewQueuedOpdPatients.setStatus(opdPatientQueue.getStatus());
 				viewQueuedOpdPatients.setPatientNames(opdPatientQueue.getPatientName());
 				viewQueuedOpdPatients.setPatientIdentifier(opdPatientQueue.getPatientIdentifier());
 				viewQueuedOpdPatients.setVisitDate(EhrRegistrationUtils.formatDate(opdPatientQueue.getCreatedOn()));
 				viewQueuedOpdPatients.setVisitStatus(opdPatientQueue.getVisitStatus());
-				viewQueuedOpdPatients.setReferralConceptName(opdPatientQueue.getReferralConceptName());
 				viewQueuedOpdPatients.setServiceConceptName(opdPatientQueue.getOpdConceptName());
+				
+				viewQueuedPatientsList.add(viewQueuedOpdPatients);
 				
 			}
 			

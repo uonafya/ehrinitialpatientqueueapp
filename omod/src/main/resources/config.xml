@@ -56,6 +56,13 @@
 			Patient identifier prefix
 		</description>
 	</globalProperty>
+	<globalProperty>
+		<property>${project.parent.artifactId}.send.to.paying</property>
+		<defaultValue>false</defaultValue>
+		<description>
+			Specifies whether a patient need to pay for the fees at registration before getting services.
+		</description>
+	</globalProperty>
 	
 	<!-- AOP
 	<advice>

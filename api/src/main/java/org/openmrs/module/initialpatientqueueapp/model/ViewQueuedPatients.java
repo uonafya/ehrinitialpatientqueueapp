@@ -40,12 +40,12 @@ public class ViewQueuedPatients {
 		this.visitStatus = visitStatus;
 	}
 	
-	public String getRoomToVisit() {
-		return roomToVisit;
+	public String getCategory() {
+		return category;
 	}
 	
-	public void setRoomToVisit(String roomToVisit) {
-		this.roomToVisit = roomToVisit;
+	public void setCategory(String category) {
+		this.category = category;
 	}
 	
 	public String getServicePoint() {
@@ -60,7 +60,7 @@ public class ViewQueuedPatients {
 	
 	private String visitStatus;
 	
-	private String roomToVisit;
+	private String category;
 	
 	private String servicePoint;
 	
