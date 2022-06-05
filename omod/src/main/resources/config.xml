@@ -58,9 +58,9 @@
 	</globalProperty>
 	<globalProperty>
 		<property>${project.parent.artifactId}.send.to.paying</property>
-		<defaultValue>false</defaultValue>
+		<defaultValue>0</defaultValue>
 		<description>
-			Specifies whether a patient need to pay for the fees at registration before getting services.
+			Specifies whether a patient need to pay for the fees at registration before getting services. O=false, 1=true
 		</description>
 	</globalProperty>
 	

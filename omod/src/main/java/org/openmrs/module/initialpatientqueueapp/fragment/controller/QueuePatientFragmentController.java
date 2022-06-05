@@ -585,6 +585,7 @@ public class QueuePatientFragmentController {
 	}
 	
 	private void sendPatientsToBilling(Concept serviceFee, Encounter encounter) {
+		String toPaySettings = Context.getAdministrationService().getGlobalProperty("initialpatientqueueapp.send.to.paying");
 		Concept hospitalChargesConcept = Context.getConceptService()
 		        .getConceptByUuid("eb458ded-1fa0-4c1b-92fa-322cada4aff2");
 		BillableService billableService = Context.getService(BillingService.class).getServiceByConceptId(serviceFee.getId());
@@ -601,7 +602,12 @@ public class QueuePatientFragmentController {
 			opdTestOrder.setScheduleDate(new Date());
 			opdTestOrder.setFromDept("Registration");
 			if (billableService.getPrice() != null && billableService.getPrice().compareTo(BigDecimal.ZERO) == 0) {
-				opdTestOrder.setBillingStatus(1);
+				if (StringUtils.isNotBlank(toPaySettings) && Integer.parseInt(toPaySettings) == 0) {
+					opdTestOrder.setBillingStatus(1);
+				} else if (StringUtils.isNotBlank(toPaySettings) && Integer.parseInt(toPaySettings) == 1) {
+					opdTestOrder.setBillingStatus(0);
+				}
+				
 			}
 			HospitalCoreService hcs = Context.getService(HospitalCoreService.class);
 			List<PersonAttribute> pas = hcs.getPersonAttributes(encounter.getPatient().getPatientId());
@@ -761,38 +767,41 @@ public class QueuePatientFragmentController {
 	}
 	
 	private void saveFeesCollectedAtRegistrationDesk(Patient patient, String name, Integer serviceOffered, String comments) {
-		BillingService billingService = Context.getService(BillingService.class);
-		BillCalculatorForBDService calculator = new BillCalculatorForBDService();
-		PatientServiceBill bill = new PatientServiceBill();
-		bill.setCreatedDate(new Date());
-		bill.setPatient(patient);
-		bill.setCreator(Context.getAuthenticatedUser());
-		PatientServiceBillItem item;
-		BillableService service = billingService.getServiceByConceptId(serviceOffered);
-		
-		item = new PatientServiceBillItem();
-		item.setCreatedDate(new Date());
-		item.setName(name);
-		item.setPatientServiceBill(bill);
-		item.setQuantity(1);
-		item.setService(service);
-		item.setUnitPrice(service.getPrice());
-		item.setAmount(service.getPrice());
-		item.setActualAmount(service.getPrice());
-		bill.addBillItem(item);
-		
-		bill.setAmount(service.getPrice());
-		bill.setActualAmount(service.getPrice());
-		bill.setWaiverAmount(new BigDecimal(0));
-		
-		bill.setComment(comments);
-		HospitalCoreService hcs = Context.getService(HospitalCoreService.class);
-		bill.setPatientCategory("Paying");
-		bill.setPatientSubCategory("General Patient");
-		bill.setPaymentMode("Cash");
-		bill.setFreeBill(calculator.isFreeBill("free"));
-		bill.setReceipt(billingService.createReceipt());
-		billingService.savePatientServiceBill(bill);
+		String toPaySettings = Context.getAdministrationService().getGlobalProperty("initialpatientqueueapp.send.to.paying");
+		if (StringUtils.isNotBlank(toPaySettings) && Integer.parseInt(toPaySettings) == 0) {
+			BillingService billingService = Context.getService(BillingService.class);
+			BillCalculatorForBDService calculator = new BillCalculatorForBDService();
+			PatientServiceBill bill = new PatientServiceBill();
+			bill.setCreatedDate(new Date());
+			bill.setPatient(patient);
+			bill.setCreator(Context.getAuthenticatedUser());
+			PatientServiceBillItem item;
+			BillableService service = billingService.getServiceByConceptId(serviceOffered);
+			
+			item = new PatientServiceBillItem();
+			item.setCreatedDate(new Date());
+			item.setName(name);
+			item.setPatientServiceBill(bill);
+			item.setQuantity(1);
+			item.setService(service);
+			item.setUnitPrice(service.getPrice());
+			item.setAmount(service.getPrice());
+			item.setActualAmount(service.getPrice());
+			bill.addBillItem(item);
+			
+			bill.setAmount(service.getPrice());
+			bill.setActualAmount(service.getPrice());
+			bill.setWaiverAmount(new BigDecimal(0));
+			
+			bill.setComment(comments);
+			HospitalCoreService hcs = Context.getService(HospitalCoreService.class);
+			bill.setPatientCategory("Paying");
+			bill.setPatientSubCategory("General Patient");
+			bill.setPaymentMode("Cash");
+			bill.setFreeBill(calculator.isFreeBill("free"));
+			bill.setReceipt(billingService.createReceipt());
+			billingService.savePatientServiceBill(bill);
+		}
 	}
 	
 	private String getPayingCategory(Map<String, String> attributes) {

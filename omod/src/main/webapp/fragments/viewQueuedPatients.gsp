@@ -11,7 +11,7 @@
             <th>Visit status</th>
             <th>Service point</th>
             <th>Request status</th>
-            <th>Paying Category</th>
+            <th>Patient Category</th>
             <th>Actions</th>
         </tr>
         </thead>
