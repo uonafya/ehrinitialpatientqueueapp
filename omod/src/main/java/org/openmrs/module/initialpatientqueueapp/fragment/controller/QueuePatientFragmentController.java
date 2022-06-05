@@ -22,6 +22,7 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.Visit;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ehrcashier.billcalculator.BillCalculatorForBDService;
@@ -31,12 +32,13 @@ import org.openmrs.module.hospitalcore.HospitalCoreService;
 import org.openmrs.module.hospitalcore.PatientDashboardService;
 import org.openmrs.module.hospitalcore.model.BillableService;
 import org.openmrs.module.hospitalcore.model.DepartmentConcept;
+import org.openmrs.module.hospitalcore.model.EhrHospitalWaiver;
 import org.openmrs.module.hospitalcore.model.OpdTestOrder;
+import org.openmrs.module.hospitalcore.model.PatientCategoryDetails;
 import org.openmrs.module.hospitalcore.model.PatientSearch;
 import org.openmrs.module.hospitalcore.model.PatientServiceBill;
 import org.openmrs.module.hospitalcore.model.PatientServiceBillItem;
 import org.openmrs.module.hospitalcore.util.GlobalPropertyUtil;
-import org.openmrs.module.hospitalcore.model.PatientCategoryDetails;
 import org.openmrs.module.initialpatientqueueapp.EhrRegistrationUtils;
 import org.openmrs.module.initialpatientqueueapp.InitialPatientQueueConstants;
 import org.openmrs.module.initialpatientqueueapp.web.controller.utils.RegistrationWebUtils;
@@ -160,6 +162,8 @@ public class QueuePatientFragmentController {
 			Context.getEncounterService().saveEncounter(encounter);
 			//save patient details categories
 			saveAllOtherAttributesAsPatientDetails(patient, parameters);
+			//save waiver information
+			saveHospitalWaivers(patient);
 			
 			sendToBillingDependingOnTheBill(parameters, encounter, payCat, Integer.parseInt(department));
 			//ADD PERSON ATTRIBUTE SET
@@ -851,5 +855,25 @@ public class QueuePatientFragmentController {
 			}
 		}
 		return param2Value;
+	}
+	
+	private void saveHospitalWaivers(Patient patient) {
+		
+		HospitalCoreService hospitalCoreService = Context.getService(HospitalCoreService.class);
+		PersonService personService = Context.getPersonService();
+		PersonAttribute personAttribute = patient.getAttribute(personService
+		        .getPersonAttributeTypeByUuid(EhrCommonMetadata._EhrPersonAttributeType.PAYMENT_CATEGORY_SUB_TYPE));
+		if (personAttribute != null && personAttribute.getValue().equals("Waiver")) {
+			EhrHospitalWaiver ehrHospitalWaiver = new EhrHospitalWaiver();
+			ehrHospitalWaiver.setPatient(patient);
+			ehrHospitalWaiver.setBirthdate(patient.getBirthdate());
+			ehrHospitalWaiver.setCreator(Context.getAuthenticatedUser());
+			ehrHospitalWaiver.setGender(patient.getGender());
+			ehrHospitalWaiver.setName(patient.getPersonName().getFullName());
+			ehrHospitalWaiver.setDateCreated(new Date());
+			ehrHospitalWaiver.setStatus(0);
+			hospitalCoreService.saveEhrHospitalWaiver(ehrHospitalWaiver);
+		}
+		
 	}
 }
