@@ -33,7 +33,8 @@
 <div class="ke-page-sidebar">
     ${ ui.includeFragment("kenyaui", "widget/panelMenu", [ items: menuItems ]) }
 </div>
-<div class="ke-panel-content">
+<div class="ke-page-content">
+    <div class="ke-panel-frame">
     <div class="ke-panel-heading">Scheduled Patients</div>
     <table border="0" cellpadding="0" cellspacing="0" id="details" width="100%">
         <thead>
@@ -77,4 +78,5 @@
         <%}%>
         </tbody>
     </table>
+    </div>
 </div>
