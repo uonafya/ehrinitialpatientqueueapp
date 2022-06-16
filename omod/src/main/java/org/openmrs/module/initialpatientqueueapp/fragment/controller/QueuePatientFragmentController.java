@@ -394,8 +394,7 @@ public class QueuePatientFragmentController {
 	private boolean hasRevisits(Patient patient) throws ParseException {
 		boolean found = false;
 		KenyaEmrService kenyaEmrService = Context.getService(KenyaEmrService.class);
-		EncounterType patientQueueEncounter = Context.getEncounterService().getEncounterTypeByUuid(
-		    "356d447a-b494-11ea-8337-f7bcaf3e8fec");
+		
 		EncounterType triageEncounter = Context.getEncounterService().getEncounterTypeByUuid(
 		    "2af60550-f291-11ea-b725-9753b5f685ae");
 		EncounterType opdEncounter = Context.getEncounterService().getEncounterTypeByUuid(
@@ -406,16 +405,12 @@ public class QueuePatientFragmentController {
 		    "98d42234-f28f-11ea-b609-bbd062a0383b");
 		List<Encounter> filteredVisits = Context.getEncounterService().getEncounters(patient,
 		    kenyaEmrService.getDefaultLocation(), null, null, null,
-		    Arrays.asList(patientQueueEncounter, triageEncounter, opdEncounter, registrationInitial, revisitInitial), null,
-		    null, null, false);
+		    Arrays.asList(triageEncounter, opdEncounter, revisitInitial), null, null, null, false);
 		
 		if (filteredVisits.size() > 0) {
 			Encounter encounterVisit = filteredVisits.get(0);
 			if (EhrRegistrationUtils.parseDate(EhrRegistrationUtils.formatDate(encounterVisit.getEncounterDatetime()))
 			        .before(EhrRegistrationUtils.parseDate(EhrRegistrationUtils.formatDate(new Date())))) {
-				found = true;
-			}
-			if (Context.getVisitService().getActiveVisitsByPatient(patient).size() > 0) {
 				found = true;
 			}
 		}
@@ -606,12 +601,7 @@ public class QueuePatientFragmentController {
 			opdTestOrder.setScheduleDate(new Date());
 			opdTestOrder.setFromDept("Registration");
 			if (billableService.getPrice() != null && billableService.getPrice().compareTo(BigDecimal.ZERO) == 0) {
-				if (StringUtils.isNotBlank(toPaySettings) && Integer.parseInt(toPaySettings) == 0) {
-					opdTestOrder.setBillingStatus(1);
-				} else if (StringUtils.isNotBlank(toPaySettings) && Integer.parseInt(toPaySettings) == 1) {
-					opdTestOrder.setBillingStatus(0);
-				}
-				
+				opdTestOrder.setBillingStatus(1);
 			}
 			HospitalCoreService hcs = Context.getService(HospitalCoreService.class);
 			List<PersonAttribute> pas = hcs.getPersonAttributes(encounter.getPatient().getPatientId());
@@ -623,7 +613,14 @@ public class QueuePatientFragmentController {
 					break;
 				}
 			}
-			opdTestOrder.setBillingStatus(1);
+			
+			if (StringUtils.isNotBlank(toPaySettings) && Integer.parseInt(toPaySettings) == 0) {
+				System.out.println("The facility pays directly at the registration desk");
+				opdTestOrder.setBillingStatus(1);
+			} else if (StringUtils.isNotBlank(toPaySettings) && Integer.parseInt(toPaySettings) == 1) {
+				System.out.println("Patients have to go to the cashier to pay");
+				opdTestOrder.setBillingStatus(0);
+			}
 			Context.getService(PatientDashboardService.class).saveOrUpdateOpdOrder(opdTestOrder);
 		}
 	}
