@@ -43,5 +43,37 @@
         <%}%>
         </tbody>
     </table>
+        <div id="new-room-dialog" class="dialog" style="display:none;">
+            <div class="dialog-header">
+                <i class="icon-folder-open"></i>
+
+                <h3>Edit Patient Service Point</h3>
+            </div>
+
+            <div class="dialog-content">
+                <ul>
+                    <li>
+                        <label>Room To Visit<span>*</span></label>
+                        <select id="rooms1" name="rooms1" onchange="LoadRoomsTypes();"
+                                class="required form-combo1" style="width: 90%!important;">
+                            <option disabled>Select Room</option>
+                            <option value="1">TRIAGE ROOM</option>
+                            <option value="2">OPD ROOM</option>
+                            <option value="3">SPECIAL CLINIC</option>
+                        </select>
+                    </li>
+                    <li>
+                        <label>Room Type<span>*</span></label>
+                        <select id="rooms2" name="rooms2" class="required form-combo1">
+                        </select>
+                    </li>
+                </ul>
+
+                <div class="onerow">
+                    <button class="button cancel">Cancel</button>
+                    <button class="button confirm right">Confirm</button>
+                </div>
+            </div>
+        </div>
 </div>
 </div>
