@@ -26,6 +26,8 @@
             selector: '#new-room-dialog',
             actions: {
                 confirm: function () {
+                    //send the client to the selected service delivery room
+                    //make an ajx call to initiate the posting
                     editroomDialog.close();
                 },
                 cancel: function () {
