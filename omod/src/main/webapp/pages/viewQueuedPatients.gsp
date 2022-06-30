@@ -2,10 +2,10 @@
     ui.decorateWith("kenyaemr", "standardPage", [layout: "sidebar"])
     ui.includeJavascript("ehrconfigs", "jquery.dataTables.min.js")
     ui.includeCss("ehrconfigs", "jquery.dataTables.min.css")
+    ui.includeCss("ehrconfigs", "bootstrap.min.js")
     ui.includeJavascript("ehrconfigs", "emr.js")
     ui.includeCss("ehrconfigs", "onepcssgrid.css")
     ui.includeCss("ehrconfigs", "custom.css")
-    ui.includeCss("ehrconfigs", "bootstrap.min.js")
     ui.includeCss("ehrconfigs", "referenceapplication.css")
     ui.includeJavascript("ehrconfigs", "jquery.simplemodal.1.4.4.min.js")
 
@@ -65,7 +65,6 @@
             jq("#triageRoom").attr('checked', 'checked');
             jq("#opdRoom").attr('checked', false);
             jq("#specialClinicRoom").attr('checked', false);
-            jq('#referralDescription').removeClass("required");
             jq('#rooms3').hide();
             jq('#froom3').hide();
             // Remove Maternity Triage and MCH when gender is male
@@ -86,7 +85,6 @@
             jq("#triageRoom").attr('checked', false);
             jq("#opdRoom").attr('checked', 'checked');
             jq("#specialClinicRoom").attr('checked', false);
-            jq('#referralDescription').removeClass("required");
             jq('#rooms3').hide();
             jq('#froom3').hide();
             // Remove Maternity Triage when gender is male
@@ -105,7 +103,6 @@
             jq("#triageRoom").attr('checked', false);
             jq("#opdRoom").attr('checked', false);
             jq("#specialClinicRoom").attr('checked', 'checked');
-            jq('#referralDescription').addClass("required");
             jq('#rooms3').show();
             jq('#froom3').show();
 
@@ -126,7 +123,6 @@
             jq("#triageRoom").attr('checked', false);
             jq("#opdRoom").attr('checked', false);
             jq("#specialClinicRoom").attr('checked', false);
-            jq('#referralDescription').removeClass("required");
             jq('#rooms3').hide();
             jq('#froom3').hide();
         }
