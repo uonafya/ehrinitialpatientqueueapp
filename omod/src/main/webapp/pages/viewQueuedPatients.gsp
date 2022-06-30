@@ -5,6 +5,7 @@
     ui.includeJavascript("ehrconfigs", "emr.js")
     ui.includeCss("ehrconfigs", "onepcssgrid.css")
     ui.includeCss("ehrconfigs", "custom.css")
+    ui.includeCss("ehrconfigs", "bootstrap.min.js")
     ui.includeCss("ehrconfigs", "referenceapplication.css")
     ui.includeJavascript("ehrconfigs", "jquery.simplemodal.1.4.4.min.js")
 
