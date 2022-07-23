@@ -2,7 +2,6 @@
     ui.decorateWith("kenyaemr", "standardPage", [layout: "sidebar"])
     ui.includeJavascript("ehrconfigs", "jquery.dataTables.min.js")
     ui.includeCss("ehrconfigs", "jquery.dataTables.min.css")
-    ui.includeCss("ehrconfigs", "bootstrap.min.js")
     ui.includeJavascript("ehrconfigs", "emr.js")
     ui.includeCss("ehrconfigs", "onepcssgrid.css")
     ui.includeCss("ehrconfigs", "custom.css")
@@ -20,9 +19,10 @@
     var SPECIALCLINIC = ",Select Type |${SPECIALCLINIC}";
 
     var jq = jQuery;
+    var editroomDialog
     jq(function () {
         jq("#details").DataTable();
-        var editroomDialog = emr.setupConfirmationDialog({
+        editroomDialog = emr.setupConfirmationDialog({
             dialogOpts: {
                 overlayClose: false,
                 close: true
@@ -44,12 +44,12 @@
             }
         });
 
-        jq("#editQueue").on("click", function (e) {
-            e.preventDefault();
-            LoadRoomsTypes() // load in the default room options
-            editroomDialog.show();
-        });
     });
+    function editQueue(queueId){
+        LoadRoomsTypes() // load in the default room options
+        editroomDialog.show();
+
+    }
 
     function LoadRoomsTypes() {
         jq('#rooms2').empty(); //resets the selector
