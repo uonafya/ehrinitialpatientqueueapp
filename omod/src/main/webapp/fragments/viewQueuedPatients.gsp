@@ -36,7 +36,8 @@
                 <td>${it.category}</td>
 
                 <td>
-                    <a href="${it.queueId}" id="editQueue" class="button task">Edit</a>
+                    <button onclick="editQueue(${it.queueId})" class="button task">Edit</button>
+
                 </td>
             </tr>
             <%}%>
