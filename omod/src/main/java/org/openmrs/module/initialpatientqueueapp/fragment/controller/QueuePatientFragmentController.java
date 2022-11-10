@@ -615,10 +615,8 @@ public class QueuePatientFragmentController {
 			}
 			
 			if (StringUtils.isNotBlank(toPaySettings) && Integer.parseInt(toPaySettings) == 0) {
-				System.out.println("The facility pays directly at the registration desk");
 				opdTestOrder.setBillingStatus(1);
 			} else if (StringUtils.isNotBlank(toPaySettings) && Integer.parseInt(toPaySettings) == 1) {
-				System.out.println("Patients have to go to the cashier to pay");
 				opdTestOrder.setBillingStatus(0);
 			}
 			Context.getService(PatientDashboardService.class).saveOrUpdateOpdOrder(opdTestOrder);

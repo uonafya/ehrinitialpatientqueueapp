@@ -20,14 +20,6 @@
 
 package org.openmrs.module.initialpatientqueueapp;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,9 +39,21 @@ import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.HospitalCoreService;
 import org.openmrs.module.hospitalcore.model.PatientSearch;
+import org.openmrs.module.hospitalcore.util.DateUtils;
 import org.openmrs.module.hospitalcore.util.GlobalPropertyUtil;
 import org.openmrs.module.hospitalcore.util.PatientUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 public class EhrRegistrationUtils {
 	
@@ -262,6 +266,47 @@ public class EhrRegistrationUtils {
 			hasSecondSpecialClinicVisit = true;
 		}
 		return hasSecondSpecialClinicVisit;
+	}
+	
+	public static Date requiredDate(Date date, Integer weight) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.MONTH, weight);
+		return calendar.getTime();
+		
+	}
+	
+	public static Date getPreviousVisitDate(Patient patient) {
+		List<Visit> visitList = Context.getVisitService().getVisitsByPatient(patient);
+		List<Visit> filteredVisits = new ArrayList<Visit>();
+		Date previousVisitDate = null;
+		
+		Date startDateToday = DateUtils.getStartOfDay(new Date());
+		//remove today's visit from a list of visits
+		for (Visit visit : visitList) {
+			if (!(visit.getStartDatetime().compareTo(startDateToday) >= 0)) {
+				filteredVisits.add(visit);
+			}
+		}
+		if (!filteredVisits.isEmpty()) {
+			orderedList(filteredVisits);
+			previousVisitDate = filteredVisits.get(filteredVisits.size() - 1).getStartDatetime();
+		}
+		return previousVisitDate;
+		
+	}
+	
+	public static List<Visit> orderedList(List<Visit> visitList) {
+		//sort them with the most recent one at the bottom
+		Collections.sort(visitList, new Comparator<Visit>() {
+			
+			public int compare(Visit v1, Visit v2) {
+				if (v1.getStartDatetime() == null || v2.getStartDatetime() == null)
+					return 0;
+				return v1.getStartDatetime().compareTo(v2.getStartDatetime());
+			}
+		});
+		return visitList;
 	}
 	
 }
