@@ -279,7 +279,7 @@ public class EhrRegistrationUtils {
 	public static Date getPreviousVisitDate(Patient patient) {
 		List<Visit> visitList = Context.getVisitService().getVisitsByPatient(patient);
 		List<Visit> filteredVisits = new ArrayList<Visit>();
-		Date previousVisitDate = null;
+		Date previousVisitDate = DateUtils.getStartOfDay(new Date());
 		
 		Date startDateToday = DateUtils.getStartOfDay(new Date());
 		//remove today's visit from a list of visits
