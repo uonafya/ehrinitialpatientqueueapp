@@ -1575,6 +1575,13 @@ a.tooltip span {
 }
 </style>
 <div id="content" class="container">
+    <div class="ke-panelbar" style="text-align: right">
+        <button type="button" onclick="openVisitSummary();"><img src="/openmrs/ms/uiframework/resource/kenyaui/images/buttons/admin_update.png"> Apply Sick Off</button>
+        <button id="fr3890" type="button">
+            <img src="/openmrs/ms/uiframework/resource/kenyaui/images/buttons/visit_end.png">
+            Book Appointment
+        </button>
+    </div>
     <form class="simple-form-ui" id="patientRegistrationForm" method="post">
         <table cellpadding="0" cellspacing="0" border="0">
             <tr>
