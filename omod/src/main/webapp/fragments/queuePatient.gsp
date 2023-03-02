@@ -1577,8 +1577,7 @@ a.tooltip span {
 <script type="text/javascript">
         function applySickOff() {
             console.log("Ready to apply")
-            window.location.href = ui.pageLink("initialpatientqueueapp", "sickOff", {
-            });
+            window.location.href = ui.pageLink("initialpatientqueueapp", "sickOff?patientId="+"${currentPatient}");
         }
 </script>
 <div id="content" class="container">
