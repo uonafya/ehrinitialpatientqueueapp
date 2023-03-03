@@ -1574,7 +1574,20 @@ a.tooltip span {
     box-shadow: 5px 5px 8px #CCC;
 }
 </style>
+<script type="text/javascript">
+        function applySickOff() {
+            console.log("Ready to apply")
+            window.location.href = ui.pageLink("initialpatientqueueapp", "sickOff?patientId="+"${currentPatient}");
+        }
+</script>
 <div id="content" class="container">
+    <div class="ke-panelbar" style="text-align: right">
+        <button type="button" onclick="applySickOff();"><img src="/openmrs/ms/uiframework/resource/kenyaui/images/buttons/admin_update.png"> Apply Sick Off</button>
+        <button id="fr3890" type="button">
+            <img src="/openmrs/ms/uiframework/resource/kenyaui/images/buttons/visit_end.png">
+            Book Appointment
+        </button>
+    </div>
     <form class="simple-form-ui" id="patientRegistrationForm" method="post">
         <table cellpadding="0" cellspacing="0" border="0">
             <tr>
