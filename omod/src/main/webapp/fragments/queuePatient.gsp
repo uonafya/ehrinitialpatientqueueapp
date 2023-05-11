@@ -1579,11 +1579,6 @@ a.tooltip span {
     box-shadow: 5px 5px 8px #CCC;
 }
 </style>
-<script type="text/javascript">
-        function applySickOff() {
-            window.location.href = ui.pageLink("initialpatientqueueapp", "sickOff", [patientId: currentPatient]);
-        }
-</script>
 <div id="content" class="container">
     <div class="ke-panelbar" style="text-align: right">
         <button type="button" onclick="ui.navigate('${ ui.pageLink("initialpatientqueueapp", "sickOff", [ patientId: currentPatient ])}')">
@@ -1737,10 +1732,10 @@ a.tooltip span {
                     </div>
                 </td>
             </tr>
-            <tr id="provider-tr">
+            <tr>
                 <td><label for="provider-to-visit">Provider(optional)</label></td>
                 <td>
-                    <div>
+                    <div id="provider-tr" style="display: none;">
                         <select id="provider-to-visit" name="providerToVisit">
                             <option value="">-Please select-</option>
                             <% listProviders.each { prod -> %>

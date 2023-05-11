@@ -72,9 +72,7 @@ form textarea:focus, .form textarea:focus{
 <div class="ke-page-content">
     <table cellpadding="0" cellspacing="0" border="0" width="100%">
         <tr>
-            <td width="30%" valign="top">
-                ${ ui.includeFragment("kenyaemr", "patient/patientSummary", [ patient: currentPatient ]) }
-            </td>
+            <td width="30%" valign="top"></td>
             <td valign="top" style="padding-left: 5px">
                 <div class="onepcssgrid-1000">
                 ${ ui.includeFragment("initialpatientqueueapp", "queuePatient", [patient: currentPatient])}

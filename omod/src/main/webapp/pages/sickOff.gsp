@@ -10,14 +10,13 @@
             [ label: "Back to home",
               iconProvider: "kenyaui",
               icon: "buttons/back.png",
-              href: ui.pageLink("initialpatientqueueapp", "patientCategory")
+              href: ui.pageLink("initialpatientqueueapp", "patientCategory", [patientId: currentPatient])
             ]
     ]
 %>
 
 <div class="ke-page-sidebar">
     ${ui.includeFragment("kenyaui", "widget/panelMenu", [heading: "Tasks", items: menuItems])}
-    ${ui.includeFragment("kenyaemr", "patient/patientSummary", [patient: patient])}
 </div>
 
 <div class="ke-page-content">

@@ -1,3 +1,26 @@
+<script type="text/javascript">
+
+    var jq = jQuery;
+    jq(function () {
+        jq("#details").DataTable();
+        var editroomDialog = emr.setupConfirmationDialog({
+                    dialogOpts: {
+                        overlayClose: false,
+                        close: true
+                    },
+                    selector: '#new-room-dialog',
+                    actions: {
+                        confirm: function () {
+                           console.log("The dialog worked");
+                        },
+                        cancel: function () {
+                            editroomDialog.close();
+                        }
+                    }
+                });
+    });
+
+</script>
 <div class="ke-panel-frame">
     <div class="ke-panel-heading">Scheduled Patients</div>
     <div class="ke-panel-content">
