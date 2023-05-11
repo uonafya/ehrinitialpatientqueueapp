@@ -1,7 +1,12 @@
 <%
     ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
     def menuItems = [
-            [ label: "View Queued Patients", extra: "Access queued patients for changes", iconProvider: "kenyaui", icon: "buttons/patient_add.png", href: ui.pageLink("initialpatientqueueapp", "viewQueuedPatients") ]
+            [
+            label: "View Queued Patients", extra: "Access queued patients for changes", iconProvider: "kenyaui", icon: "buttons/patient_add.png", href: ui.pageLink("initialpatientqueueapp", "viewQueuedPatients")
+            ],
+            [
+            label: "Appointments", extra: "Manage patient appointments", iconProvider: "kenyaui", icon: "buttons/visit_end.png", href: ui.pageLink("initialpatientqueueapp", "viewAppointments")
+            ]
     ]
 %>
 

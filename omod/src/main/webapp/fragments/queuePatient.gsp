@@ -789,6 +789,7 @@
                 jq("#specialClinic").val("");
                 jq("#specialClinicField").hide();
                 jq("#fileNumberField").hide();
+                jq("#provider-tr").show();
             }
             else {
                 jq("#triageField").hide();
@@ -804,10 +805,11 @@
                 jq("#specialClinic").val("");
                 jq("#specialClinicField").hide();
                 jq("#fileNumberField").hide();
-                jq("#provider-to-visit").show();
+                jq("#provider-tr").show();
             }
             else {
                 jq("#opdWardField").hide();
+                jq("#provider-tr").hide();
             }
         },
         specialClinicRoomCheck: function () {
@@ -820,11 +822,12 @@
                 jq("#opdWardField").hide();
                 jq("#specialClinicField").show();
                 jq("#fileNumberField").show();
-                jq("#provider-to-visit").show();
+                jq("#provider-tr").show();
             }
             else {
                 jq("#specialClinicField").hide();
                 jq("#fileNumberField").hide();
+                jq("#provider-tr").hide();
             }
         },
         /**CHECK MLC*/
@@ -1578,16 +1581,17 @@ a.tooltip span {
 </style>
 <script type="text/javascript">
         function applySickOff() {
-            console.log("Ready to apply")
-            window.location.href = ui.pageLink("initialpatientqueueapp", "sickOff?patientId="+"${currentPatient}");
+            window.location.href = ui.pageLink("initialpatientqueueapp", "sickOff", [patientId: currentPatient]);
         }
 </script>
 <div id="content" class="container">
     <div class="ke-panelbar" style="text-align: right">
-        <button type="button" onclick="applySickOff();"><img src="/openmrs/ms/uiframework/resource/kenyaui/images/buttons/admin_update.png"> Apply Sick Off</button>
-        <button id="fr3890" type="button">
-            <img src="/openmrs/ms/uiframework/resource/kenyaui/images/buttons/visit_end.png">
-            Book Appointment
+        <button type="button" onclick="ui.navigate('${ ui.pageLink("initialpatientqueueapp", "sickOff", [ patientId: currentPatient ])}')">
+                        <img src="${ ui.resourceLink("kenyaui", "images/buttons/admin_update.png") }" /> Apply Sick Off
+                    </button>
+
+        <button type="button" onclick="ui.navigate('${ ui.pageLink("initialpatientqueueapp", "viewAppointments", [ patientId: currentPatient ])}')">
+                <img src="${ ui.resourceLink("kenyaui", "images/buttons/visit_end.png") }" /> Book Appointment
         </button>
     </div>
     <form class="simple-form-ui" id="patientRegistrationForm" method="post">
@@ -1733,8 +1737,8 @@ a.tooltip span {
                     </div>
                 </td>
             </tr>
-            <tr id="provider-tr" style="display : none;">
-                <td><h2>Provider(optional)</h2></td>
+            <tr id="provider-tr">
+                <td><label for="provider-to-visit">Provider(optional)</label></td>
                 <td>
                     <div>
                         <select id="provider-to-visit" name="providerToVisit">
