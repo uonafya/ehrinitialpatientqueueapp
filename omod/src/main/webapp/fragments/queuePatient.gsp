@@ -804,6 +804,7 @@
                 jq("#specialClinic").val("");
                 jq("#specialClinicField").hide();
                 jq("#fileNumberField").hide();
+                jq("#provider-to-visit").show();
             }
             else {
                 jq("#opdWardField").hide();
@@ -819,6 +820,7 @@
                 jq("#opdWardField").hide();
                 jq("#specialClinicField").show();
                 jq("#fileNumberField").show();
+                jq("#provider-to-visit").show();
             }
             else {
                 jq("#specialClinicField").hide();
@@ -1728,6 +1730,19 @@ a.tooltip span {
                     <div class="col4 last">
                         <field><input type="text" id="rooms3" name="rooms3" value="N/A" placeholder="FILE NUMBER"
                                       readonly=""/></field>
+                    </div>
+                </td>
+            </tr>
+            <tr id="provider-tr" style="display : none;">
+                <td><h2>Provider(optional)</h2></td>
+                <td>
+                    <div>
+                        <select id="provider-to-visit" name="providerToVisit">
+                            <option value="">-Please select-</option>
+                            <% listProviders.each { prod -> %>
+                            <option value="${prod.providerId }">${prod.names}</option>
+                            <% } %>
+                        </select>
                     </div>
                 </td>
             </tr>

@@ -105,7 +105,7 @@ public class RegistrationWebUtils {
 	 * @param revisit
 	 */
 	public static void sendPatientToOPDQueue(Patient patient, Concept selectedOPDConcept, boolean revisit,
-	        String selectedCategory) {
+	        String selectedCategory, Provider provider) {
 		Concept visitStatus = null;
 		if (!revisit) {
 			visitStatus = Context.getConceptService().getConceptByUuid("164144AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -133,6 +133,11 @@ public class RegistrationWebUtils {
 			//queue.setReferralConceptName(referralConcept.getName().getName());
 			queue.setSex(patient.getGender());
 			queue.setCategory(selectedCategory);
+			if (provider == null) {
+				queue.setProvider("");
+			} else {
+				queue.setProvider(provider.getIdentifier());
+			}
 			queue.setVisitStatus(visitStatus.getName().getName());
 			PatientQueueService queueService = Context.getService(PatientQueueService.class);
 			queueService.saveOpdPatientQueue(queue);

@@ -12,16 +12,7 @@ package org.openmrs.module.initialpatientqueueapp.fragment.controller;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Concept;
-import org.openmrs.ConceptAnswer;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
-import org.openmrs.PersonAttribute;
-import org.openmrs.PersonAttributeType;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
@@ -42,6 +33,7 @@ import org.openmrs.module.hospitalcore.model.PatientServiceBillItem;
 import org.openmrs.module.hospitalcore.util.GlobalPropertyUtil;
 import org.openmrs.module.initialpatientqueueapp.EhrRegistrationUtils;
 import org.openmrs.module.initialpatientqueueapp.InitialPatientQueueConstants;
+import org.openmrs.module.initialpatientqueueapp.model.ProviderSimplifier;
 import org.openmrs.module.initialpatientqueueapp.web.controller.utils.RegistrationWebUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.UiUtils;
@@ -56,12 +48,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 4 Fragment to process the queueing information for a patient return processed patients
@@ -134,12 +121,33 @@ public class QueuePatientFragmentController {
 		model.addAttribute("userLocation", kenyaEmrService.getDefaultLocation().getName());
 		model.addAttribute("receiptDate", new Date());
 		
+		List<Provider> allProvidersList = Context.getProviderService().getAllProviders();
+		List<ProviderSimplifier> simplifiedProviderList = new ArrayList<ProviderSimplifier>();
+		ProviderSimplifier providerSimplifier;
+		
+		for (Provider provider : allProvidersList) {
+			providerSimplifier = new ProviderSimplifier();
+			providerSimplifier.setProviderId(provider.getProviderId());
+			providerSimplifier.setIdentifier(provider.getIdentifier());
+			providerSimplifier.setPersonId(provider.getPerson().getPersonId());
+			if (!(Context.getUserService().getUsersByPerson(provider.getPerson(), false).isEmpty())) {
+				providerSimplifier.setUserId(Context.getUserService().getUsersByPerson(provider.getPerson(), false).get(0)
+				        .getUserId());
+			}
+			providerSimplifier.setNames(provider.getIdentifier() + "-" + provider.getPerson().getGivenName() + " "
+			        + provider.getPerson().getFamilyName());
+			simplifiedProviderList.add(providerSimplifier);
+		}
+		
+		model.addAttribute("listProviders", simplifiedProviderList);
+		
 	}
 	
 	public String post(HttpServletRequest request, PageModel model, UiUtils uiUtils, HttpServletResponse response,
 	        @RequestParam("patientId") Patient patient, @RequestParam("paym_1") String paymentCategory,
 	        @RequestParam(value = "rooms1", required = false) String room1Options,
 	        @RequestParam(value = "rooms2", required = false) String department,
+	        @RequestParam(value = "providerToVisit", required = false) Provider provider,
 	        @RequestParam(value = "rooms3", required = false) String fileNumber) throws IOException, ParseException {
 		
 		Map<String, String> parameters = RegistrationWebUtils.optimizeParameters(request);
@@ -158,7 +166,7 @@ public class QueuePatientFragmentController {
 			savePatientSearch(patient);
 			// create encounter for the visit here
 			Visit visit = hasActiveVisit(patientVisit, patient);
-			Encounter encounter = createEncounter(patient, parameters, visit);
+			Encounter encounter = createEncounter(patient, parameters, visit, provider);
 			//save the encounter here
 			Context.getEncounterService().saveEncounter(encounter);
 			//save patient details categories
@@ -191,7 +199,8 @@ public class QueuePatientFragmentController {
 	 * @param parameters
 	 * @return
 	 */
-	private Encounter createEncounter(Patient patient, Map<String, String> parameters, Visit visit) throws ParseException {
+	private Encounter createEncounter(Patient patient, Map<String, String> parameters, Visit visit, Provider provider)
+	        throws ParseException {
 		int rooms1 = Integer.parseInt(parameters.get("rooms1"));
 		int paymt1 = Integer.parseInt(parameters.get("paym_1"));
 		int paymt2 = Integer.parseInt(parameters.get("paym_2"));
@@ -301,7 +310,7 @@ public class QueuePatientFragmentController {
 			opdObs.setConcept(opdConcept);
 			opdObs.setValueCoded(selectedOPDConcept);
 			encounterObs.addObs(opdObs);
-			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedOPDConcept, hasRevisits(patient), paymt3);
+			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedOPDConcept, hasRevisits(patient), paymt3, provider);
 			
 		}
 		if (StringUtils.isNotBlank(sNSpecial)) {
@@ -312,7 +321,8 @@ public class QueuePatientFragmentController {
 			opdObs.setConcept(specialClinicConcept);
 			opdObs.setValueCoded(selectedSpecialClinicConcept);
 			encounterObs.addObs(opdObs);
-			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedSpecialClinicConcept, hasRevisits(patient), paymt3);
+			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedSpecialClinicConcept, hasRevisits(patient), paymt3,
+			    provider);
 		}
 		
 		//if mlc is not empty then is a mlc otherwise NOT an mlc
