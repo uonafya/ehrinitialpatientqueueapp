@@ -263,14 +263,14 @@
 		<reportingVersion>0.9.8.1</reportingVersion>
 		<serializationxstreamVersion>0.2.7</serializationxstreamVersion>
 		<uiframeworkVersion>3.8</uiframeworkVersion>
-		<kenyacoreVersion>2.4.1</kenyacoreVersion>
-		<kenyauiVersion>2.1.1</kenyauiVersion>
-		<kenyaemrVersion>17.0.3</kenyaemrVersion>
+		<kenyacoreVersion>3.0.1</kenyacoreVersion>
+		<kenyauiVersion>3.0.0</kenyauiVersion>
+		<kenyaemrVersion>18.5.1</kenyaemrVersion>
 		<jodaTimeVersion>2.9.1</jodaTimeVersion>
 		<webservices.restVersion>2.1</webservices.restVersion>
 		<hospitalcoreVersion>2.0.3-SNAPSHOT</hospitalcoreVersion>
 		<ehrconfigsVersion>2.0.1-SNAPSHOT</ehrconfigsVersion>
 		<legacyUiVersion>1.5.0</legacyUiVersion>
-		<ehrcashierVersion>2.0.0</ehrcashierVersion>
+		<ehrcashierVersion>2.0.1-SNAPSHOT</ehrcashierVersion>
     </properties>
 </project>

@@ -38,7 +38,7 @@ public class SickOffPageController {
 		
 		try {
 			Context.getService(HospitalCoreService.class).savePatientSickOff(sickOff);
-
+			
 		}
 		catch (Exception e) {
 			e.printStackTrace();
