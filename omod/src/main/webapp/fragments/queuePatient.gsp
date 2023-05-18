@@ -1735,7 +1735,7 @@ a.tooltip span {
             <tr>
                 <td><label for="provider-to-visit">Provider(optional)</label></td>
                 <td>
-                    <div id="provider-tr" style="display: none;">
+                    <div id="provider-tr">
                         <select id="provider-to-visit" name="providerToVisit">
                             <option value="">-Please select-</option>
                             <% listProviders.each { prod -> %>

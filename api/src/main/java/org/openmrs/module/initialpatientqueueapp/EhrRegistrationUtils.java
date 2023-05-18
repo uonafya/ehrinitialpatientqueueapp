@@ -23,21 +23,14 @@ package org.openmrs.module.initialpatientqueueapp;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Concept;
-import org.openmrs.Location;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
-import org.openmrs.PatientIdentifierType;
-import org.openmrs.Person;
-import org.openmrs.PersonAddress;
-import org.openmrs.PersonAttribute;
-import org.openmrs.PersonAttributeType;
-import org.openmrs.PersonName;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.hospitalcore.EhrAppointmentService;
 import org.openmrs.module.hospitalcore.HospitalCoreService;
+import org.openmrs.module.hospitalcore.model.EhrAppointmentBlock;
+import org.openmrs.module.hospitalcore.model.EhrAppointmentType;
+import org.openmrs.module.hospitalcore.model.EhrTimeSlot;
 import org.openmrs.module.hospitalcore.model.PatientSearch;
 import org.openmrs.module.hospitalcore.util.DateUtils;
 import org.openmrs.module.hospitalcore.util.GlobalPropertyUtil;
@@ -46,14 +39,7 @@ import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class EhrRegistrationUtils {
 	
@@ -307,6 +293,60 @@ public class EhrRegistrationUtils {
 			}
 		});
 		return visitList;
+	}
+	
+	public static Date formatDateFromStringWithTime(String date) throws ParseException {
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm a").parse(date);
+	}
+	
+	public static EhrTimeSlot getAppointmentTimeSlot(Date startDate, Date endDate, Provider provider, Location location,
+	        EhrAppointmentType type) {
+		EhrTimeSlot timeSlot = new EhrTimeSlot();
+		timeSlot.setStartDate(startDate);
+		timeSlot.setEndDate(endDate);
+		timeSlot.setCreator(Context.getAuthenticatedUser());
+		timeSlot.setDateCreated(new Date());
+		
+		//add an appointment block
+		timeSlot.setAppointmentBlock(getAppointmentBlock(startDate, endDate, provider, location, type));
+		
+		return timeSlot;
+	}
+	
+	public static EhrAppointmentBlock getAppointmentBlock(Date startDate, Date endDate, Provider provider,
+	        Location location, EhrAppointmentType type) {
+		Set<EhrAppointmentType> appointmentTypeSet = new HashSet<EhrAppointmentType>();
+		appointmentTypeSet.add(type);
+		
+		EhrAppointmentBlock appointmentBlock = new EhrAppointmentBlock();
+		appointmentBlock.setStartDate(startDate);
+		appointmentBlock.setEndDate(endDate);
+		appointmentBlock.setProvider(provider);
+		appointmentBlock.setLocation(location);
+		appointmentBlock.setTypes(appointmentTypeSet);
+		appointmentBlock.setCreator(Context.getAuthenticatedUser());
+		appointmentBlock.setDateCreated(new Date());
+		return appointmentBlock;
+	}
+	
+	public static EhrAppointmentType getDefaultAppointmentType() {
+		EhrAppointmentService service = Context.getService(EhrAppointmentService.class);
+		EhrAppointmentType appointmentType = service
+		        .getEhrAppointmentTypeByUuid("BotswanaEmrConstants.REGULAR_FOLLOW_UP_APPOINTMENT_TYPE");
+		if (appointmentType == null) {
+			appointmentType = createDefaultAppointmentType(service);
+		}
+		return appointmentType;
+	}
+	
+	private static EhrAppointmentType createDefaultAppointmentType(EhrAppointmentService service) {
+		EhrAppointmentType appointmentType = new EhrAppointmentType();
+		appointmentType.setUuid("BotswanaEmrConstants.REGULAR_FOLLOW_UP_APPOINTMENT_TYPE");
+		appointmentType.setName("Regular follow up appointment");
+		appointmentType.setDescription("Regular follow up appointment type");
+		appointmentType.setDuration(10);
+		
+		return service.saveEhrAppointmentType(appointmentType);
 	}
 	
 }

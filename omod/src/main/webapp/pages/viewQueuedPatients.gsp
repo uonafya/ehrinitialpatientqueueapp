@@ -1,13 +1,14 @@
 <%
     ui.decorateWith("kenyaemr", "standardPage", [layout: "sidebar"])
     ui.includeJavascript("ehrconfigs", "jquery.dataTables.min.js")
-    ui.includeCss("ehrconfigs", "jquery.dataTables.min.css")
-    ui.includeCss("ehrconfigs", "bootstrap.min.js")
+    ui.includeJavascript("ehrconfigs", "bootstrap.min.js")
     ui.includeJavascript("ehrconfigs", "emr.js")
+    ui.includeJavascript("ehrconfigs", "jquery.simplemodal.1.4.4.min.js")
+    ui.includeCss("ehrconfigs", "jquery.dataTables.min.css")
     ui.includeCss("ehrconfigs", "onepcssgrid.css")
     ui.includeCss("ehrconfigs", "custom.css")
     ui.includeCss("ehrconfigs", "referenceapplication.css")
-    ui.includeJavascript("ehrconfigs", "jquery.simplemodal.1.4.4.min.js")
+
 
     def menuItems = [
             [label: "Back to home", iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to home", href: ui.pageLink("initialpatientqueueapp", "patientQueueHome")]

@@ -27,8 +27,8 @@ import java.util.List;
 @AppPage(InitialPatientQueueConstants.APP_PATIENT_QUEUE)
 public class TriageQueuePageController {
 	
-	public String get(@RequestParam("app") AppDescriptor appDescriptor, UiSessionContext sessionContext, PageModel model,
-	        HttpSession session, PageRequest pageRequest, UiUtils ui) {
+	public String get(@RequestParam("app") AppDescriptor appDescriptor, PageModel model, HttpSession session,
+	        PageRequest pageRequest, UiUtils ui) {
 		
 		model.addAttribute("afterSelectedUrl", appDescriptor.getConfig().get("onSelectUrl").getTextValue());
 		User usr = Context.getAuthenticatedUser();

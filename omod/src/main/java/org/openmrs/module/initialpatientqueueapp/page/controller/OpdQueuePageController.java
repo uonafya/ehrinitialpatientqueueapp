@@ -23,8 +23,8 @@ import java.util.List;
 @AppPage(InitialPatientQueueConstants.APP_PATIENT_QUEUE)
 public class OpdQueuePageController {
 	
-	public String get(@RequestParam(value = "currentApp", required = false) AppDescriptor appDescriptor,
-	        UiSessionContext sessionContext, PageModel model, UiUtils ui, HttpSession session, PageRequest pageRequest) {
+	public String get(@RequestParam(value = "currentApp", required = false) AppDescriptor appDescriptor, PageModel model,
+	        UiUtils ui, HttpSession session, PageRequest pageRequest) {
 		
 		User usr = Context.getAuthenticatedUser();
 		model.addAttribute("title", "OPD Queue");

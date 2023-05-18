@@ -26,44 +26,43 @@
     <div class="ke-panel-content">
         <table border="0" cellpadding="0" cellspacing="0" id="details" width="100%">
             <thead>
-            <tr>
-                <th>Visit Date</th>
-                <th>Patient Identifier</th>
-                <th>Patient Names</th>
-                <th>Sex</th>
-                <th>Visit status</th>
-                <th>Service point</th>
-                <th>Request status</th>
-                <th>Patient Category</th>
-                <th>Actions</th>
-            </tr>
+                <tr>
+                    <th>Visit Date</th>
+                    <th>Patient Identifier</th>
+                    <th>Patient Names</th>
+                    <th>Sex</th>
+                    <th>Visit status</th>
+                    <th>Service point</th>
+                    <th>Request status</th>
+                    <th>Patient Category</th>
+                    <th>Actions</th>
+                </tr>
             </thead>
             <tbody>
-            <% if (viewQueuedPatientsList.empty) { %>
-            <tr>
-                <td colspan="10">
-                    No records found for specified period
-                </td>
-            </tr>
-            <% } %>
-            <% if (viewQueuedPatientsList) { %>
-            <% viewQueuedPatientsList.each {%>
-            <tr>
-                <td>${it.visitDate}</td>
-                <td>${it.patientIdentifier}</td>
-                <td>${it.patientNames}</td>
-                <td>${it.sex}</td>
-                <td>${it.visitStatus}</td>
-                <td>${it.serviceConceptName}</td>
-                <td>${it.status}</td>
-                <td>${it.category}</td>
-
-                <td>
-                    <a href="${it.queueId}" id="editQueue" class="button task">Edit</a>
-                </td>
-            </tr>
-            <%}%>
-            <%}%>
+                <% if (viewQueuedPatientsList.empty) { %>
+                    <tr>
+                        <td colspan="9">
+                            No records found for specified period
+                        </td>
+                    </tr>
+                <% } %>
+                <% if (viewQueuedPatientsList) { %>
+                    <% viewQueuedPatientsList.each {%>
+                        <tr>
+                            <td>${it.visitDate}</td>
+                            <td>${it.patientIdentifier}</td>
+                            <td>${it.patientNames}</td>
+                            <td>${it.sex}</td>
+                            <td>${it.visitStatus}</td>
+                            <td>${it.serviceConceptName}</td>
+                            <td>${it.status}</td>
+                            <td>${it.category}</td>
+                            <td>
+                                <a href="${it.queueId}" id="editQueue" class="button task">Edit</a>
+                            </td>
+                        </tr>
+                    <%}%>
+                <%}%>
             </tbody>
         </table>
         <div id="new-room-dialog" class="dialog" style="display:none;">
@@ -74,8 +73,12 @@
             </div>
 
             <div class="dialog-content">
-                <table>
-                    <tr><td colspan="2"><h2>Room to Visit</h2></td></tr>
+                <table border="0">
+                    <tr>
+                        <td colspan="2">
+                            <h2>Room to Visit</h2>
+                        </td>
+                    </tr>
                     <tr>
 
                         <div class="onerow" style="margin-top:10px;">

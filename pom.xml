@@ -140,38 +140,26 @@
 			<dependency>
 				<groupId>org.openmrs.module</groupId>
 				<artifactId>webservices.rest-omod</artifactId>
-				<version>${webservicesRestVersion}</version>
-				<type>jar</type>
+				<version>${webservices.restVersion}</version>
 				<scope>provided</scope>
 			</dependency>
-
 			<dependency>
 				<groupId>org.openmrs.module</groupId>
 				<artifactId>webservices.rest-omod-common</artifactId>
-				<version>${webservicesRestVersion}</version>
+				<version>${webservices.restVersion}</version>
 				<scope>provided</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>org.openmrs.module</groupId>
-				<artifactId>webservices.rest-omod-1.8</artifactId>
-				<version>${webservicesRestVersion}</version>
-				<scope>provided</scope>
-			</dependency>
-
-
-			<dependency>
-				<groupId>org.openmrs.module</groupId>
-				<artifactId>webservices.rest-omod-common</artifactId>
-				<version>${webservicesRestVersion}</version>
-				<classifier>tests</classifier>
-				<scope>test</scope>
+				<type>test-jar</type>
 			</dependency>
 			<dependency>
 				<groupId>org.openmrs.module</groupId>
 				<artifactId>ehrcashier-api</artifactId>
 				<version>${ehrcashierVersion}</version>
 				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>1.18.22</version>
 			</dependency>
 			<!-- End OpenMRS modules -->
 
@@ -267,7 +255,7 @@
 		<kenyauiVersion>3.0.0</kenyauiVersion>
 		<kenyaemrVersion>18.5.1</kenyaemrVersion>
 		<jodaTimeVersion>2.9.1</jodaTimeVersion>
-		<webservices.restVersion>2.1</webservices.restVersion>
+		<webservices.restVersion>2.29.0</webservices.restVersion>
 		<hospitalcoreVersion>2.0.3-SNAPSHOT</hospitalcoreVersion>
 		<ehrconfigsVersion>2.0.1-SNAPSHOT</ehrconfigsVersion>
 		<legacyUiVersion>1.5.0</legacyUiVersion>
