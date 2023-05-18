@@ -23,7 +23,23 @@ package org.openmrs.module.initialpatientqueueapp;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.*;
+import org.joda.time.DateTime;
+import org.joda.time.Hours;
+import org.joda.time.Minutes;
+import org.joda.time.Seconds;
+import org.openmrs.Concept;
+import org.openmrs.Location;
+import org.openmrs.Obs;
+import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
+import org.openmrs.PatientIdentifierType;
+import org.openmrs.Person;
+import org.openmrs.PersonAddress;
+import org.openmrs.PersonAttribute;
+import org.openmrs.PersonAttributeType;
+import org.openmrs.PersonName;
+import org.openmrs.Provider;
+import org.openmrs.Visit;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.EhrAppointmentService;
@@ -39,7 +55,16 @@ import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 public class EhrRegistrationUtils {
 	
@@ -347,6 +372,34 @@ public class EhrRegistrationUtils {
 		appointmentType.setDuration(10);
 		
 		return service.saveEhrAppointmentType(appointmentType);
+	}
+	
+	/**
+	 * Calculates the days since the given date
+	 * 
+	 * @param date1 the date
+	 * @param date2 the date2
+	 * @return the number of days
+	 */
+	public static String unitsSince(Date date1, Date date2) {
+		int valueHours = 0;
+		int valueMinutes = 0;
+		int valueSeconds = 0;
+		String diff = "";
+		DateTime d1 = new DateTime(date1.getTime());
+		DateTime d2 = new DateTime(date2.getTime());
+		valueHours = Math.abs(Hours.hoursBetween(d1, d2).getHours());
+		valueMinutes = Math.abs(Minutes.minutesBetween(d1, d2).getMinutes());
+		valueSeconds = Math.abs(Seconds.secondsBetween(d1, d2).getSeconds());
+		if (valueHours > 0) {
+			diff = valueHours + " Hrs";
+		} else if (valueHours == 0 && valueMinutes > 0) {
+			diff = valueMinutes + " Min";
+		} else if (valueHours == 0 && valueMinutes == 0 && valueSeconds > 0) {
+			diff = valueSeconds + " Sec";
+		}
+		
+		return diff;
 	}
 	
 }

@@ -5,16 +5,21 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.PatientQueueService;
 import org.openmrs.module.hospitalcore.model.OpdPatientQueue;
 import org.openmrs.module.hospitalcore.model.TriagePatientQueue;
+import org.openmrs.module.hospitalcore.util.HospitalCoreUtils;
 import org.openmrs.module.initialpatientqueueapp.EhrRegistrationUtils;
 import org.openmrs.module.initialpatientqueueapp.model.ViewQueuedPatients;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class ViewQueuedPatientsFragmentController {
+	
+	DateFormat formatter = new SimpleDateFormat("hh:mm:ss a");
 	
 	public void controller(FragmentModel model) {
 		List<ViewQueuedPatients> viewQueuedPatientsList = new ArrayList<ViewQueuedPatients>();
@@ -41,6 +46,11 @@ public class ViewQueuedPatientsFragmentController {
 				viewQueuedTriagePatients.setVisitStatus(triagePatientQueue.getVisitStatus());
 				viewQueuedTriagePatients.setServiceConceptName(triagePatientQueue.getTriageConceptName());
 				viewQueuedTriagePatients.setCategory(triagePatientQueue.getCategory());
+				viewQueuedTriagePatients.setStartTime(formatter.format(triagePatientQueue.getCreatedOn()));
+				viewQueuedTriagePatients.setDuration(EhrRegistrationUtils.unitsSince(new Date(),
+				    triagePatientQueue.getCreatedOn()));
+				viewQueuedTriagePatients.setProvider(HospitalCoreUtils.getProviderNames(viewQueuedTriagePatients
+				        .getProvider()));
 				
 				viewQueuedPatientsList.add(viewQueuedTriagePatients);
 				
@@ -58,6 +68,10 @@ public class ViewQueuedPatientsFragmentController {
 				viewQueuedOpdPatients.setVisitStatus(opdPatientQueue.getVisitStatus());
 				viewQueuedOpdPatients.setServiceConceptName(opdPatientQueue.getOpdConceptName());
 				viewQueuedOpdPatients.setCategory(opdPatientQueue.getCategory());
+				viewQueuedOpdPatients.setStartTime(formatter.format(opdPatientQueue.getCreatedOn()));
+				viewQueuedOpdPatients
+				        .setDuration(EhrRegistrationUtils.unitsSince(new Date(), opdPatientQueue.getCreatedOn()));
+				viewQueuedOpdPatients.setProvider(HospitalCoreUtils.getProviderNames(opdPatientQueue.getProvider()));
 				
 				viewQueuedPatientsList.add(viewQueuedOpdPatients);
 				

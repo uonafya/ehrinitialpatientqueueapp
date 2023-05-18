@@ -123,4 +123,34 @@ public class ViewQueuedPatients {
 	private String referralConceptName;
 	
 	private String serviceConceptName;
+	
+	private String startTime;
+	
+	public String getStartTime() {
+		return startTime;
+	}
+	
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+	
+	public String getDuration() {
+		return duration;
+	}
+	
+	public void setDuration(String duration) {
+		this.duration = duration;
+	}
+	
+	public String getProvider() {
+		return provider;
+	}
+	
+	public void setProvider(String provider) {
+		this.provider = provider;
+	}
+	
+	private String duration;
+	
+	private String provider;
 }

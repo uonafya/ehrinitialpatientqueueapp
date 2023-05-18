@@ -18,6 +18,10 @@
                         }
                     }
                 });
+          jq('#details tbody').on( 'click', 'tr', function () {
+                      alert("Looking froward to edit this record");
+                      jq("#new-room-dialog").show();
+                  } );
     });
 
 </script>
@@ -27,13 +31,16 @@
         <table border="0" cellpadding="0" cellspacing="0" id="details" width="100%">
             <thead>
                 <tr>
+                    <th>Queue Id</th>
                     <th>Visit Date</th>
                     <th>Patient Identifier</th>
                     <th>Patient Names</th>
                     <th>Sex</th>
                     <th>Visit status</th>
                     <th>Service point</th>
-                    <th>Request status</th>
+                    <th>Requested time</th>
+                    <th>Time taken</th>
+                    <th>Assigned Provider</th>
                     <th>Patient Category</th>
                     <th>Actions</th>
                 </tr>
@@ -41,7 +48,7 @@
             <tbody>
                 <% if (viewQueuedPatientsList.empty) { %>
                     <tr>
-                        <td colspan="9">
+                        <td colspan="11">
                             No records found for specified period
                         </td>
                     </tr>
@@ -49,16 +56,19 @@
                 <% if (viewQueuedPatientsList) { %>
                     <% viewQueuedPatientsList.each {%>
                         <tr>
+                            <td>${it.queueId}</td>
                             <td>${it.visitDate}</td>
                             <td>${it.patientIdentifier}</td>
                             <td>${it.patientNames}</td>
                             <td>${it.sex}</td>
                             <td>${it.visitStatus}</td>
                             <td>${it.serviceConceptName}</td>
-                            <td>${it.status}</td>
+                            <td>${it.startTime}</td>
+                            <td>${it.duration}</td>
+                            <td>${it.provider}</td>
                             <td>${it.category}</td>
                             <td>
-                                <a href="${it.queueId}" id="editQueue" class="button task">Edit</a>
+                                <button id="editQueue" class="button task">Edit</button>
                             </td>
                         </tr>
                     <%}%>
@@ -73,6 +83,7 @@
             </div>
 
             <div class="dialog-content">
+            <input type="text" id="queueValue" />
                 <table border="0">
                     <tr>
                         <td colspan="2">
