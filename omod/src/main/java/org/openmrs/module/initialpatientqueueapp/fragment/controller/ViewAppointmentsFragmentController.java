@@ -20,7 +20,6 @@ import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 
 import java.text.ParseException;
 import java.time.Instant;
@@ -37,7 +36,7 @@ public class ViewAppointmentsFragmentController {
 	public void controller(@SpringBean FragmentModel model) {
 		model.addAttribute("location", Context.getService(KenyaEmrService.class).getDefaultLocation());
 		model.addAttribute("events", this.getCalenderEventsForProvider());
-		model.addAttribute("taskAppointmentPatient", this.getAppointmentTaskPatient());
+		//model.addAttribute("taskAppointmentPatient", this.getAppointmentTaskPatient());
 	}
 	
 	public String createAppointment(@RequestParam(value = "appointmentDate", required = false) String appointmentDate,
@@ -116,26 +115,24 @@ public class ViewAppointmentsFragmentController {
 	}
 	
 	private Patient getAppointmentTaskPatient() {
-		String patientUuid = Context.getAdministrationService().getGlobalProperty(
-		    "BotswanaEmrConstants.TASK_APPOINTMENT_PATIENT_UUID", "Unknown");
-		if (patientUuid.equals("Unknown")) {
-			// Not configured
-			log.error("please configure appointment task patient via GP property {}",
-			    "BotswanaEmrConstants.TASK_APPOINTMENT_PATIENT_UUID");
-			throw new ObjectNotFoundException();
-		}
-		Patient fakePatient = Context.getPatientService().getPatientByUuid(patientUuid);
+		String patientUuid1 = Context.getPatientService().getPatient(1).getPerson().getUuid();
+		System.out.println("uuid one is >>" + patientUuid1);
+		
+		String patientUuid2 = Context.getPatientService().getAllPatients().get(0).getPerson().getUuid();
+		
+		Patient fakePatient = Context.getPatientService().getPatientByUuid(patientUuid1);
+		System.out.println("uuid two is >>" + patientUuid2);
 		
 		if (fakePatient == null) {
-			throw new ObjectNotFoundException();
+			fakePatient = Context.getPatientService().getPatientByUuid(patientUuid2);
 		}
+		System.out.println("We got this patient out >>" + fakePatient);
 		return fakePatient;
 	}
 	
 	private EhrAppointmentType getTaskAppointmentType() {
 		EhrAppointmentService service = Context.getService(EhrAppointmentService.class);
-		EhrAppointmentType appointmentType = service
-		        .getEhrAppointmentTypeByUuid("BotswanaEmrConstants.TASK_APPOINTMENT_TYPE");
+		EhrAppointmentType appointmentType = service.getEhrAppointmentTypeByUuid("3304E4C0-620C-483F-94EB-BD67E730CD18");
 		if (appointmentType == null) {
 			appointmentType = createTaskAppointmentType(service);
 		}
@@ -144,10 +141,10 @@ public class ViewAppointmentsFragmentController {
 	
 	private EhrAppointmentType createTaskAppointmentType(EhrAppointmentService service) {
 		EhrAppointmentType taskAppointmentType = new EhrAppointmentType();
-		taskAppointmentType.setUuid("BotswanaEmrConstants.TASK_APPOINTMENT_TYPE");
-		taskAppointmentType.setName("Task appointment");
-		taskAppointmentType.setDescription("Task appointment type");
-		taskAppointmentType.setDuration(20);
+		taskAppointmentType.setUuid("3304E4C0-620C-483F-94EB-BD67E730CD18");
+		taskAppointmentType.setName("Normal appointment");
+		taskAppointmentType.setDescription("Regular appointment type used in a facility");
+		taskAppointmentType.setDuration(30);
 		
 		return service.saveEhrAppointmentType(taskAppointmentType);
 	}
@@ -171,7 +168,7 @@ public class ViewAppointmentsFragmentController {
 		List<ScheduleFragmentController.Event> events = new ArrayList<ScheduleFragmentController.Event>();
 		for (EhrAppointment appointment : this.getAppointmentsByLoggedInProvider()) {
 			ScheduleFragmentController.Event event = new ScheduleFragmentController.Event();
-			if (appointment.getAppointmentType().getUuid().equals("BotswanaEmrConstants.TASK_APPOINTMENT_TYPE")) {
+			if (appointment.getAppointmentType().getUuid().equals("3304E4C0-620C-483F-94EB-BD67E730CD18")) {
 				event.setTitle(appointment.getReason());
 			} else {
 				event.setTitle(appointment.getPatient().getPerson().getPersonName().getFullName());

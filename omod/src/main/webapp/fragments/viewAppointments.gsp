@@ -4,6 +4,7 @@
     ui.includeJavascript("initialpatientqueueapp", "jquery.timepicker.min.js")
     ui.includeJavascript("initialpatientqueueapp", "jquery-ui-1.13.1.min.js")
     ui.includeJavascript("initialpatientqueueapp", "jquery.autocomplete.min.js")
+
     ui.includeCss("initialpatientqueueapp", "jquery-ui-1.13.1.min.css")
     ui.includeCss("initialpatientqueueapp", "calendar/calendar-main.css")
     ui.includeCss("initialpatientqueueapp", "jquery.timepicker.min.css")

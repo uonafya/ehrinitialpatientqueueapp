@@ -2,7 +2,7 @@
 
     var jq = jQuery;
     jq(function () {
-        jq("#details").DataTable();
+       var table = jq("#details").DataTable();
         var editroomDialog = emr.setupConfirmationDialog({
                     dialogOpts: {
                         overlayClose: false,
@@ -11,18 +11,31 @@
                     selector: '#new-room-dialog',
                     actions: {
                         confirm: function () {
-                           console.log("The dialog worked");
+                           updateQueue();
                         },
                         cancel: function () {
-                            editroomDialog.close();
+                            location.reload();
                         }
                     }
                 });
           jq('#details tbody').on( 'click', 'tr', function () {
-                      alert("Looking froward to edit this record");
+                      var trData = table.row(this).data();
+                      jq("#queueValue").val(trData[0])
+                      jq("#servicePointValue").val(trData[6])
                       jq("#new-room-dialog").show();
-                  } );
+          });
     });
+    function updateQueue() {
+        jq.getJSON('${ ui.actionLink("initialpatientqueueapp", "viewQueuedPatients", "updatePatientQueue") }', {
+            queueId:jq("#queueValue").val(),
+            servicePoint: jq("#servicePointValue").val(),
+            rooms2: jq("#rooms2").val(),
+            rooms1: jq("#rooms1").val(),
+        }).success(function(data) {
+            jq().toastmessage('showSuccessToast', "Patient's Queue updated successfully");
+            location.reload();
+        });
+  }
 
 </script>
 <div class="ke-panel-frame">
@@ -75,85 +88,92 @@
                 <%}%>
             </tbody>
         </table>
-        <div id="new-room-dialog" class="dialog" style="display:none;">
-            <div class="dialog-header">
-                <i class="icon-folder-open"></i>
+</div>
+</div>
+<div id="new-room-dialog" class="dialog" style="display:none;">
+    <div class="dialog-header">
+        <i class="icon-folder-open"></i>
+        <h3>Edit Patient Service Point</h3>
+    </div>
 
-                <h3>Edit Patient Service Point</h3>
-            </div>
+    <div class="dialog-content">
+    <input type="text" id="queueValue" />
+    <input type="text" id="servicePointValue" />
+        <table border="0">
+            <tr>
+                <td colspan="2">
+                    <h2>Room to Visit</h2>
+                </td>
+            </tr>
+            <tr>
 
-            <div class="dialog-content">
-            <input type="text" id="queueValue" />
-                <table border="0">
-                    <tr>
-                        <td colspan="2">
-                            <h2>Room to Visit</h2>
-                        </td>
-                    </tr>
-                    <tr>
-
-                        <div class="onerow" style="margin-top:10px;">
-                            <td valign="top">
-                                <div class="col-auto">
-                                    <label for="rooms1" id="froom1" style="margin:0px;">Room to Visit<span>*</span></label>
-                                </div>
-                            </td>
-                            <td valign="top">
-                                <div class="col-auto">
-                                    <span class="select-arrow" style="width: 100%">
-                                        <field>
-                                            <select id="rooms1" name="rooms1" onchange="LoadRoomsTypes();"
-                                                    class="required form-combo1">
-                                                <option value="">Select Room</option>
-                                                <option value="1">TRIAGE ROOM</option>
-                                                <option value="2">OPD ROOM</option>
-                                                <option value="3">SPECIAL CLINIC</option>
-                                            </select>
-                                        </field>
-                                    </span>
-                                </div>
-                            </td>
-                        </div>
-                    </tr>
-                    <tr>
-                        <div class="onerow" style="margin-top:10px;">
-                            <td valign="top">
-                                <div class="col-auto">
-                                    <label for="rooms2" id="froom2" style="margin:0px;">Room Type<span>*</span></label>
-                                </div>
-                            </td>
-                            <td valign="top">
-                                <div class="col-auto">
-                                    <span class="select-arrow" style="width: 100%">
-                                        <field>
-                                            <select id="rooms2" name="rooms2" class="required form-combo1">
-                                            </select>
-                                        </field>
-                                    </span>
-                                </div>
-                            </td>
-                        </div>
-                    </tr>
-                    <tr>
-                        <td valign="top">
-                            <div class="col-auto last">
-                                <label for="rooms3" id="froom3" style="margin:0px;">File Number</label>
-                            </div>
-                        </td>
-                        <td valign="top">
-                            <div class="col4 last">
-                                <field><input type="text" id="rooms3" name="rooms3" value="N/A" placeholder="FILE NUMBER"
-                                              readonly=""/></field>
-                            </div>
-                        </td>
-                    </tr>
-
-                </table>
                 <div class="onerow" style="margin-top:10px;">
-                    <button class="button cancel">Cancel</button>
-                    <button class="button confirm right">Confirm</button>
+                    <td valign="top">
+                        <div class="col-auto">
+                            <label for="rooms1" id="froom1" style="margin:0px;">Room to Visit<span>*</span></label>
+                        </div>
+                    </td>
+                    <td valign="top">
+                        <div class="col-auto">
+                            <span class="select-arrow" style="width: 100%">
+                                <field>
+                                    <select id="rooms1" name="rooms1" onchange="LoadRoomsTypes();" class="required form-combo1">
+                                        <option value="">Select Room</option>
+                                        <option value="1">TRIAGE ROOM</option>
+                                        <option value="2">OPD ROOM</option>
+                                        <option value="3">SPECIAL CLINIC</option>
+                                    </select>
+                                </field>
+                            </span>
+                        </div>
+                    </td>
                 </div>
-            </div>
+            </tr>
+            <tr>
+                <div class="onerow" style="margin-top:10px;">
+                    <td valign="top">
+                        <div class="col-auto">
+                            <label for="rooms2" id="froom2" style="margin:0px;">Room Type<span>*</span></label>
+                        </div>
+                    </td>
+                    <td valign="top">
+                        <div class="col-auto">
+                            <span class="select-arrow" style="width: 100%">
+                                <field>
+                                    <select id="rooms2" name="rooms2" class="required form-combo1">
+                                    </select>
+                                </field>
+                            </span>
+                        </div>
+                    </td>
+                </div>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <div class="col-auto last">
+                        <label for="provider-to-visit" style="margin:0px;">Provider</label>
+                    </div>
+                </td>
+                <td valign="top">
+                    <div class="col-auto">
+                        <span class="select-arrow" style="width: 100%">
+                            <field>
+                                <select id="provider-to-visit" name="providerToVisit">
+                                    <option value="">-Please select-</option>
+                                    <% listProviders.each { prod -> %>
+                                    <option value="${prod.providerId }">${prod.names}</option>
+                                    <% } %>
+                                </select>
+                            </field>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+
+        </table>
+        <div class="onerow" style="margin-top:10px;">
+            <button class="button cancel" id="cancel">Cancel</button>
+            <button class="button confirm right" id="confirm">Confirm</button>
         </div>
     </div>
 </div>

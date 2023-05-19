@@ -1,5 +1,6 @@
 package org.openmrs.module.initialpatientqueueapp.fragment.controller;
 
+import org.openmrs.Provider;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.PatientQueueService;
@@ -7,9 +8,11 @@ import org.openmrs.module.hospitalcore.model.OpdPatientQueue;
 import org.openmrs.module.hospitalcore.model.TriagePatientQueue;
 import org.openmrs.module.hospitalcore.util.HospitalCoreUtils;
 import org.openmrs.module.initialpatientqueueapp.EhrRegistrationUtils;
+import org.openmrs.module.initialpatientqueueapp.model.ProviderSimplifier;
 import org.openmrs.module.initialpatientqueueapp.model.ViewQueuedPatients;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -28,9 +31,9 @@ public class ViewQueuedPatientsFragmentController {
 		User user = Context.getAuthenticatedUser();
 		
 		List<OpdPatientQueue> opdPatientQueueList = Context.getService(PatientQueueService.class)
-		        .getAllOpdPatientQueueWithinDatePerUser(startDate, endDate, user);
+		        .getAllOpdPatientQueueWithinDatePerUser(startDate, endDate, user, null);
 		List<TriagePatientQueue> triagePatientQueueList = Context.getService(PatientQueueService.class)
-		        .getAllTriagePatientQueueWithinDatePerUser(startDate, endDate, user);
+		        .getAllTriagePatientQueueWithinDatePerUser(startDate, endDate, user, null);
 		ViewQueuedPatients viewQueuedTriagePatients;
 		ViewQueuedPatients viewQueuedOpdPatients;
 		if (!triagePatientQueueList.isEmpty()) {
@@ -80,5 +83,34 @@ public class ViewQueuedPatientsFragmentController {
 		}
 		
 		model.addAttribute("viewQueuedPatientsList", viewQueuedPatientsList);
+		
+		List<Provider> allProvidersList = Context.getProviderService().getAllProviders();
+		List<ProviderSimplifier> simplifiedProviderList = new ArrayList<ProviderSimplifier>();
+		ProviderSimplifier providerSimplifier;
+		
+		for (Provider provider : allProvidersList) {
+			providerSimplifier = new ProviderSimplifier();
+			providerSimplifier.setProviderId(provider.getProviderId());
+			providerSimplifier.setIdentifier(provider.getIdentifier());
+			providerSimplifier.setPersonId(provider.getPerson().getPersonId());
+			if (!(Context.getUserService().getUsersByPerson(provider.getPerson(), false).isEmpty())) {
+				providerSimplifier.setUserId(Context.getUserService().getUsersByPerson(provider.getPerson(), false).get(0)
+				        .getUserId());
+			}
+			providerSimplifier.setNames(provider.getIdentifier() + "-" + provider.getPerson().getGivenName() + " "
+			        + provider.getPerson().getFamilyName());
+			simplifiedProviderList.add(providerSimplifier);
+		}
+		
+		model.addAttribute("listProviders", simplifiedProviderList);
+	}
+	
+	public void updatePatientQueue(@RequestParam(value = "queueId", required = false) String queueId,
+	        @RequestParam(value = "servicePoint", required = false) String servicePoint,
+	        @RequestParam(value = "rooms2", required = false) String rooms2,
+	        @RequestParam(value = "rooms1", required = false) String rooms1) {
+		
+		System.out.println(queueId + ">>" + servicePoint + ">>" + rooms2 + ">>" + rooms1);
+		
 	}
 }
