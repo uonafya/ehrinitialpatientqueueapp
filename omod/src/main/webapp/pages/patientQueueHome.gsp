@@ -6,6 +6,9 @@
             ],
             [
             label: "Appointments", extra: "Manage patient appointments", iconProvider: "kenyaui", icon: "buttons/visit_end.png", href: ui.pageLink("initialpatientqueueapp", "viewAppointments")
+            ],
+            [
+            label: "Appointment types", extra: "Manage appointments types", iconProvider: "kenyaui", icon: "buttons/developer_overview.png", href: ui.pageLink("initialpatientqueueapp", "manageAppointmentsTypes")
             ]
     ]
 %>

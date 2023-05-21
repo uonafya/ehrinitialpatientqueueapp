@@ -44,8 +44,8 @@ public class ViewAppointmentsFragmentController {
 	        @RequestParam(value = "endTime", required = false) String endTime, @RequestParam(value = "type") String type,
 	        @RequestParam(value = "flow", required = false) String flow,
 	        @RequestParam(value = "patientId", required = false) Patient patient,
-	        @RequestParam(value = "notes", required = false) String notes, Integer locationId) throws ParseException {
-		
+	        @RequestParam(value = "notes", required = false) String notes) throws ParseException {
+		Integer locationId = Context.getService(KenyaEmrService.class).getDefaultLocation().getLocationId();
 		EhrAppointmentService appointmentService = Context.getService(EhrAppointmentService.class);
 		LocationService locationService = Context.getLocationService();
 		Provider provider = HospitalCoreUtils.getProvider(Context.getAuthenticatedUser().getPerson());

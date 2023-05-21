@@ -9,7 +9,9 @@
     ui.includeCss("initialpatientqueueapp", "calendar/calendar-main.css")
     ui.includeCss("initialpatientqueueapp", "jquery.timepicker.min.css")
 %>
-
+<script type="text/javascript">
+   jQuery.noConflict(true);
+ </script>
 <style>
 #hidden_patient_input {
     display: none;
@@ -84,7 +86,7 @@
                 let formattedDate = moment(selectedDate).format('dddd, MMMM DD yyyy');
                 jq('#appointmentDate').val(selectedDate);
                 jq('#appointmentDateDisplay').text(formattedDate);
-                jq('#createAppointmentModal').modal('show');
+                jq('#createAppointmentDlg').show();
                 let startDateTime = new Date(selectedDate);
                 jq("#startTime").timepicker('option', 'minTime', startDateTime);
                 jq("#startTime").timepicker('setTime', startDateTime);
@@ -99,6 +101,21 @@
     });
 
     jq(function () {
+        var appointmentDialog = emr.setupConfirmationDialog({
+                            dialogOpts: {
+                                overlayClose: false,
+                                close: true
+                            },
+                            selector: '#createAppointmentDlg',
+                            actions: {
+                                confirm: function () {
+                                   updateAppointments();
+                                },
+                                cancel: function () {
+                                    location.reload();
+                                }
+                            }
+                        });
         jq("#createAppointmentForm").submit(function (e) {
             e.preventDefault();
 
@@ -187,15 +204,25 @@
 
         jq( "#patient-search-box" ).autocomplete( "option", "appendTo", ".createAppointmentForm");
     });
+    function updateQueue() {
+            jq.getJSON('${ ui.actionLink("initialpatientqueueapp", "viewAppointments", "createAppointment") }', {
+                appointmentDate:jq("#queueValue").val(),
+                startTime: jq("#servicePointValue").val(),
+                endTime: jq("#rooms2").val(),
+                type: jq("#rooms1").val(),
+                flow: jq("#rooms1").val(),
+                patient: jq("#rooms1").val(),
+                notes: jq("#rooms1").val(),
+            }).success(function(data) {
+                jq().toastmessage('showSuccessToast', "Patient's Queue updated successfully");
+                location.reload();
+            });
+      }
 </script>
 
 <div id="myAppointments-calendar"></div>
 
-<div class="modal fade" id="createAppointmentModal" tabindex="-1"
-     data-controls-modal="createAppointmentModal" data-backdrop="static"
-     data-keyboard="false" role="dialog" aria-hidden="true"
-     aria-labelledby="createAppointmentModalModalTitle">
-
+<div id="createAppointmentDlg" style="display:none;">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header bg-white">
@@ -286,9 +313,9 @@
                         </div>
                     </div>
 
-                    <div class="row button-section-right" style="margin-top: 2rem;">
-                        <button type="button" class="btn btn-dark bg-dark float-right" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary float-right ml-1">Save</button>
+                    <div class="onerow" style="margin-top:10px;">
+                        <button class="button cancel" id="cancel">Cancel</button>
+                        <button class="button confirm right" id="confirm">Confirm</button>
                     </div>
                 </form>
             </div>

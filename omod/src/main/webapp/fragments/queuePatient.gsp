@@ -1585,7 +1585,7 @@ a.tooltip span {
                         <img src="${ ui.resourceLink("kenyaui", "images/buttons/admin_update.png") }" /> Apply Sick Off
                     </button>
 
-        <button type="button" onclick="ui.navigate('${ ui.pageLink("initialpatientqueueapp", "viewAppointments", [ patientId: currentPatient ])}')">
+        <button type="button" onclick="ui.navigate('${ ui.pageLink("initialpatientqueueapp", "scheduleAppointments", [ patientId: currentPatient ])}')">
                 <img src="${ ui.resourceLink("kenyaui", "images/buttons/visit_end.png") }" /> Book Appointment
         </button>
     </div>
