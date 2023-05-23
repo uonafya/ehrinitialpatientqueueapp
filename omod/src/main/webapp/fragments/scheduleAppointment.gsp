@@ -3,7 +3,6 @@
         jq(function () {
             jq('#confirm').on( 'click',function () {
                 saveAppointment();
-                location.reload();
             });
 
             jq('#cancel').on( 'click',function () {
@@ -25,7 +24,7 @@
                         jq().toastmessage('showSuccessToast', "Patient's Appointment created successfully");
                         location.reload();
                     });
-              }
+        }
 </script>
 
 <div class="ke-panel-frame">
@@ -54,7 +53,7 @@
                             <select id="provider" name="provider">
                                 <option value="">Please select provider</option>
                                 <% providerList.each { prod -> %>
-                                    <option value="${prod.providerId }">${type.name}</option>
+                                    <option value="${prod.providerId }">${prod.name}</option>
                                 <% } %>
                             </select>
                         </td>

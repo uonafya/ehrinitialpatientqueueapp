@@ -3,8 +3,7 @@
 var jq = jQuery;
     jq(function () {
         jq('#confirm').on( 'click',function () {
-            alert("Confirmed");
-            location.reload();
+            saveAppointmentType()
         });
 
         jq('#cancel').on( 'click',function () {
@@ -12,6 +11,17 @@ var jq = jQuery;
                     location.reload();
         });
     });
+    function saveAppointmentType() {
+                        jq.getJSON('${ ui.actionLink("initialpatientqueueapp", "manageAppointmentsTypes", "createAppointmentType") }', {
+                            name:jq("#appointment-type-name").val(),
+                            appointmentVisitType: jq("#appointment-visit-type").val(),
+                            appointmentDuration: jq("#appointment-duration").val(),
+                            description: jq("#appointment-description").val(),
+                        }).success(function(data) {
+                            jq().toastmessage('showSuccessToast', "Patient's Appointment type created successfully");
+                            location.reload();
+                        });
+            }
 </script>
 <div class="ke-panel-frame">
     <div class="ke-panel-heading">Create Appointment Types</div>

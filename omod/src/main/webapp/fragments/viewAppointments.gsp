@@ -98,36 +98,6 @@
 
         calendar.render();
     });
-
-    jq(function () {
-        jq("#createAppointmentForm").submit(function (e) {
-            e.preventDefault();
-
-            let appointmentDate = jq('#appointmentDate').val();
-            let startTime = jq("#startTime").timepicker('getTime');
-            let endTime = jq("#endTime").timepicker('getTime');
-            let type = jq('#appointmentType').val();
-            let patient = jq('#patient').val();
-            let heading = jq('#heading').val();
-            let description = jq('#description').val();
-
-            const params = {
-                'patientId': patient,
-                'appointmentDate': moment(appointmentDate).format('YYYY-MM-DD'),
-                'location': ${location.id},
-                'startTime': moment(startTime).format("hh:mm a"),
-                'endTime': moment(endTime).format("hh:mm a"),
-                'type': type,
-                'notes': heading + ":" + description
-            };
-
-            jq.getJSON('${ ui.actionLink("botswanaemr", "appointments/myAppointments", "createAppointment")}', params)
-                .success(function (data) {
-                    jq().toastmessage('showNoticeToast', "Appointment created successfully");
-                    location.reload();
-                })
-        });
-    });
 </script>
 
 <div id="myAppointments-calendar"></div>

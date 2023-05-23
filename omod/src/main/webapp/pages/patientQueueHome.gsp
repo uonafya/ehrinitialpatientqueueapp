@@ -9,9 +9,6 @@
             ],
             [
                 label: "Appointment types", extra: "Manage appointments types", iconProvider: "kenyaui", icon: "buttons/developer_overview.png", href: ui.pageLink("initialpatientqueueapp", "manageAppointmentsTypes")
-            ],
-            [
-                label: "Time Slots", extra: "Manage available time slots", iconProvider: "kenyaui", icon: "buttons/visit_retrospective.png", href: ui.pageLink("initialpatientqueueapp", "manageTimeSlots")
             ]
     ]
 %>
