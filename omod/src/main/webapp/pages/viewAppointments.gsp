@@ -1,5 +1,6 @@
 <%
  ui.decorateWith("kenyaemr", "standardPage", [layout: "sidebar"])
+ ui.includeJavascript("ehrconfigs", "emr.js")
  def menuItems = [
              [label: "Back to home", iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to home", href: ui.pageLink("initialpatientqueueapp", "patientQueueHome")]
      ]

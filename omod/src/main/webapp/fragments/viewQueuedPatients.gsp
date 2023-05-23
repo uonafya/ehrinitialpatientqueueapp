@@ -97,8 +97,8 @@
     </div>
 
     <div class="dialog-content">
-    <input type="text" id="queueValue" />
-    <input type="text" id="servicePointValue" />
+    <input type="hidden" id="queueValue" />
+    <input type="hidden" id="servicePointValue" />
         <table border="0">
             <tr>
                 <td colspan="2">

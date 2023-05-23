@@ -2,13 +2,16 @@
     ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
     def menuItems = [
             [
-            label: "View Queued Patients", extra: "Access queued patients for changes", iconProvider: "kenyaui", icon: "buttons/patient_add.png", href: ui.pageLink("initialpatientqueueapp", "viewQueuedPatients")
+                label: "View Queued Patients", extra: "Access queued patients for changes", iconProvider: "kenyaui", icon: "buttons/patient_add.png", href: ui.pageLink("initialpatientqueueapp", "viewQueuedPatients")
             ],
             [
-            label: "Appointments", extra: "Manage patient appointments", iconProvider: "kenyaui", icon: "buttons/visit_end.png", href: ui.pageLink("initialpatientqueueapp", "viewAppointments")
+                label: "Appointments", extra: "Manage patient appointments", iconProvider: "kenyaui", icon: "buttons/visit_end.png", href: ui.pageLink("initialpatientqueueapp", "viewAppointments")
             ],
             [
-            label: "Appointment types", extra: "Manage appointments types", iconProvider: "kenyaui", icon: "buttons/developer_overview.png", href: ui.pageLink("initialpatientqueueapp", "manageAppointmentsTypes")
+                label: "Appointment types", extra: "Manage appointments types", iconProvider: "kenyaui", icon: "buttons/developer_overview.png", href: ui.pageLink("initialpatientqueueapp", "manageAppointmentsTypes")
+            ],
+            [
+                label: "Time Slots", extra: "Manage available time slots", iconProvider: "kenyaui", icon: "buttons/visit_retrospective.png", href: ui.pageLink("initialpatientqueueapp", "manageTimeSlots")
             ]
     ]
 %>

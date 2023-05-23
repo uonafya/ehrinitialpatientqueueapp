@@ -10,7 +10,7 @@
     ui.includeCss("initialpatientqueueapp", "jquery.timepicker.min.css")
 %>
 <script type="text/javascript">
-   jQuery.noConflict(true);
+   var jq = jQuery.noConflict();
  </script>
 <style>
 #hidden_patient_input {
@@ -86,7 +86,6 @@
                 let formattedDate = moment(selectedDate).format('dddd, MMMM DD yyyy');
                 jq('#appointmentDate').val(selectedDate);
                 jq('#appointmentDateDisplay').text(formattedDate);
-                jq('#createAppointmentDlg').show();
                 let startDateTime = new Date(selectedDate);
                 jq("#startTime").timepicker('option', 'minTime', startDateTime);
                 jq("#startTime").timepicker('setTime', startDateTime);
@@ -101,21 +100,6 @@
     });
 
     jq(function () {
-        var appointmentDialog = emr.setupConfirmationDialog({
-                            dialogOpts: {
-                                overlayClose: false,
-                                close: true
-                            },
-                            selector: '#createAppointmentDlg',
-                            actions: {
-                                confirm: function () {
-                                   updateAppointments();
-                                },
-                                cancel: function () {
-                                    location.reload();
-                                }
-                            }
-                        });
         jq("#createAppointmentForm").submit(function (e) {
             e.preventDefault();
 
@@ -143,182 +127,7 @@
                     location.reload();
                 })
         });
-
-        jq('.timepicker').timepicker({
-            timeFormat: 'h:mm p',
-            interval: 30,
-            minTime: '08:00am',
-            maxTime: '5:00pm',
-            defaultTime: '8:00am',
-            startTime: '8:00am',
-            dynamic: false,
-            dropdown: true,
-            scrollbar: true,
-            zindex: 9999999,
-            change: function (timeValue) {
-                let element = jq(this);
-                if (element.is("#startTime")) {
-                    const time = element.val();
-                    const picker = jq("#endTime");
-                    const defaultEndDate = moment(timeValue).add(moment.duration(30, 'minutes')).toDate();
-                    const minTime = moment(defaultEndDate).format("hh:mm a");
-                    picker.timepicker('setTime', defaultEndDate);
-                    picker.timepicker('option', 'minTime', minTime);
-                    picker.timepicker('option', 'defaultTime', time);
-                }
-            }
-        });
     });
-
-    jq(function () {
-        const getData = function (request, response) {
-            jq.getJSON(
-                '/' + OPENMRS_CONTEXT_PATH + '/ws/rest/v1/patient?identifier=' + request.term,
-                function (data) {
-                    let results = [];
-                    let rawData = data.results;
-                    if (rawData) {
-                        for (let i in rawData) {
-                            const result = {
-                                label: rawData[i]?.display,
-                                value: rawData[i]?.uuid
-                            };
-                            results.push(result);
-                        }
-                    }
-                    response(results);
-                });
-        };
-
-        const selectItem = function (event, ui) {
-            jq("#patient-search-box").val(ui.item.label);
-            jq("#patient").val(ui.item.value);
-            return false;
-        }
-
-        jq("#patient-search-box").autocomplete({
-            source: getData,
-            select: selectItem,
-            minLength: 2
-        });
-
-        jq( "#patient-search-box" ).autocomplete( "option", "appendTo", ".createAppointmentForm");
-    });
-    function updateQueue() {
-            jq.getJSON('${ ui.actionLink("initialpatientqueueapp", "viewAppointments", "createAppointment") }', {
-                appointmentDate:jq("#queueValue").val(),
-                startTime: jq("#servicePointValue").val(),
-                endTime: jq("#rooms2").val(),
-                type: jq("#rooms1").val(),
-                flow: jq("#rooms1").val(),
-                patient: jq("#rooms1").val(),
-                notes: jq("#rooms1").val(),
-            }).success(function(data) {
-                jq().toastmessage('showSuccessToast', "Patient's Queue updated successfully");
-                location.reload();
-            });
-      }
 </script>
 
 <div id="myAppointments-calendar"></div>
-
-<div id="createAppointmentDlg" style="display:none;">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-white">
-                <h4 class="modal-title text-black" id="createAppointmentModalModalTitle">Create new</h4>
-                <button type="button" id="createAppointmentModalBtn" class="btn btn-sm bg-white text-danger"
-                        data-dismiss="modal"
-                        aria-label="Close">
-                    <i class="fa fa-times-circle fa-2x" aria-hidden="true"></i>
-                </button>
-            </div>
-
-            <div class="modal-body">
-                <form method="post" id="createAppointmentForm" class="createAppointmentForm">
-                    <div class="row">
-                        <div class="col mb-2">
-                            <label for="appointmentDate">Date <span class="text-danger">*</span></label>
-                            <input type="date" id="appointmentDate"/>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col col-md-4">
-                            <div class="form-group">
-                                <label for="startTime">Start Time
-                                    <span class="text-danger">*</span>
-                                </label>
-
-                                <div class="input-group">
-                                    <input required
-                                           id="startTime"
-                                           name="startTime"
-                                           type="text"
-                                           class="form-control input-sm timepicker"
-                                           placeholder="Enter time">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col col-md-4">
-                            <div class="form-group">
-                                <label for="endTime">End Time
-                                    <span class="text-danger">*</span>
-                                </label>
-
-                                <div class="input-group">
-                                    <input required
-                                           id="endTime"
-                                           name="endTime"
-                                           type="text"
-                                           class="form-control input-sm timepicker"
-                                           placeholder="Enter time">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col mb-2">
-                            <label for="appointmentType">Type <span class="text-danger">*</span></label>
-                            <select id="appointmentType" name="form_select" onchange="showDiv(this)">
-                                <option value="Task">Task</option>
-                                <option value="Consultation">Consultation</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="row" id="hidden_patient_input" style="margin-top: 1rem;">
-                        <div class="col mb-2">
-                            <div class="frmSearch">
-                                <label for="patient-search-box">Patient <span class="text-danger">*</span></label>
-                                <input type="text" id="patient-search-box" placeholder="Patient name/identifier"/>
-                                <input type="hidden" id="patient"/>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row" id="task_heading" style="margin-top: 1rem;">
-                        <div class="col mb-2">
-                            <label for="heading">Heading <span class="text-danger">*</span></label>
-                            <input type="text" id="heading"/>
-                        </div>
-                    </div>
-
-                    <div class="row" id="task_description" style="margin-top: 1rem;">
-                        <div class="col mb-2">
-                            <label for="description">Description</label>
-                            <input type="text" id="description"/>
-                        </div>
-                    </div>
-
-                    <div class="onerow" style="margin-top:10px;">
-                        <button class="button cancel" id="cancel">Cancel</button>
-                        <button class="button confirm right" id="confirm">Confirm</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>

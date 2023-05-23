@@ -13,5 +13,5 @@ def menuItems = [
 </div>
 
 <div class="ke-page-content">
-    ${ui.includeFragment("initialpatientqueueapp", "scheduleAppointment", [patientId: currentPatient])}
+    ${ui.includeFragment("initialpatientqueueapp", "manageTimeSlots")}
 </div>
