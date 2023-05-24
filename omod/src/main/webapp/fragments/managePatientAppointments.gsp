@@ -19,7 +19,7 @@
                 <thead>
                     <tr>
                         <th>Appointment type</th>
-                        <th>Patient</th>
+                        <th>PatientID</th>
                         <th>Provider</th>
                         <th>Status</th>
                         <th>Appointment reason</th>
@@ -38,13 +38,13 @@
                     <% if (allPatientAppointments) { %>
                         <% allPatientAppointments.each {%>
                             <tr>
-                                <td>${it.appointmentType.name}</td>
-                                <td>${it.patient}</td>
-                                <td>${it.timeSlot.appointmentBlock.provider.name}</td>
-                                <td>${it.status.name}</td>
-                                <td>${it.reason}</td>
-                                <td>${it.timeSlot.startDate}</td>
-                                <td>${it.timeSlot.endDate}</td>
+                                <td>${it.appointmentType}</td>
+                                <td>${it.patientId}</td>
+                                <td>${it.provider}</td>
+                                <td>${it.Status}</td>
+                                <td>${it.appointmentReason}</td>
+                                <td>${it.startTime}</td>
+                                <td>${it.endTime}</td>
                             </tr>
                         <%}%>
                     <%}%>

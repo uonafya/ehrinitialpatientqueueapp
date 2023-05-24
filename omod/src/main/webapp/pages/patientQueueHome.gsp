@@ -12,6 +12,9 @@
             ],
             [
                 label: "Patient Appointments", extra: "Manage Patient appointment", iconProvider: "kenyaui", icon: "buttons/visit_retrospective.png", href: ui.pageLink("initialpatientqueueapp", "managePatientAppointments")
+            ],
+            [
+                label: "Sick Off", extra: "Manage Patient Sick Offs", iconProvider: "kenyaui", icon: "buttons/facility.png", href: ui.pageLink("initialpatientqueueapp", "sickOffList")
             ]
     ]
 %>

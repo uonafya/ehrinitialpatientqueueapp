@@ -3,16 +3,20 @@ package org.openmrs.module.initialpatientqueueapp.fragment.controller;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
+import org.openmrs.User;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.EhrAppointmentService;
+import org.openmrs.module.hospitalcore.HospitalCoreService;
 import org.openmrs.module.hospitalcore.model.EhrAppointment;
 import org.openmrs.module.hospitalcore.model.EhrAppointmentSimplifier;
 import org.openmrs.module.hospitalcore.model.EhrAppointmentType;
 import org.openmrs.module.hospitalcore.model.EhrTimeSlot;
+import org.openmrs.module.hospitalcore.model.SickOff;
 import org.openmrs.module.initialpatientqueueapp.EhrRegistrationUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -91,5 +95,25 @@ public class ScheduleAppointmentFragmentController {
 			appointmentService.saveEhrAppointment(appointment);
 		}
 		return "Appointment Created";
+	}
+	
+	public String saveSickOff(UiUtils uiUtils, @RequestParam("patientId") Patient patient, @RequestParam("user") User user,
+	        @RequestParam(value = "sickOffStartDate", required = false) Date sickOffStartDate,
+	        @RequestParam(value = "clinicianNotes", required = false) String clinicianNotes) {
+		//get sick-off form data and save to db
+		//provider,dateOfOnset,clinicalNotes,patient.patientId
+		SickOff sickOff = new SickOff();
+		sickOff.setCreator(Context.getAuthenticatedUser());
+		sickOff.setClinicianNotes(clinicianNotes);
+		sickOff.setSickOffStartDate(sickOffStartDate);
+		
+		try {
+			Context.getService(HospitalCoreService.class).savePatientSickOff(sickOff);
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

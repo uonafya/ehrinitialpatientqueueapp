@@ -14,6 +14,42 @@
             ]
     ]
 %>
+<script type="text/javascript">
+   var jq = jQuery.noConflict();
+ </script>
+ <script type="text/javascript">
+      var jq = jQuery;
+          jq(function () {
+
+          jq('#submitSickOff').on( 'click',function () {
+              saveSickOff();
+          });
+
+          jq('#resetSickOff').on( 'click',function () {
+              location.reload();
+          });
+              jq("#sickOffTbl").DataTable();
+
+              jq('#sickOffTbl tbody').on( 'click', 'tr', function () {
+                        var trData = table.row(this).data();
+                 console.log(trData);
+              });
+          });
+          function saveSickOff() {
+                              jq.getJSON('${ ui.actionLink("initialpatientqueueapp", "scheduleAppointment", "saveSickOff") }', {
+                                  appointmentDate:jq("#appointmentDate").val(),
+                                  startTime: jq("#startTime").val(),
+                                  endTime: jq("#endTime").val(),
+                                  type: jq("#type").val(),
+                                  patientId: jq("#patient").val(),
+                                  provider: jq("#provider").val(),
+                                  notes: jq("#notes").val(),
+                              }).success(function(data) {
+                                  jq().toastmessage('showSuccessToast', "Patient's Appointment created successfully");
+                                  location.reload();
+                              });
+                  }
+  </script>
 
 <div class="ke-page-sidebar">
     ${ui.includeFragment("kenyaui", "widget/panelMenu", [heading: "Tasks", items: menuItems])}
@@ -24,7 +60,6 @@
         <div class="ke-panel-heading">Sickness Leave Form</div>
         <div class="ke-panel-content">
             <div class="container">
-                <form id="SickOffForm" action="'initialpatientqueueapp', 'sickOff', 'post'" class="ng-pristine ng-valid">
                     <div class="ke-form-content">
                         <div class="onerow">
                             <div class="col4">
@@ -52,16 +87,15 @@
                     </div>
                     <div class="onerow" style="margin-top: 100px">
 
-                        <button class="button confirm" type="submit"
+                        <button id="submitSickOff" class="button confirm" type="submit"
                                 style="float:right; display:inline-block; margin-left: 5px;">
                             <span>FINISH</span>
                         </button>
 
-                        <button class="cancel" type="reset" style="float:right; display:inline-block;"/>
+                        <button id="resetSickOff" class="cancel" type="reset" style="float:right; display:inline-block;"/>
                         <span>RESET</span>
                     </button>
                     </div>
-                </form>
 
             </div>
         </div>
@@ -70,7 +104,7 @@
     <div>
         <section>
             <div>
-                <table cellpadding="5" cellspacing="0" width="100%" id="queueList">
+                <table border="1" cellpadding="0" cellspacing="0" width="100%" id="sickOffTbl">
                     <thead>
                     <tr align="center">
                         <th style="width:200px">Patient ID</th>
