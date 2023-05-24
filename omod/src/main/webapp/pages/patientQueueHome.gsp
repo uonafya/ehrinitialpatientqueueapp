@@ -5,10 +5,13 @@
                 label: "View Queued Patients", extra: "Access queued patients for changes", iconProvider: "kenyaui", icon: "buttons/patient_add.png", href: ui.pageLink("initialpatientqueueapp", "viewQueuedPatients")
             ],
             [
-                label: "Appointments", extra: "Manage patient appointments", iconProvider: "kenyaui", icon: "buttons/visit_end.png", href: ui.pageLink("initialpatientqueueapp", "viewAppointments")
+                label: "Appointment Calendar", extra: "Manage calendar appointments", iconProvider: "kenyaui", icon: "buttons/visit_end.png", href: ui.pageLink("initialpatientqueueapp", "viewAppointments")
             ],
             [
                 label: "Appointment types", extra: "Manage appointments types", iconProvider: "kenyaui", icon: "buttons/developer_overview.png", href: ui.pageLink("initialpatientqueueapp", "manageAppointmentsTypes")
+            ],
+            [
+                label: "Patient Appointments", extra: "Manage Patient appointment", iconProvider: "kenyaui", icon: "buttons/visit_retrospective.png", href: ui.pageLink("initialpatientqueueapp", "managePatientAppointments")
             ]
     ]
 %>

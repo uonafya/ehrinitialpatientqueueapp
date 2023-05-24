@@ -13,7 +13,7 @@
             });
 
             jq('#appointmentDate').datepicker();
-            jq("#types").DataTable();
+            jq("#typesTb").DataTable();
         });
         function saveAppointment() {
                     jq.getJSON('${ ui.actionLink("initialpatientqueueapp", "scheduleAppointment", "createAppointment") }', {
@@ -34,25 +34,28 @@
 <div class="ke-panel-frame">
         <div class="ke-panel-heading">Appointment Scheduling</div>
             <div class="ke-panel-content">
-                <table border="0" cellpadding="0" cellspacing="0" id="appointments" width="75%">
+                <table border="1" cellpadding="0" cellspacing="0" id="appointments" width="75%">
                     <input type="hidden" id="patient" value=${patientId} />
                     <tr>
-                        <td>Appointment Date</td><td> <input type="text" id="appointmentDate" name="appointmentDate" /></td>
+                        <td>Appointment Date</td>
+                        <td><input type="text" id="appointmentDate" name="appointmentDate" /></td>
                     </tr>
                     <tr>
                         <td>Appointment Type</td>
 
-                           <td> <select id="type" name="type">
+                       <td>
+                           <select id="type" name="type">
                                 <option value="">Please select appointment type</option>
                                 <% appointmentTypes.each { type -> %>
                                     <option value="${type.appointmentTypeId }">${type.name}</option>
                                 <% } %>
                             </select>
-                        </td>
+                       </td>
                     </tr>
                     <tr>
                         <td>Provider</td>
-                            <td><select id="provider" name="provider">
+                        <td>
+                            <select id="provider" name="provider">
                                 <option value="">Please select provider</option>
                                 <% providerList.each { prod -> %>
                                     <option value="${prod.providerId }">${prod.name}</option>
@@ -75,8 +78,8 @@
                                 <option value="16:00">16:00</option>
                                 <option value="17:00">17:00</option>
                             </select>
-                             To:
-                            <select id="startTime" name="endTime">
+                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To:
+                            <select id="endTime" name="endTime">
                                 <option value="08:00">08:00</option>
                                 <option value="09:00">09:00</option>
                                 <option value="10:00">10:00</option>
@@ -108,7 +111,7 @@
         </div>
         <br />
         <div class="ke-panel-content">
-            <table border="0" cellpadding="0" cellspacing="0" id="types" width="100%">
+            <table border="1" cellpadding="0" cellspacing="0" id="typesTb" width="100%">
                 <thead>
                     <tr>
                         <th>Appointment type</th>
@@ -131,7 +134,7 @@
                         <% patientAppointments.each {%>
                             <tr>
                                 <td>${it.appointmentType.name}</td>
-                                <td>${it.timeSlot.appointmentBlock.provider.providerName}</td>
+                                <td>${it.timeSlot.appointmentBlock.provider.name}</td>
                                 <td>${it.status.name}</td>
                                 <td>${it.reason}</td>
                                 <td>${it.timeSlot.startDate}</td>

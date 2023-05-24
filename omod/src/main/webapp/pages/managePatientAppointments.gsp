@@ -1,6 +1,8 @@
 <%
     ui.decorateWith("kenyaemr", "standardPage", [layout: "sidebar"])
-    ui.includeCss("ehrconfigs", "referenceapplication.css")
+    ui.includeJavascript("ehrconfigs", "jquery.dataTables.min.js")
+        ui.includeCss("ehrconfigs", "jquery.dataTables.min.css")
+        ui.includeCss("ehrconfigs", "referenceapplication.css")
 
 def menuItems = [
             [label: "Queue Patients", iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to home", href: ui.pageLink("initialpatientqueueapp", "patientQueueHome")]
@@ -13,5 +15,5 @@ def menuItems = [
 </div>
 
 <div class="ke-page-content">
-    ${ui.includeFragment("initialpatientqueueapp", "manageTimeSlots")}
+    ${ui.includeFragment("initialpatientqueueapp", "managePatientAppointments")}
 </div>

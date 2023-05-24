@@ -14,7 +14,7 @@ var jq = jQuery;
                     location.reload();
         });
 
-        jq("#appointment-types").DataTable();
+        jq("#appointmentTypesTb").DataTable();
     });
     function saveAppointmentType() {
                         jq.getJSON('${ ui.actionLink("initialpatientqueueapp", "manageAppointmentsTypes", "createAppointmentType") }', {
@@ -32,7 +32,7 @@ var jq = jQuery;
     <div class="ke-panel-heading">Create Appointment Types</div>
         <div class="ke-panel-content" style="background-color: #F3F9FF">
             <div>
-                <table>
+                <table border="0">
                     <tr>
                         <td>Name</td>
                         <td><input type="text" id="appointment-type-name" name="appointmentType" /></td>
@@ -50,7 +50,7 @@ var jq = jQuery;
                     </tr>
                     <tr>
                         <td>Appointment duration</td>
-                        <td><input type="text" id="appointment-duration" name="appointmentDuration" /></td>
+                        <td><input type="text" id="appointment-duration" name="appointmentDuration" />(in Minutes)</td>
                     </tr>
                     <tr>
                         <td colspan="2">Appointment Description</td>
@@ -66,36 +66,35 @@ var jq = jQuery;
             </div>
         <div>
     </div>
-    <br />
-    <div class="ke-panel-content>
-        <table border="0" cellpadding="0" cellspacing="0" id="appointment-types" width="100%">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Visit Type</th>
-                    <th>Duration</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (appointmentTypes.empty) { %>
-                    <tr>
-                        <td colspan="4">
-                            No records found for specified period
-                        </td>
-                    </tr>
-                <% } %>
-                <% if (appointmentTypes) { %>
-                    <% appointmentTypes.each {%>
-                    <tr>
-                        <td>${it.name}</td>
-                        <td>${it.visitType.name}</td>
-                        <td>${it.duration}</td>
-                        <td>${it.description}</td>
-                    </tr>
-                    <%}%>
-                <%}%>
-            </tbody>
-        </table>
-    </div>
 </div>
+    <br />
+
+    <table border="1" cellpadding="0" cellspacing="0" id="appointmentTypesTb" width="100%">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Visit Type</th>
+                <th>Duration</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (appointmentTypes.empty) { %>
+                <tr>
+                    <td colspan="4">
+                        No records found for specified period
+                    </td>
+                </tr>
+            <% } %>
+            <% if (appointmentTypes) { %>
+                <% appointmentTypes.each {%>
+                <tr>
+                    <td>${it.name}</td>
+                    <td>${it.visitType.name}</td>
+                    <td>${it.duration}</td>
+                    <td>${it.description}</td>
+                </tr>
+                <%}%>
+            <%}%>
+        </tbody>
+    </table>

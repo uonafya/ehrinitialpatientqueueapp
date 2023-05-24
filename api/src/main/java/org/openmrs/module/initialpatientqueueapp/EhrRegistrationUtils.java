@@ -321,7 +321,7 @@ public class EhrRegistrationUtils {
 	}
 	
 	public static Date formatDateFromStringWithTime(String date) throws ParseException {
-		return new SimpleDateFormat("yyyy-MM-dd HH:mm a").parse(date);
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(date);
 	}
 	
 	public static EhrTimeSlot getAppointmentTimeSlot(Date startDate, Date endDate, Provider provider, Location location,

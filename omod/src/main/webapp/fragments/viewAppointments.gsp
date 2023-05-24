@@ -1,13 +1,11 @@
 <%
     ui.includeJavascript("initialpatientqueueapp", "calendar/calendar-main.js")
     ui.includeJavascript("initialpatientqueueapp", "calendar/moment.min.js")
-    ui.includeJavascript("initialpatientqueueapp", "jquery.timepicker.min.js")
     ui.includeJavascript("initialpatientqueueapp", "jquery-ui-1.13.1.min.js")
     ui.includeJavascript("initialpatientqueueapp", "jquery.autocomplete.min.js")
 
     ui.includeCss("initialpatientqueueapp", "jquery-ui-1.13.1.min.css")
     ui.includeCss("initialpatientqueueapp", "calendar/calendar-main.css")
-    ui.includeCss("initialpatientqueueapp", "jquery.timepicker.min.css")
 %>
 <script type="text/javascript">
    var jq = jQuery.noConflict();
@@ -82,6 +80,7 @@
             dayMaxEvents: true,
             navLinks: true,
             dateClick: function (info) {
+                console.log("A date clicked", info);
                 let selectedDate = info.dateStr;
                 let formattedDate = moment(selectedDate).format('dddd, MMMM DD yyyy');
                 jq('#appointmentDate').val(selectedDate);

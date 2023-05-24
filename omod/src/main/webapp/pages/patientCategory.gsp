@@ -70,7 +70,7 @@ form textarea:focus, .form textarea:focus{
 </style>
 
 <div class="ke-page-content">
-    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+    <table cellpadding="1" cellspacing="0" border="0" width="100%">
         <tr>
             <td width="30%" valign="top"></td>
             <td valign="top" style="padding-left: 5px">

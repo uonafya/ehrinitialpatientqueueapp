@@ -5,7 +5,7 @@ import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.page.PageModel;
 
 @AppPage(InitialPatientQueueConstants.APP_PATIENT_QUEUE)
-public class ManageTimeSlotsPageController {
+public class ManagePatientAppointmentsPageController {
 	
 	public void controller(PageModel model) {
 	}

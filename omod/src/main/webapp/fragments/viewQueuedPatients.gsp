@@ -2,7 +2,7 @@
 
     var jq = jQuery;
     jq(function () {
-       var table = jq("#details").DataTable();
+       var table = jq("#detailsTb").DataTable();
         var editroomDialog = emr.setupConfirmationDialog({
                     dialogOpts: {
                         overlayClose: false,
@@ -18,7 +18,7 @@
                         }
                     }
                 });
-          jq('#details tbody').on( 'click', 'tr', function () {
+          jq('#detailsTb tbody').on( 'click', 'tr', function () {
                       var trData = table.row(this).data();
                       jq("#queueValue").val(trData[0])
                       jq("#servicePointValue").val(trData[6])
@@ -41,7 +41,7 @@
 <div class="ke-panel-frame">
     <div class="ke-panel-heading">Scheduled Patients</div>
     <div class="ke-panel-content">
-        <table border="0" cellpadding="0" cellspacing="0" id="details" width="100%">
+        <table border="1" cellpadding="0" cellspacing="0" id="detailsTb" width="100%">
             <thead>
                 <tr>
                     <th>Queue Id</th>
@@ -61,7 +61,7 @@
             <tbody>
                 <% if (viewQueuedPatientsList.empty) { %>
                     <tr>
-                        <td colspan="11">
+                        <td colspan="12">
                             No records found for specified period
                         </td>
                     </tr>

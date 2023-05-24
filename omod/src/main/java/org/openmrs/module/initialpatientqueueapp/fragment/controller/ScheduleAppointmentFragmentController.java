@@ -30,16 +30,14 @@ public class ScheduleAppointmentFragmentController {
 
 		model.addAttribute("appointmentTypes", appointmentTypeList);
 		model.addAttribute("providerList", providerService.getAllProviders());
-		//model.addAttribute("timeSlots", ehrAppointmentService.getAllEhrTimeSlots());
 		model.addAttribute("patientAppointments", ehrAppointmentService.getEhrAppointmentsOfPatient(patient));
 		model.addAttribute("patientId", patient.getPatientId());
 	}
 	
-	public String createAppointment(@RequestParam(value = "appointmentDate", required = false) String appointmentDate,
-	        @RequestParam(value = "startTime", required = false) String startTime,
-	        @RequestParam(value = "endTime", required = false) String endTime, @RequestParam(value = "type") Integer type,
-	        @RequestParam(value = "patientId", required = false) Patient patient,
-	        @RequestParam(value = "provider", required = false) Provider provider,
+	public String createAppointment(@RequestParam(value = "appointmentDate") String appointmentDate,
+	        @RequestParam(value = "startTime") String startTime, @RequestParam(value = "endTime") String endTime,
+	        @RequestParam(value = "type") Integer type, @RequestParam(value = "patientId") Patient patient,
+	        @RequestParam(value = "provider") Provider provider,
 	        @RequestParam(value = "notes", required = false) String notes) throws ParseException {
 		
 		Integer locationId = Context.getService(KenyaEmrService.class).getDefaultLocation().getLocationId();
@@ -48,8 +46,14 @@ public class ScheduleAppointmentFragmentController {
 		EhrAppointmentType ehrAppointmentType = appointmentService.getEhrAppointmentType(type);
 		EhrAppointment appointment = new EhrAppointment();
 		if (StringUtils.isNotBlank(appointmentDate) && StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
-			String startDateStr = appointmentDate + " " + startTime;
-			String endDateStr = appointmentDate + " " + endTime;
+			String[] appointmentDatePart = appointmentDate.split("/");
+			String year = appointmentDatePart[2];
+			String month = appointmentDatePart[1];
+			String day = appointmentDatePart[0];
+			String resultDateString = year + "-" + month + "-" + day;
+			
+			String startDateStr = resultDateString + " " + startTime;
+			String endDateStr = resultDateString + " " + endTime;
 			Date startDate = EhrRegistrationUtils.formatDateFromStringWithTime(startDateStr);
 			Date endDate = EhrRegistrationUtils.formatDateFromStringWithTime(endDateStr);
 			
@@ -64,6 +68,7 @@ public class ScheduleAppointmentFragmentController {
 			appointmentService.saveEhrTimeSlot(appointmentTimeSlot);
 			appointment.setTimeSlot(appointmentTimeSlot);
 			appointment.setPatient(patient);
+			appointment.setAppointmentType(ehrAppointmentType);
 			appointment.setStatus(EhrAppointment.EhrAppointmentStatus.SCHEDULED);
 			if (StringUtils.isNotBlank(notes)) {
 				appointment.setReason(notes);
