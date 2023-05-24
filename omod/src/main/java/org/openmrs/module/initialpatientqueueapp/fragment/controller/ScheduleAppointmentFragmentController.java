@@ -8,6 +8,7 @@ import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.EhrAppointmentService;
 import org.openmrs.module.hospitalcore.model.EhrAppointment;
+import org.openmrs.module.hospitalcore.model.EhrAppointmentSimplifier;
 import org.openmrs.module.hospitalcore.model.EhrAppointmentType;
 import org.openmrs.module.hospitalcore.model.EhrTimeSlot;
 import org.openmrs.module.initialpatientqueueapp.EhrRegistrationUtils;
@@ -27,11 +28,25 @@ public class ScheduleAppointmentFragmentController {
 		EhrAppointmentService ehrAppointmentService = Context.getService(EhrAppointmentService.class);
 		ProviderService providerService = Context.getProviderService();
 		List<EhrAppointmentType> appointmentTypeList = new ArrayList<>(ehrAppointmentService.getAllEhrAppointmentTypes());
+		List<EhrAppointmentSimplifier> ehrAppointmentSimplifierList = new ArrayList<EhrAppointmentSimplifier>();
 
 		model.addAttribute("appointmentTypes", appointmentTypeList);
 		model.addAttribute("providerList", providerService.getAllProviders());
 		model.addAttribute("patientAppointments", ehrAppointmentService.getEhrAppointmentsOfPatient(patient));
 		model.addAttribute("patientId", patient.getPatientId());
+		EhrAppointmentSimplifier ehrAppointmentSimplifier;
+		for(EhrAppointment ehrAppointment : ehrAppointmentService.getEhrAppointmentsOfPatient(patient)) {
+			ehrAppointmentSimplifier = new EhrAppointmentSimplifier();
+			ehrAppointmentSimplifier.setAppointmentType(ehrAppointment.getAppointmentType().getName());
+			ehrAppointmentSimplifier.setProvider(ehrAppointment.getTimeSlot().getAppointmentBlock().getProvider().getName());
+			ehrAppointmentSimplifier.setStatus(ehrAppointment.getStatus().getName());
+			ehrAppointmentSimplifier.setStartTime(EhrRegistrationUtils.formatDateTime(ehrAppointment.getTimeSlot().getStartDate()));
+			ehrAppointmentSimplifier.setAppointmentReason(ehrAppointment.getReason());
+			ehrAppointmentSimplifier.setEndTime(EhrRegistrationUtils.formatDateTime(ehrAppointment.getTimeSlot().getEndDate()));
+			ehrAppointmentSimplifierList.add(ehrAppointmentSimplifier);
+
+		}
+		model.addAttribute("patientAppointments", ehrAppointmentSimplifierList);
 	}
 	
 	public String createAppointment(@RequestParam(value = "appointmentDate") String appointmentDate,

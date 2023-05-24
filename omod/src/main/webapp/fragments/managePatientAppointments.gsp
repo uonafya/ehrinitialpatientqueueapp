@@ -40,11 +40,11 @@
                             <tr>
                                 <td>${it.appointmentType.name}</td>
                                 <td>${it.patient}</td>
-                                <td>${it.timeSlot.appointmentBlock.provider.providerName}</td>
+                                <td>${it.timeSlot.appointmentBlock.provider.name}</td>
                                 <td>${it.status.name}</td>
                                 <td>${it.reason}</td>
                                 <td>${it.timeSlot.startDate}</td>
-                                <td>${it.timeslot.endDate}</td>
+                                <td>${it.timeSlot.endDate}</td>
                             </tr>
                         <%}%>
                     <%}%>

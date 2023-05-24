@@ -133,12 +133,12 @@
                     <% if (patientAppointments) { %>
                         <% patientAppointments.each {%>
                             <tr>
-                                <td>${it.appointmentType.name}</td>
-                                <td>${it.timeSlot.appointmentBlock.provider.name}</td>
-                                <td>${it.status.name}</td>
-                                <td>${it.reason}</td>
-                                <td>${it.timeSlot.startDate}</td>
-                                <td>${it.timeslot.endDate}</td>
+                                <td>${it.appointmentType}</td>
+                                <td>${it.provider}</td>
+                                <td>${it.status}</td>
+                                <td>${it.appointmentReason}</td>
+                                <td>${it.startTime}</td>
+                                <td>${it.endTime}</td>
                             </tr>
                         <%}%>
                     <%}%>

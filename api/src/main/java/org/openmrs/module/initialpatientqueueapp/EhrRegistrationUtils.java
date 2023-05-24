@@ -93,6 +93,11 @@ public class EhrRegistrationUtils {
 		return sdf.format(date);
 	}
 	
+	public static String formatDateTime(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		return sdf.format(date);
+	}
+	
 	/**
 	 * Generate person name
 	 * 
