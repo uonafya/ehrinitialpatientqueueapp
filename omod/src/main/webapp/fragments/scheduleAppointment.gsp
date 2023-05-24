@@ -34,7 +34,7 @@
 <div class="ke-panel-frame">
         <div class="ke-panel-heading">Appointment Scheduling</div>
             <div class="ke-panel-content">
-                <table border="1" cellpadding="0" cellspacing="0" id="appointments" width="75%">
+                <table border="0" cellpadding="0" cellspacing="0" id="appointments" width="75%">
                     <input type="hidden" id="patient" value=${patientId} />
                     <tr>
                         <td>Appointment Date</td>
