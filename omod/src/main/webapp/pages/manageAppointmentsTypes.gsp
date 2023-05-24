@@ -1,5 +1,7 @@
 <%
     ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
+    ui.includeJavascript("ehrconfigs", "jquery.dataTables.min.js")
+    ui.includeCss("ehrconfigs", "jquery.dataTables.min.css")
 
     def menuItems = [
                 [label: "Queue Patients", iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to home", href: ui.pageLink("initialpatientqueueapp", "patientQueueHome")]

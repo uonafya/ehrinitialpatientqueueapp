@@ -30,15 +30,14 @@ public class ScheduleAppointmentFragmentController {
 
 		model.addAttribute("appointmentTypes", appointmentTypeList);
 		model.addAttribute("providerList", providerService.getAllProviders());
-		model.addAttribute("timeSlots", ehrAppointmentService.getAllEhrTimeSlots());
+		//model.addAttribute("timeSlots", ehrAppointmentService.getAllEhrTimeSlots());
 		model.addAttribute("patientAppointments", ehrAppointmentService.getEhrAppointmentsOfPatient(patient));
 		model.addAttribute("patientId", patient.getPatientId());
 	}
 	
 	public String createAppointment(@RequestParam(value = "appointmentDate", required = false) String appointmentDate,
 	        @RequestParam(value = "startTime", required = false) String startTime,
-	        @RequestParam(value = "endTime", required = false) String endTime,
-	        @RequestParam(value = "type") EhrAppointmentType type,
+	        @RequestParam(value = "endTime", required = false) String endTime, @RequestParam(value = "type") Integer type,
 	        @RequestParam(value = "patientId", required = false) Patient patient,
 	        @RequestParam(value = "provider", required = false) Provider provider,
 	        @RequestParam(value = "notes", required = false) String notes) throws ParseException {
@@ -46,17 +45,8 @@ public class ScheduleAppointmentFragmentController {
 		Integer locationId = Context.getService(KenyaEmrService.class).getDefaultLocation().getLocationId();
 		EhrAppointmentService appointmentService = Context.getService(EhrAppointmentService.class);
 		LocationService locationService = Context.getLocationService();
-		
+		EhrAppointmentType ehrAppointmentType = appointmentService.getEhrAppointmentType(type);
 		EhrAppointment appointment = new EhrAppointment();
-		appointment.setDateCreated(new Date());
-		appointment.setPatient(patient);
-		appointment.setAppointmentType(type);
-		appointment.setCreator(Context.getAuthenticatedUser());
-		if (StringUtils.isNotBlank(notes)) {
-			appointment.setReason(notes);
-		}
-		appointment.setStatus(null);
-		//add this time slot to the appointment
 		if (StringUtils.isNotBlank(appointmentDate) && StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
 			String startDateStr = appointmentDate + " " + startTime;
 			String endDateStr = appointmentDate + " " + endTime;
@@ -68,12 +58,16 @@ public class ScheduleAppointmentFragmentController {
 			    endDate,
 			    provider,
 			    locationId == null ? Context.getService(KenyaEmrService.class).getDefaultLocation() : locationService
-			            .getLocation(locationId), type);
+			            .getLocation(locationId), ehrAppointmentType);
 			
 			appointmentService.saveEhrAppointmentBlock(appointmentTimeSlot.getAppointmentBlock());
 			appointmentService.saveEhrTimeSlot(appointmentTimeSlot);
 			appointment.setTimeSlot(appointmentTimeSlot);
+			appointment.setPatient(patient);
 			appointment.setStatus(EhrAppointment.EhrAppointmentStatus.SCHEDULED);
+			if (StringUtils.isNotBlank(notes)) {
+				appointment.setReason(notes);
+			}
 			appointmentService.saveEhrAppointment(appointment);
 		}
 		return "Appointment Created";
