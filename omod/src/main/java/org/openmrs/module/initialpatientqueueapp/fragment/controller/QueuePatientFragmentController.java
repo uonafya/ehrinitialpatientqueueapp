@@ -20,10 +20,12 @@ import org.openmrs.module.ehrcashier.billcalculator.BillCalculatorForBDService;
 import org.openmrs.module.ehrconfigs.metadata.EhrCommonMetadata;
 import org.openmrs.module.ehrconfigs.utils.EhrConfigsUtils;
 import org.openmrs.module.hospitalcore.BillingService;
+import org.openmrs.module.hospitalcore.EhrAppointmentService;
 import org.openmrs.module.hospitalcore.HospitalCoreService;
 import org.openmrs.module.hospitalcore.PatientDashboardService;
 import org.openmrs.module.hospitalcore.model.BillableService;
 import org.openmrs.module.hospitalcore.model.DepartmentConcept;
+import org.openmrs.module.hospitalcore.model.EhrAppointment;
 import org.openmrs.module.hospitalcore.model.EhrHospitalWaiver;
 import org.openmrs.module.hospitalcore.model.OpdTestOrder;
 import org.openmrs.module.hospitalcore.model.PatientCategoryDetails;
@@ -175,6 +177,15 @@ public class QueuePatientFragmentController {
 			saveHospitalWaivers(patient);
 			
 			sendToBillingDependingOnTheBill(parameters, encounter, payCat, Integer.parseInt(department));
+			//update the appointment in consultation if scheduled
+			EhrAppointmentService ehrAppointmentService = Context.getService(EhrAppointmentService.class);
+			EhrAppointment ehrAppointment = ehrAppointmentService.getLastEhrAppointment(patient);
+			if (ehrAppointment != null) {
+				ehrAppointment.setStatus(EhrAppointment.EhrAppointmentStatus.INCONSULTATION);
+				ehrAppointment.setVisit(visit);
+				ehrAppointmentService.saveEhrAppointment(ehrAppointment);
+			}
+			
 			//ADD PERSON ATTRIBUTE SET
 			model.addAttribute("status", "success");
 			model.addAttribute("patientId", patient.getPatientId());
