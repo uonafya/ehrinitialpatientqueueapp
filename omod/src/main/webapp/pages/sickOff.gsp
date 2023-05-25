@@ -1,17 +1,10 @@
 <%
-    ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
+    ui.decorateWith("kenyaemr", "standardPage")
     ui.includeCss("ehrconfigs", "referenceapplication.css")
     ui.includeCss("ehrconfigs", "jquery.dataTables.min.css")
     ui.includeCss("ehrconfigs", "onepcssgrid.css")
     ui.includeJavascript("ehrconfigs", "jquery.dataTables.min.js")
     ui.includeJavascript("uicommons", "handlebars/handlebars.min.js")
-    def menuItems = [
-            [ label: "Back to home",
-              iconProvider: "kenyaui",
-              icon: "buttons/back.png",
-              href: ui.pageLink("initialpatientqueueapp", "patientCategory", [patientId: currentPatient])
-            ]
-    ]
 %>
 <script type="text/javascript">
    var jq = jQuery.noConflict();
@@ -47,12 +40,8 @@
                               });
                   }
   </script>
-
-<div class="ke-page-sidebar">
-    ${ui.includeFragment("kenyaui", "widget/panelMenu", [heading: "Tasks", items: menuItems])}
-</div>
-<input type="hidden" id="patientId" name="patientId" value=${patientId} />
 <div class="ke-page-content">
+    <input type="hidden" id="patientId" name="patientId" value=${patientId} />
     <div class="ke-panel-frame">
         <div class="ke-panel-heading">Sickness Leave Form</div>
         <div class="ke-panel-content">
@@ -108,7 +97,7 @@
     <div>
         <section>
             <div>
-                <table border="1" cellpadding="0" cellspacing="0" width="100%" id="sickOffTbl">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" id="sickOffTbl">
                     <thead>
                         <tr>
                             <th>Sick off ID</th>
