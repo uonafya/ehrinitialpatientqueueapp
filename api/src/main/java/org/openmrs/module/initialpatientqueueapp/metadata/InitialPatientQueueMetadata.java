@@ -21,11 +21,15 @@ public class InitialPatientQueueMetadata extends AbstractMetadataBundle {
 	public static class _Privilege {
 		
 		public static final String APP_PQ_MODULE_APP = "App: initialpatientqueueapp.queue";
+		
+		public static final String APP_EHR_APPOINTMENT = "App: initialpatientqueueapp.appointment";
 	}
 	
 	public static final class _Role {
 		
 		public static final String APPLICATION_PQ_MODULE = "EHR Patient Queue application";
+		
+		public static final String EHR_APPOINTMENT_MODULE = "EHR Appointment application";
 	}
 	
 	//encounter type here
@@ -50,6 +54,10 @@ public class InitialPatientQueueMetadata extends AbstractMetadataBundle {
 		install(role(_Role.APPLICATION_PQ_MODULE, "Can access Key patient queue module App for EHR",
 		    idSet(org.openmrs.module.kenyaemr.metadata.SecurityMetadata._Role.API_PRIVILEGES_VIEW_AND_EDIT),
 		    idSet(_Privilege.APP_PQ_MODULE_APP)));
+		install(privilege(_Privilege.APP_EHR_APPOINTMENT, "Able to access Key patient appointments module features for EHR "));
+		install(role(_Role.EHR_APPOINTMENT_MODULE, "Can access Key patient appointment module App for EHR",
+		    idSet(org.openmrs.module.kenyaemr.metadata.SecurityMetadata._Role.API_PRIVILEGES_VIEW_AND_EDIT),
+		    idSet(_Privilege.APP_EHR_APPOINTMENT)));
 		
 		//install the encounter types
 		install(encounterType("Patient queue initial", "Initial Patient Queuing", _EncounterTypes.PATIENT_QUEUE_INITIAL));
