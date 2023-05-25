@@ -1,31 +1,23 @@
-package org.openmrs.module.initialpatientqueueapp.page.controller;
+package org.openmrs.module.initialpatientqueueapp.fragment.controller;
 
-import org.openmrs.Patient;
-import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.HospitalCoreService;
 import org.openmrs.module.hospitalcore.model.SickOff;
 import org.openmrs.module.hospitalcore.model.SickOffSimplifier;
 import org.openmrs.module.initialpatientqueueapp.EhrRegistrationUtils;
-import org.openmrs.module.initialpatientqueueapp.InitialPatientQueueConstants;
-import org.openmrs.module.kenyaui.annotation.AppPage;
-import org.openmrs.ui.framework.page.PageModel;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@AppPage(InitialPatientQueueConstants.APP_PATIENT_QUEUE)
-public class SickOffPageController {
+public class SickOffListFragmentController {
 	
-	public void controller(PageModel pageModel, @RequestParam("patientId") Patient patient) {
+	public void controller(FragmentModel model) {
 		HospitalCoreService hospitalCoreService = Context.getService(HospitalCoreService.class);
-		ProviderService providerService = Context.getProviderService();
 		
-		pageModel.addAttribute("patient", patient);
 		SickOffSimplifier sickOffSimplifier;
 		List<SickOffSimplifier> patientSearchList = new ArrayList<SickOffSimplifier>();
-		for (SickOff sickOff : hospitalCoreService.getPatientSickOffs(patient, null, null)) {
+		for (SickOff sickOff : hospitalCoreService.getPatientSickOffs(null, null, null)) {
 			sickOffSimplifier = new SickOffSimplifier();
 			sickOffSimplifier.setSickOffId(sickOff.getSickOffId());
 			sickOffSimplifier.setNotes(sickOff.getClinicianNotes());
@@ -40,8 +32,6 @@ public class SickOffPageController {
 			
 			patientSearchList.add(sickOffSimplifier);
 		}
-		pageModel.addAttribute("sickOffs", patientSearchList);
-		pageModel.addAttribute("providerList", providerService.getAllProviders());
+		model.addAttribute("sickOffsList", patientSearchList);
 	}
-	
 }

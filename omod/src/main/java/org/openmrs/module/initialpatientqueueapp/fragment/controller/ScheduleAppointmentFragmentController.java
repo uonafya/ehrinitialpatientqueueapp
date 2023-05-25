@@ -3,7 +3,6 @@ package org.openmrs.module.initialpatientqueueapp.fragment.controller;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
-import org.openmrs.User;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
@@ -51,6 +50,7 @@ public class ScheduleAppointmentFragmentController {
 
 		}
 		model.addAttribute("patientAppointments", ehrAppointmentSimplifierList);
+		model.addAttribute("patientId", patient.getPatientId());
 	}
 	
 	public String createAppointment(@RequestParam(value = "appointmentDate") String appointmentDate,
@@ -97,23 +97,31 @@ public class ScheduleAppointmentFragmentController {
 		return "Appointment Created";
 	}
 	
-	public String saveSickOff(UiUtils uiUtils, @RequestParam("patientId") Patient patient, @RequestParam("user") User user,
+	public String saveSickOff(UiUtils uiUtils, @RequestParam("patientId") Patient patientId,
+	        @RequestParam("provider") Provider provider,
 	        @RequestParam(value = "sickOffStartDate", required = false) Date sickOffStartDate,
+	        @RequestParam(value = "sickOffEndDate", required = false) Date sickOffEndDate,
 	        @RequestParam(value = "clinicianNotes", required = false) String clinicianNotes) {
-		//get sick-off form data and save to db
-		//provider,dateOfOnset,clinicalNotes,patient.patientId
-		SickOff sickOff = new SickOff();
-		sickOff.setCreator(Context.getAuthenticatedUser());
-		sickOff.setClinicianNotes(clinicianNotes);
-		sickOff.setSickOffStartDate(sickOffStartDate);
 		
-		try {
-			Context.getService(HospitalCoreService.class).savePatientSickOff(sickOff);
+		SickOff sickOff;
+		if (provider != null && sickOffStartDate != null && sickOffEndDate != null) {
+			sickOff = new SickOff();
+			sickOff.setCreator(Context.getAuthenticatedUser());
+			sickOff.setClinicianNotes(clinicianNotes);
+			sickOff.setSickOffStartDate(sickOffStartDate);
+			sickOff.setCreatedOn(new Date());
+			sickOff.setSickOffEndDate(sickOffEndDate);
+			sickOff.setProvider(provider);
+			sickOff.setPatient(patientId);
 			
+			try {
+				Context.getService(HospitalCoreService.class).savePatientSickOff(sickOff);
+				
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+		return "Patient sick off created";
 	}
 }

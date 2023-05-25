@@ -5,7 +5,6 @@
     ui.includeCss("ehrconfigs", "onepcssgrid.css")
     ui.includeJavascript("ehrconfigs", "jquery.dataTables.min.js")
     ui.includeJavascript("uicommons", "handlebars/handlebars.min.js")
-    ui.decorateWith("kenyaemr", "standardPage", [patient: patient])
     def menuItems = [
             [ label: "Back to home",
               iconProvider: "kenyaui",
@@ -21,13 +20,13 @@
       var jq = jQuery;
           jq(function () {
 
-          jq('#submitSickOff').on( 'click',function () {
-              saveSickOff();
-          });
+              jq('#submitSickOff').on( 'click',function () {
+                  saveSickOff();
+              });
 
-          jq('#resetSickOff').on( 'click',function () {
-              location.reload();
-          });
+              jq('#resetSickOff').on( 'click',function () {
+                  location.reload();
+              });
               jq("#sickOffTbl").DataTable();
 
               jq('#sickOffTbl tbody').on( 'click', 'tr', function () {
@@ -37,15 +36,13 @@
           });
           function saveSickOff() {
                               jq.getJSON('${ ui.actionLink("initialpatientqueueapp", "scheduleAppointment", "saveSickOff") }', {
-                                  appointmentDate:jq("#appointmentDate").val(),
-                                  startTime: jq("#startTime").val(),
-                                  endTime: jq("#endTime").val(),
-                                  type: jq("#type").val(),
-                                  patientId: jq("#patient").val(),
+                                  patientId:jq("#patientId").val(),
                                   provider: jq("#provider").val(),
-                                  notes: jq("#notes").val(),
+                                  sickOffStartDate: jq("#sickOffStartDate").val(),
+                                  sickOffEndDate: jq("#sickOffEndDate").val(),
+                                  clinicianNotes: jq("#clinicianNotes").val(),
                               }).success(function(data) {
-                                  jq().toastmessage('showSuccessToast', "Patient's Appointment created successfully");
+                                  jq().toastmessage('showSuccessToast', "Patient's Sick leave created successfully");
                                   location.reload();
                               });
                   }
@@ -54,7 +51,7 @@
 <div class="ke-page-sidebar">
     ${ui.includeFragment("kenyaui", "widget/panelMenu", [heading: "Tasks", items: menuItems])}
 </div>
-
+<input type="hidden" id="patientId" name="patientId" value=${patientId} />
 <div class="ke-page-content">
     <div class="ke-panel-frame">
         <div class="ke-panel-heading">Sickness Leave Form</div>
@@ -64,17 +61,24 @@
                         <div class="onerow">
                             <div class="col4">
                                 <label>Provider</label>
-                                <select id="user" name="user">
+                                <select id="provider" name="provider">
                                     class="required form-combo1">
                                     <option value="">Select provider</option>
-                                    <option value="1">Dr. Super Admin</option>
+                                    <% providerList.each { prod -> %>
+                                        <option value="${prod.providerId }">${prod.name}</option>
+                                    <% } %>
                                 </select>
                             </div>
+                        </div>
+                        <div class="onerow">
                             <div class="col4">
-                                <label>Date of Onset</label><input type="date" id="sickOffStartDate"
-                                                                   class="focused">
+                                <label>Start Date</label><input type="date" id="sickOffStartDate" name="sickOffStartDate" class="focused">
+                            </div>
+                            <div class="col4">
+                                <label>End Date</label><input type="date" id="sickOffEndDate" name="sickOffEndDate" class="focused">
                             </div>
                         </div>
+                        <br />
                         <div class="onerow">
                             <div class="col4">
                                 <label>Provider/Facility Notes</label>
@@ -104,19 +108,45 @@
     <div>
         <section>
             <div>
-                <table border="1" cellpadding="0" cellspacing="0" width="100%" id="sickOffTbl">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" id="sickOffTbl">
                     <thead>
-                    <tr align="center">
-                        <th style="width:200px">Patient ID</th>
-                        <th>Provider ID</th>
-                        <th>Notes</th>
-                        <th style="width: 60px">Action</th>
-                    </tr>
+                        <tr>
+                            <th>Sick off ID</th>
+                            <th>Patient ID</th>
+                            <th>Patient Name</th>
+                            <th>Authorised Provider</th>
+                            <th>Created on</th>
+                            <th>Created By</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th style="width:200px">Notes</th>
+                            <th style="width: 60px">Action</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr align="center">
-                        <td colspan="5">No patient found</td>
-                    </tr>
+                        <% if (sickOffs.empty) { %>
+                            <tr align="center">
+                                <td colspan="10">
+                                    No records found for specified period
+                                </td>
+                            </tr>
+                        <% } %>
+                        <% if (sickOffs) { %>
+                            <% sickOffs.each {%>
+                                <tr>
+                                    <td>${it.sickOffId}</td>
+                                    <td>${it.patientIdentifier}</td>
+                                    <td>${it.patientName}</td>
+                                    <td>${it.provider}</td>
+                                    <td>${it.dateCreated}</td>
+                                    <td>${it.user}</td>
+                                    <td>${it.sickOffStartDate}</td>
+                                    <td>${it.sickOffEndDate}</td>
+                                    <td>${it.notes}</td>
+                                    <td>Print | Edit</td>
+                                </tr>
+                            <%}%>
+                        <%}%>
                     </tbody>
                 </table>
             </div>
