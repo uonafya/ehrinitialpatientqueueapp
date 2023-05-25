@@ -111,7 +111,7 @@
         </div>
         <br />
         <div class="ke-panel-content">
-            <table border="1" cellpadding="0" cellspacing="0" id="typesTb" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0" id="typesTb" width="100%">
                 <thead>
                     <tr>
                         <th>Appointment type</th>

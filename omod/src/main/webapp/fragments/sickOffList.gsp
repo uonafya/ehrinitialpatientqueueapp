@@ -10,7 +10,7 @@
 <div class="ke-panel-frame">
     <div class="ke-panel-heading">Sick Off Listing for Patients</div>
             <div class="ke-panel-content">
-                <table border="1" cellpadding="0" cellspacing="0" id="sickOffs" width="75%">
+                <table border="0" cellpadding="0" cellspacing="0" id="sickOffs" width="75%">
                     <thead>
                         <tr>
                             <th>Sick off ID</th>
