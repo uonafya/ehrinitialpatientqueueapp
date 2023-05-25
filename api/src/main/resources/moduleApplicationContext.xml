@@ -32,6 +32,13 @@
         <constructor-arg value="initialpatientqueueapp:apps/queue.png" />
         <constructor-arg value="1500" />
     </bean>
+    <bean id="initialpatientqueueapp.app.appointment" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+        <constructor-arg value="initialpatientqueueapp.appointment" />
+        <constructor-arg value="EHR Appointment" />
+        <constructor-arg value="initialpatientqueueapp/ehrAppointmentHome.page" />
+        <constructor-arg value="initialpatientqueueapp:apps/calendar.png" />
+        <constructor-arg value="1600" />
+    </bean>
     <bean id="initialpatientqueueapp.config.form" class="org.openmrs.module.kenyacore.form.FormConfiguration">
         <property name="commonPatientForms">
             <set>

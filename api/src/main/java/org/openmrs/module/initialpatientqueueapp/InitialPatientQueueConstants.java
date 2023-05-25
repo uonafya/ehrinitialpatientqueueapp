@@ -20,6 +20,8 @@ public class InitialPatientQueueConstants {
 	
 	public static final String APP_PATIENT_QUEUE = MODULE_ID + ".queue";
 	
+	public static final String APP_EHR_APPOINTMENTS = MODULE_ID + ".appointment";
+	
 	public static final String APP_PATIENT_OPD = MODULE_ID + ".opd";
 	
 	public static final String CONCEPT_NAME_TRIAGE = "Triage Room";

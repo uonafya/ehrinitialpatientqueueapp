@@ -127,7 +127,7 @@
                                     <td>${it.patientIdentifier}</td>
                                     <td>${it.patientName}</td>
                                     <td>${it.provider}</td>
-                                    <td>${it.dateCreated}</td>
+                                    <td>${it.createdOn}</td>
                                     <td>${it.user}</td>
                                     <td>${it.sickOffStartDate}</td>
                                     <td>${it.sickOffEndDate}</td>
