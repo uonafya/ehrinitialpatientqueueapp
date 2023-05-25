@@ -75,7 +75,7 @@ public class ScheduleAppointmentFragmentController {
 			String endDateStr = resultDateString + " " + endTime;
 			Date startDate = EhrRegistrationUtils.formatDateFromStringWithTime(startDateStr);
 			Date endDate = EhrRegistrationUtils.formatDateFromStringWithTime(endDateStr);
-			
+			System.out.println("The start date is >>" + startDate + " and end date is >>" + endDate);
 			EhrTimeSlot appointmentTimeSlot = EhrRegistrationUtils.getAppointmentTimeSlot(
 			    startDate,
 			    endDate,

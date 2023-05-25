@@ -1,5 +1,6 @@
 package org.openmrs.module.initialpatientqueueapp.fragment.controller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Provider;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
@@ -10,6 +11,7 @@ import org.openmrs.module.hospitalcore.util.HospitalCoreUtils;
 import org.openmrs.module.initialpatientqueueapp.EhrRegistrationUtils;
 import org.openmrs.module.initialpatientqueueapp.model.ProviderSimplifier;
 import org.openmrs.module.initialpatientqueueapp.model.ViewQueuedPatients;
+import org.openmrs.module.initialpatientqueueapp.web.controller.utils.RegistrationWebUtils;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -109,8 +111,21 @@ public class ViewQueuedPatientsFragmentController {
 	        @RequestParam(value = "servicePoint", required = false) String servicePoint,
 	        @RequestParam(value = "rooms2", required = false) String rooms2,
 	        @RequestParam(value = "rooms1", required = false) String rooms1) {
-		
-		System.out.println(queueId + ">>" + servicePoint + ">>" + rooms2 + ">>" + rooms1);
+		String[] servicePointPart = servicePoint.split("\\s+");
+		if (StringUtils.isNotBlank(queueId) && StringUtils.isNotBlank(servicePoint)) {
+			if (servicePointPart[1].equals("Triage")) {
+				//update the triage queue
+				TriagePatientQueue queueTriage = Context.getService(PatientQueueService.class).getTriagePatientQueueById(
+				    Integer.valueOf(queueId));
+				
+				//Context.getService(PatientQueueService.class).saveTriagePatientQueue(queueTriage);
+			} else {
+				//update the opd queue
+				OpdPatientQueue queueOpd = Context.getService(PatientQueueService.class).getOpdPatientQueueById(
+				    Integer.valueOf(queueId));
+				//Context.getService(PatientQueueService.class).saveOpdPatientQueue(queueOpd);
+			}
+		}
 		
 	}
 }
