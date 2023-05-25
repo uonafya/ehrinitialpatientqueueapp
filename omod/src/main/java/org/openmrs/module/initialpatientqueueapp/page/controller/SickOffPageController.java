@@ -42,6 +42,7 @@ public class SickOffPageController {
 		}
 		pageModel.addAttribute("sickOffs", patientSearchList);
 		pageModel.addAttribute("providerList", providerService.getAllProviders());
+		pageModel.addAttribute("patientId", patient.getPatientId());
 	}
 	
 }

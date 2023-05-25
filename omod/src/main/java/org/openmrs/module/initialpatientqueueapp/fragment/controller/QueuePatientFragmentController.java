@@ -180,7 +180,9 @@ public class QueuePatientFragmentController {
 			//update the appointment in consultation if scheduled
 			EhrAppointmentService ehrAppointmentService = Context.getService(EhrAppointmentService.class);
 			EhrAppointment ehrAppointment = ehrAppointmentService.getLastEhrAppointment(patient);
-			if (ehrAppointment != null) {
+			if (ehrAppointment != null
+			        && (ehrAppointment.getStatus().equals(EhrAppointment.EhrAppointmentStatus.SCHEDULED) || ehrAppointment
+			                .getStatus().equals(EhrAppointment.EhrAppointmentStatus.RESCHEDULED))) {
 				ehrAppointment.setStatus(EhrAppointment.EhrAppointmentStatus.INCONSULTATION);
 				ehrAppointment.setVisit(visit);
 				ehrAppointmentService.saveEhrAppointment(ehrAppointment);

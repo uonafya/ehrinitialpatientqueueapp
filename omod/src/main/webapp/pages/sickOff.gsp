@@ -108,7 +108,7 @@
     <div>
         <section>
             <div>
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" id="sickOffTbl">
+                <table border="1" cellpadding="0" cellspacing="0" width="100%" id="sickOffTbl">
                     <thead>
                         <tr>
                             <th>Sick off ID</th>
