@@ -67,15 +67,14 @@ public class ScheduleAppointmentFragmentController {
 		if (StringUtils.isNotBlank(appointmentDate) && StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
 			String[] appointmentDatePart = appointmentDate.split("/");
 			String year = appointmentDatePart[2];
-			String month = appointmentDatePart[1];
-			String day = appointmentDatePart[0];
+			String month = appointmentDatePart[0];
+			String day = appointmentDatePart[1];
 			String resultDateString = year + "-" + month + "-" + day;
 			
 			String startDateStr = resultDateString + " " + startTime;
 			String endDateStr = resultDateString + " " + endTime;
 			Date startDate = EhrRegistrationUtils.formatDateFromStringWithTime(startDateStr);
 			Date endDate = EhrRegistrationUtils.formatDateFromStringWithTime(endDateStr);
-			System.out.println("The start date is >>" + startDate + " and end date is >>" + endDate);
 			EhrTimeSlot appointmentTimeSlot = EhrRegistrationUtils.getAppointmentTimeSlot(
 			    startDate,
 			    endDate,

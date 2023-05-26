@@ -5,7 +5,19 @@
      var jq = jQuery;
          jq(function () {
             jq("#sickOffs").DataTable();
+            jq('#printSickOff').on( 'click', function () {
+                printSickOff();
+            });
+            jq('#editSickOff').on( 'click', function () {
+                editSickOff();
+            });
          });
+         function printSickOff() {
+            alert("Printing of this record under development");
+         }
+         function editSickOff() {
+            alert("Editing of this record under development");
+         }
  </script>
 <div class="ke-panel-frame">
     <div class="ke-panel-heading">Sick Off Listing for Patients</div>
@@ -45,7 +57,10 @@
                                     <td>${it.sickOffStartDate}</td>
                                     <td>${it.sickOffEndDate}</td>
                                     <td>${it.notes}</td>
-                                    <td>Print | Edit</td>
+                                    <td>
+                                            <button id="printSickOff" class="button task">Print</button>|
+                                            <button id="editSickOff" class="button task">Edit</button>
+                                    </td>
                                 </tr>
                             <%}%>
                         <%}%>

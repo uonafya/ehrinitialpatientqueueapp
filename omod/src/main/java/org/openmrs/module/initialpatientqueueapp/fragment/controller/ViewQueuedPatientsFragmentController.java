@@ -1,6 +1,7 @@
 package org.openmrs.module.initialpatientqueueapp.fragment.controller;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openmrs.Concept;
 import org.openmrs.Provider;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
@@ -110,20 +111,34 @@ public class ViewQueuedPatientsFragmentController {
 	public void updatePatientQueue(@RequestParam(value = "queueId", required = false) String queueId,
 	        @RequestParam(value = "servicePoint", required = false) String servicePoint,
 	        @RequestParam(value = "rooms2", required = false) String rooms2,
-	        @RequestParam(value = "rooms1", required = false) String rooms1) {
+	        @RequestParam(value = "rooms1", required = false) String rooms1,
+	        @RequestParam(value = "providerToVisit", required = false) Provider providerToVisit) {
 		String[] servicePointPart = servicePoint.split("\\s+");
-		if (StringUtils.isNotBlank(queueId) && StringUtils.isNotBlank(servicePoint)) {
+		Concept concept = null;
+		if (StringUtils.isNotBlank(rooms2)) {
+			concept = Context.getConceptService().getConcept(rooms2);
+		}
+		if (StringUtils.isNotBlank(queueId) && StringUtils.isNotBlank(servicePoint) && concept != null) {
 			if (servicePointPart[1].equals("Triage")) {
 				//update the triage queue
 				TriagePatientQueue queueTriage = Context.getService(PatientQueueService.class).getTriagePatientQueueById(
 				    Integer.valueOf(queueId));
-				
-				//Context.getService(PatientQueueService.class).saveTriagePatientQueue(queueTriage);
+				queueTriage.setTriageConcept(concept);
+				queueTriage.setTriageConceptName(concept.getDisplayString());
+				if (providerToVisit != null) {
+					queueTriage.setProvider(providerToVisit.getIdentifier());
+				}
+				Context.getService(PatientQueueService.class).saveTriagePatientQueue(queueTriage);
 			} else {
 				//update the opd queue
 				OpdPatientQueue queueOpd = Context.getService(PatientQueueService.class).getOpdPatientQueueById(
 				    Integer.valueOf(queueId));
-				//Context.getService(PatientQueueService.class).saveOpdPatientQueue(queueOpd);
+				queueOpd.setOpdConcept(concept);
+				queueOpd.setOpdConceptName(concept.getDisplayString());
+				if (providerToVisit != null) {
+					queueOpd.setProvider(providerToVisit.getIdentifier());
+				}
+				Context.getService(PatientQueueService.class).saveOpdPatientQueue(queueOpd);
 			}
 		}
 		

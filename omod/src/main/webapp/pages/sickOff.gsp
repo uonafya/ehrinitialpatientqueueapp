@@ -20,10 +20,10 @@
               jq('#resetSickOff').on( 'click',function () {
                   location.reload();
               });
-              jq("#sickOffTbl").DataTable();
+             var tbl =  jq("#sickOffTbl").DataTable();
 
               jq('#sickOffTbl tbody').on( 'click', 'tr', function () {
-                        var trData = table.row(this).data();
+                        var trData = tbl.row(this).data();
                  console.log(trData);
               });
           });

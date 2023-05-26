@@ -11,6 +11,9 @@
             jq('#cancel').on( 'click',function () {
                 location.reload();
             });
+            jq('#editAppointment').on( 'click', function () {
+                            editAppointment();
+                        });
 
             jq('#appointmentDate').datepicker();
             jq("#typesTb").DataTable();
@@ -28,6 +31,9 @@
                         jq().toastmessage('showSuccessToast', "Patient's Appointment created successfully");
                         location.reload();
                     });
+        }
+        function editAppointment() {
+            alert("Editing of the patient appointment under development");
         }
 </script>
 
@@ -120,12 +126,13 @@
                         <th>Appointment reason</th>
                         <th>Start time</th>
                         <th>End time</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% if (patientAppointments.empty) { %>
                         <tr>
-                            <td colspan="6">
+                            <td colspan="7">
                                 No records found for specified period
                             </td>
                         </tr>
@@ -139,6 +146,9 @@
                                 <td>${it.appointmentReason}</td>
                                 <td>${it.startTime}</td>
                                 <td>${it.endTime}</td>
+                                <td>
+                                    <button id="editAppointment" class="button task">Edit</button>
+                                </td>
                             </tr>
                         <%}%>
                     <%}%>

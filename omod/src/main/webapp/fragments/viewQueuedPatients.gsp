@@ -1,5 +1,5 @@
 <script type="text/javascript">
-
+var MODEL;
     var jq = jQuery;
     jq(function () {
        var table = jq("#detailsTb").DataTable();
@@ -24,6 +24,7 @@
                       jq("#servicePointValue").val(trData[6])
                       jq("#new-room-dialog").show();
           });
+          updateRooms();
     });
     function updateQueue() {
         jq.getJSON('${ ui.actionLink("initialpatientqueueapp", "viewQueuedPatients", "updatePatientQueue") }', {
@@ -35,7 +36,81 @@
             jq().toastmessage('showSuccessToast', "Patient's Queue updated successfully");
             location.reload();
         });
-  }
+    }
+    function updateRooms() {
+        jq("#rooms1").on("change", function () {
+             LoadRoomsTypes();
+        });
+    }
+    function LoadRoomsTypes() {
+        jq('#rooms2').empty();
+        if (jq("#rooms1").val() == 1) {
+            PAGE.fillOptions("#rooms2", {
+                data: MODEL.TRIAGE,
+                delimiter: ",",
+                optionDelimiter: "|"
+            });
+        }
+        else if (jq("#rooms1").val() == 2) {
+            PAGE.fillOptions("#rooms2", {
+                data: MODEL.OPDs,
+                delimiter: ",",
+                optionDelimiter: "|"
+            });
+        }
+        else if (jq("#rooms1").val() == 3) {
+            PAGE.fillOptions("#rooms2", {
+                data: MODEL.SPECIALCLINIC,
+                delimiter: ",",
+                optionDelimiter: "|"
+            });
+        }
+    }
+
+    PAGE = {
+        fillOptions: function (divId, option) {
+            jq(divId).empty();
+            if (option.delimiter == undefined) {
+                if (option.index == undefined) {
+                    jq.each(option.data, function (index, value) {
+                        if (value.length > 0) {
+                            jq(divId).append(
+                                "<option value='" + value + "'>" + value
+                                + "</option>");
+                        }
+                    });
+                } else {
+                    jq.each(option.data, function (index, value) {
+                        if (value.length > 0) {
+                            jq(divId).append(
+                                "<option value='" + option.index[index] + "'>"
+                                + value + "</option>");
+                        }
+                    });
+                }
+            } else {
+                options = option.data.split(option.optionDelimiter);
+                jq.each(options, function (index, value) {
+                    values = value.split(option.delimiter);
+                    optionValue = values[0];
+                    optionLabel = values[1];
+                    if (optionLabel != undefined) {
+                        if (optionLabel.length > 0) {
+                            jq(divId).append(
+                                "<option value='" + optionValue + "'>"
+                                + optionLabel + "</option>");
+                        }
+                    }
+                });
+            }
+        }
+    };
+
+    MODEL = {
+                TRIAGE: "${TRIAGE}",
+                OPDs: "${OPDs}",
+                SPECIALCLINIC: "${SPECIALCLINIC}"
+            };
 
 </script>
 <div class="ke-panel-frame">
@@ -117,7 +192,7 @@
                         <div class="col-auto">
                             <span class="select-arrow" style="width: 100%">
                                 <field>
-                                    <select id="rooms1" name="rooms1" onchange="LoadRoomsTypes();" class="required form-combo1">
+                                    <select id="rooms1" name="rooms1" class="required form-combo1">
                                         <option value="">Select Room</option>
                                         <option value="1">TRIAGE ROOM</option>
                                         <option value="2">OPD ROOM</option>

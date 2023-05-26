@@ -13,20 +13,32 @@ var jq = jQuery;
                     alert("Cancelled");
                     location.reload();
         });
+        jq('#editAppointmentType').on( 'click', function () {
+            editAppointmentType();
+        });
+        jq('#deleteAppointmentType').on( 'click', function () {
+            deleteAppointmentType();
+        });
 
         jq("#appointmentTypesTb").DataTable();
     });
     function saveAppointmentType() {
-                        jq.getJSON('${ ui.actionLink("initialpatientqueueapp", "manageAppointmentsTypes", "createAppointmentType") }', {
-                            name:jq("#appointment-type-name").val(),
-                            appointmentVisitType: jq("#appointment-visit-type").val(),
-                            appointmentDuration: jq("#appointment-duration").val(),
-                            description: jq("#appointment-description").val(),
-                        }).success(function(data) {
-                            jq().toastmessage('showSuccessToast', "Patient's Appointment type created successfully");
-                            location.reload();
-                        });
-            }
+                jq.getJSON('${ ui.actionLink("initialpatientqueueapp", "manageAppointmentsTypes", "createAppointmentType") }', {
+                    name:jq("#appointment-type-name").val(),
+                    appointmentVisitType: jq("#appointment-visit-type").val(),
+                    appointmentDuration: jq("#appointment-duration").val(),
+                    description: jq("#appointment-description").val(),
+                }).success(function(data) {
+                    jq().toastmessage('showSuccessToast', "Patient's Appointment type created successfully");
+                    location.reload();
+                });
+    }
+    function editAppointmentType() {
+        alert("Editing appointments under development");
+    }
+    function deleteAppointmentType() {
+            alert("Deleting appointments under development");
+        }
 </script>
 <div class="ke-panel-frame">
     <div class="ke-panel-heading">Create Appointment Types</div>
@@ -76,12 +88,13 @@ var jq = jQuery;
                 <th>Visit Type</th>
                 <th>Duration</th>
                 <th>Description</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             <% if (appointmentTypes.empty) { %>
                 <tr>
-                    <td colspan="4">
+                    <td colspan="5">
                         No records found for specified period
                     </td>
                 </tr>
@@ -93,6 +106,10 @@ var jq = jQuery;
                     <td>${it.visitType.name}</td>
                     <td>${it.duration}</td>
                     <td>${it.description}</td>
+                    <td>
+                        <button id="editAppointmentType" class="button task">Edit</button>|
+                        <button id="deleteAppointmentType" class="button task">Delete</button>
+                    </td>
                 </tr>
                 <%}%>
             <%}%>
