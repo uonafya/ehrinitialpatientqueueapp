@@ -4,7 +4,7 @@
  <script type="text/javascript">
      var jq = jQuery;
          jq(function () {
-             jq("#appTb").DataTable();
+             var table = jq("#appTb").DataTable();
 
              jq('#appTb tbody').on( 'click', 'tr', function () {
                        var trData = table.row(this).data();
