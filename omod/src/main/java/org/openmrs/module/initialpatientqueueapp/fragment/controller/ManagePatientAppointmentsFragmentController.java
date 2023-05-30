@@ -29,9 +29,14 @@ public class ManagePatientAppointmentsFragmentController {
 			ehrAppointmentSimplifier.setStartTime(EhrRegistrationUtils.formatDateTime(ehrAppointment.getTimeSlot().getStartDate()));
 			ehrAppointmentSimplifier.setEndTime(EhrRegistrationUtils.formatDateTime(ehrAppointment.getTimeSlot().getEndDate()));
 			ehrAppointmentSimplifier.setStatus(ehrAppointment.getStatus().getName());
+			ehrAppointmentSimplifier.setAppointmentId(ehrAppointment.getAppointmentId());
 			simplifierList.add(ehrAppointmentSimplifier);
 		}
 		model.addAttribute("allPatientAppointments", simplifierList);
 
+	}
+	
+	public String editAppointments() {
+		return "Appointment list updated";
 	}
 }
