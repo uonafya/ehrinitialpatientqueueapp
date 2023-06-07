@@ -12,11 +12,13 @@ import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.EhrAppointmentService;
 import org.openmrs.module.hospitalcore.model.EhrAppointment;
+import org.openmrs.module.hospitalcore.model.EhrAppointmentSimplifier;
 import org.openmrs.module.hospitalcore.model.EhrAppointmentType;
 import org.openmrs.module.hospitalcore.model.EhrTimeSlot;
 import org.openmrs.module.hospitalcore.util.HospitalCoreUtils;
 import org.openmrs.module.initialpatientqueueapp.EhrRegistrationUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,10 +35,35 @@ import static org.openmrs.module.initialpatientqueueapp.EhrRegistrationUtils.get
 @Slf4j
 public class ViewAppointmentsFragmentController {
 	
-	public void controller(@SpringBean FragmentModel model) {
-		model.addAttribute("location", Context.getService(KenyaEmrService.class).getDefaultLocation());
-		model.addAttribute("events", this.getCalenderEventsForProvider());
-		//model.addAttribute("taskAppointmentPatient", this.getAppointmentTaskPatient());
+	public void controller(@SpringBean FragmentModel model,
+	        @RequestParam(required = false, value = "scheduledDate") Date scheduledDate) {
+		EhrAppointmentService appointmentService = Context.getService(EhrAppointmentService.class);
+		
+		// Get the date for schedule view
+		if (scheduledDate == null) {
+			scheduledDate = new Date();
+		}
+		List<EhrAppointment> getTodaysAppointments = new ArrayList<EhrAppointment>(
+		        appointmentService.getEhrAppointmentsByConstraints(DateUtil.getStartOfDay(scheduledDate),
+		            DateUtil.getEndOfDay(scheduledDate), null, null, null, null));
+		
+		EhrAppointmentSimplifier ehrAppointmentSimplifier;
+		List<EhrAppointmentSimplifier> simplifierList = new ArrayList<EhrAppointmentSimplifier>();
+		for (EhrAppointment ehrAppointment : getTodaysAppointments) {
+			ehrAppointmentSimplifier = new EhrAppointmentSimplifier();
+			ehrAppointmentSimplifier.setAppointmentType(ehrAppointment.getAppointmentType().getName());
+			ehrAppointmentSimplifier.setPatient(ehrAppointment.getPatient());
+			ehrAppointmentSimplifier.setAppointmentReason(ehrAppointment.getReason());
+			ehrAppointmentSimplifier.setProvider(ehrAppointment.getTimeSlot().getAppointmentBlock().getProvider().getName());
+			ehrAppointmentSimplifier.setStartTime(EhrRegistrationUtils.formatDateTime(ehrAppointment.getTimeSlot()
+			        .getStartDate()));
+			ehrAppointmentSimplifier.setEndTime(EhrRegistrationUtils.formatDateTime(ehrAppointment.getTimeSlot()
+			        .getEndDate()));
+			ehrAppointmentSimplifier.setStatus(ehrAppointment.getStatus().getName());
+			ehrAppointmentSimplifier.setAppointmentId(ehrAppointment.getAppointmentId());
+			simplifierList.add(ehrAppointmentSimplifier);
+		}
+		model.addAttribute("getTodaysAppointments", simplifierList);
 	}
 	
 	public String createAppointment(@RequestParam(value = "appointmentDate", required = false) String appointmentDate,
