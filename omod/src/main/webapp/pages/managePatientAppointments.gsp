@@ -1,8 +1,10 @@
 <%
     ui.decorateWith("kenyaemr", "standardPage")
     ui.includeJavascript("ehrconfigs", "jquery.dataTables.min.js")
-        ui.includeCss("ehrconfigs", "jquery.dataTables.min.css")
-        ui.includeCss("ehrconfigs", "referenceapplication.css")
+    ui.includeJavascript("ehrconfigs", "bootstrap.min.js")
+    ui.includeJavascript("ehrconfigs", "emr.js")
+    ui.includeCss("ehrconfigs", "jquery.dataTables.min.css")
+    ui.includeCss("ehrconfigs", "referenceapplication.css")
 
 %>
 

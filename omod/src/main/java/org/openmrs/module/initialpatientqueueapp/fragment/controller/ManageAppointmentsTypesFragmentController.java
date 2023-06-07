@@ -1,5 +1,6 @@
 package org.openmrs.module.initialpatientqueueapp.fragment.controller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.VisitType;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
@@ -47,16 +48,29 @@ public class ManageAppointmentsTypesFragmentController {
 	        @RequestParam(value = "appointmentTypeId", required = false) Integer appointmentTypeId,
 	        @RequestParam(value = "editName", required = false) String editName,
 	        @RequestParam(value = "editAppointmentVisitType") VisitType editAppointmentVisitType,
-	        @RequestParam(value = "editAppointmentDuration", required = false) String editAppointmentDuration,
+	        @RequestParam(value = "editAppointmentDuration", required = false) Integer editAppointmentDuration,
 	        @RequestParam(value = "editDescription", required = false) String editDescription,
-	        @RequestParam(value = "editAction", required = false) Integer editAction) {
+	        @RequestParam(value = "editAction", required = false) Integer editAction,
+	        @RequestParam(value = "editAppointmentRetire", required = false) String editAppointmentRetire) {
+		
+		EhrAppointmentService ehrAppointmentService = Context.getService(EhrAppointmentService.class);
+		
+		EhrAppointmentType ehrAppointmentType = ehrAppointmentService.getEhrAppointmentType(appointmentTypeId);
+		ehrAppointmentType.setName(editName);
+		ehrAppointmentType.setVisitType(editAppointmentVisitType);
+		ehrAppointmentType.setDuration(editAppointmentDuration);
+		ehrAppointmentType.setDescription(editDescription);
+		
 		if (editAction != null) {
 			if (editAction == 1) {
-				//Call the edit function/saveOrUpdate
-			} else if (editAction == 2) {
-				//call the saveOrUpdate function with the voided set to 1
+				ehrAppointmentService.saveEhrAppointmentType(ehrAppointmentType);
+			} else if (editAction == 2 && StringUtils.isNotBlank(editAppointmentRetire)) {
+				ehrAppointmentType.setRetired(true);
+				ehrAppointmentType.setRetiredBy(Context.getAuthenticatedUser());
+				ehrAppointmentType.setRetireReason(editAppointmentRetire);
+				ehrAppointmentService.saveEhrAppointmentType(ehrAppointmentType);
 			} else if (editAction == 3) {
-				//call the purge method and remove the type from the database
+				ehrAppointmentService.purgeEhrAppointmentType(ehrAppointmentType);
 			}
 		}
 		return "Appointment type edited";

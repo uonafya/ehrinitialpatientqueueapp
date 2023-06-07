@@ -32,6 +32,7 @@ var MODEL;
             servicePoint: jq("#servicePointValue").val(),
             rooms2: jq("#rooms2").val(),
             rooms1: jq("#rooms1").val(),
+            providerToVisit: jq("#provider-to-visit").val(),
         }).success(function(data) {
             jq().toastmessage('showSuccessToast', "Patient's Queue updated successfully");
             location.reload();

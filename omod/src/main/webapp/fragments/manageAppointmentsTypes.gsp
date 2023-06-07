@@ -29,10 +29,10 @@ var jq = jQuery;
             },
             selector: '#edit-appointment-type-dialog',
             actions: {
-                edit-confirm: function () {
+                confirm: function () {
                    updateAppointmentType();
                 },
-                edit-cancel: function () {
+                cancel: function () {
                     location.reload();
                 }
             }
@@ -46,6 +46,7 @@ var jq = jQuery;
                             editAppointmentDuration: jq("#edit-appointment-duration").val(),
                             editDescription: jq("#edit-appointment-description").val(),
                             editAction: jq("#edit-appointment-type-action").val(),
+                            editAppointmentRetire: jq("#edit-appointment-type-retire").val(),
                         }).success(function(data) {
                             jq().toastmessage('showSuccessToast', "Appointment type updated successfully");
                             location.reload();
@@ -153,6 +154,7 @@ var jq = jQuery;
         </div>
         <div class="dialog-content">
         <input type="hidden" id="edit-appointment-type_id" />
+        <div>
             <table border="0">
                 <tr>
                     <td>Name</td>
@@ -169,10 +171,11 @@ var jq = jQuery;
                         </select>
                     </td>
                 </tr>
+                <tr>
                     <td>Duration</td>
                     <td><input type="text" id="edit-appointment-duration" name="editAppointmentDuration" />
                     </td>
-                <tr>
+                </tr>
                 <tr>
                     <td colspan="2">Description</td>
                 </tr>
@@ -181,18 +184,22 @@ var jq = jQuery;
                 </tr>
                 <tr>
                     <td>Action</td>
-                    <select id="edit-appointment-type-action" name="editAction">
+                    <td><select id="edit-appointment-type-action" name="editAction">
                        <option value="1">Edit</option>
-                       <option value="2">Void</option>
+                       <option value="2">Retire</option>
                        <option value="3">Delete</option>
-                    </select>
+                    </select></td>
                 </tr>
-
+                <tr>
+                    <td colspan="2">Retire/Void Reason</td>
+                </tr>
+                <tr>
+                    <td colspan="2"><textarea id="edit-appointment-type-retire" name="editAppointmentRetire" rows="4" cols="50"></textarea></td>
                 </tr>
             </table>
         </div>
         <div class="onerow" style="margin-top:10px;">
-            <button class="button cancel" id="edit-cancel">Cancel</button>
-            <button class="button confirm right" id="edit-confirm">Confirm</button>
+            <button class="button cancel" id="editCancel">Cancel</button>
+            <button class="button confirm right" id="editConfirm">Confirm</button>
         </div>
     </div>

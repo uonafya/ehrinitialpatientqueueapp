@@ -5,10 +5,12 @@
      var jq = jQuery;
          jq(function () {
              var table = jq("#appTb").DataTable();
+             jq('#edit-appointmentDate').datepicker();
 
              jq('#appTb tbody').on( 'click', 'tr', function () {
                        var trData = table.row(this).data();
                        jq("#edit-appointment-id").val(trData[0]);
+                       jq("#editNotes").val(trData[5]);
                        jq("#edit-appointment-list").show();
                 //ui.navigate('initialpatientqueueapp', 'patientCategory', {patientId: trData[1]});
              });
@@ -20,10 +22,10 @@
                  },
                  selector: '#edit-appointment-list',
                  actions: {
-                     edit-appointment-confirm: function () {
+                     confirm: function () {
                         updateAppointmentList();
                      },
-                     edit-appointment-cancel: function () {
+                     cancel: function () {
                          location.reload();
                      }
                  }
@@ -31,14 +33,10 @@
          });
          function updateAppointmentList() {
             jq.getJSON('${ ui.actionLink("initialpatientqueueapp", "managePatientAppointments", "editAppointments") }', {
-                        appointmentId: jq("#edit-appointment-type_id").val(),
-                        editAppointmentType:jq("#edit-appointment-type-name").val(),
-                        editAppointmentProvider: jq("#edit-appointment-visit-type").val(),
-                        editAppointmentStatus: jq("#edit-appointment-duration").val(),
-                        editAppointmentReason: jq("#edit-appointment-description").val(),
-                        editAppointmentStartTime: jq("#edit-appointment-description").val(),
-                        editAppointmentEndTime: jq("#edit-appointment-description").val(),
-                        editAppointmentAction: jq("#edit-appointment-type-action").val(),
+                        editAppointmentId: jq("#edit-appointment-type_id").val(),
+                        editAppointmentStatus: jq("#edit-appointment-status").val(),
+                        editAppointmentVoidReason: jq("#edit-appointment-void-reason").val(),
+                        editAppointmentAction: jq("#edit-appointment-action").val(),
                     }).success(function(data) {
                         jq().toastmessage('showSuccessToast', "Appointment updated successfully");
                         location.reload();
@@ -98,48 +96,43 @@
              <h3>Edit Appointment</h3>
          </div>
          <div class="dialog-content">
-         <input type="hidden" id="edit-appointment-id" />
+         <input type="hidden" id="edit-appointment-id" name="editAppointmentId" />
              <table border="0">
                  <tr>
-                     <td>Name</td>
-                     <td><input type="text" id="edit-appointment-type-name" name="editName" /></td>
-                 </tr>
-                 <tr>
-                     <td>Visit type</td>
-                     <td>
-                         <select id="edit-appointment-visit-type" name="editAppointmentVisitType">
-                             <option value="">Please select visit type</option>
-                             <% types.each { type -> %>
-                                 <option value="${type.visitTypeId }">${type.name}</option>
-                             <% } %>
-                         </select>
-                     </td>
-                 </tr>
-                     <td>Duration</td>
-                     <td><input type="text" id="edit-appointment-duration" name="editAppointmentDuration" />
-                     </td>
-                 <tr>
-                 <tr>
-                     <td colspan="2">Description</td>
-                 </tr>
-                 <tr>
-                     <td colspan="2"><textarea id="edit-appointment-description" name="editDescription" rows="4" cols="50"></textarea></td>
+                    <td>Appointment Status</td>
+                    <td>
+                        <select id="edit-appointment-status" name="editAppointmentStatus">
+                            <option value="1">Scheduled</option>
+                            <option value="2">Active</option>
+                            <option value="3">Cancelled</option>
+                            <option value="4">Missed</option>
+                            <option value="5">Completed</option>
+                        </select>
+                    </td>
                  </tr>
                  <tr>
                      <td>Action</td>
-                     <select id="edit-appointment-action" name="editAction">
-                        <option value="1">Edit</option>
-                        <option value="2">Void</option>
-                        <option value="3">Delete</option>
-                        <option value="3">Queue for visit</option>
-                     </select>
+                     <td><select id="edit-appointment-action" name="editAppointmentAction">
+                        <option value="1">Queue for visit</option>
+                        <option value="2">Edit</option>
+                        <option value="3">Void</option>
+                        <option value="4">Delete</option>
+                     </select></td>
                  </tr>
+                 <tr>
+                      <td colspan="2">Reason for voiding appointment</td>
+                  </tr>
+                  <tr>
+                      <td colspan="2">
+                          <textarea id="edit-appointment-void-reason" name="editAppointmentVoidReason" rows="4" cols="50"></textarea>
+                      </td>
+                  </tr>
 
-                 </tr>
+
              </table>
          </div>
          <div class="onerow" style="margin-top:10px;">
-             <button class="button cancel" id="edit-appointment-cancel">Cancel</button>
-             <button class="button confirm right" id="edit-appointment-confirm">Confirm</button>
+             <button class="button cancel" id="cancel">Cancel</button>
+             <button class="button confirm right" id="confirm">Confirm</button>
          </div>
      </div>
