@@ -20,7 +20,9 @@ public class SickOffDetailsForPatientPageController {
 		pageModel.addAttribute("sickOffEndDate", EhrRegistrationUtils.formatDate(sickOffObj.getSickOffEndDate()));
 		pageModel.addAttribute("notes", sickOffObj.getClinicianNotes());
 		pageModel.addAttribute("sickOffCreatedDate", EhrRegistrationUtils.formatDateTime(sickOffObj.getCreatedOn()));
-		pageModel.addAttribute("sickOffCreator", sickOffObj.getCreator().getGivenName() + " "+sickOffObj.getCreator().getFamilyName() );
-		pageModel.addAttribute("sickOffProvider", sickOffObj.getProvider().getPerson().getGivenName() + " "+sickOffObj.getProvider().getPerson().getFamilyName());
+		pageModel.addAttribute("sickOffCreator", sickOffObj.getCreator().getGivenName() + " "
+		        + sickOffObj.getCreator().getFamilyName());
+		pageModel.addAttribute("sickOffProvider", sickOffObj.getProvider().getPerson().getGivenName() + " "
+		        + sickOffObj.getProvider().getPerson().getFamilyName());
 	}
 }

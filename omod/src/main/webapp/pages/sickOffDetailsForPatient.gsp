@@ -80,9 +80,9 @@
     }
 </style>
 <div class="ke-page-content">
-    <div id="sick-off-detail">
+    <div>
         <div class="page">
-            <div class="subpage">
+            <div class="subpage" id="sick-off-detail">
                <div style="text-align: center;" id="header">
                    <center>
                        <img src="/openmrs/ms/uiframework/resource/ehrinventoryapp/images/kenya_logo.bmp" width="60" height="60" align="middle">
@@ -134,8 +134,10 @@
                             <td>${sickOffCreator}</td>
                         </tr>
                         <tr>
-                            <td colspan="2">Clinical notes</td>
-                            <td colspan="2">${notes}</td>
+                            <td colspan="4">Clinical notes</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">${notes}</td>
                         </tr>
                         <tr>
                             <td colspan="2">Authorizing Doctor</td>
@@ -143,7 +145,6 @@
                         </tr>
                     </table>
                <div>
-
             </div>
         </div>
     </div>
