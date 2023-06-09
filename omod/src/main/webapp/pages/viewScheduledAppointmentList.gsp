@@ -1,3 +1,0 @@
-<%
-	ui.decorateWith("kenyaemr", "standardPage")
-%>

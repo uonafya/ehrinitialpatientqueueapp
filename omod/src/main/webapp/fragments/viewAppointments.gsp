@@ -1,5 +1,4 @@
 <script type="text/javascript">
-   var jq = jQuery.noConflict();
    jq("#appointmentsList").DataTable({
     searchPanes: true,
         searching: true,

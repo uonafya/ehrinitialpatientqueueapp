@@ -1,13 +1,11 @@
 package org.openmrs.module.initialpatientqueueapp.fragment.controller;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.EhrAppointmentService;
 import org.openmrs.module.hospitalcore.model.EhrAppointment;
 import org.openmrs.module.hospitalcore.model.EhrAppointmentSimplifier;
 import org.openmrs.module.hospitalcore.model.EhrAppointmentType;
-import org.openmrs.module.hospitalcore.model.EhrTimeSlot;
 import org.openmrs.module.initialpatientqueueapp.EhrRegistrationUtils;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.fragment.FragmentModel;

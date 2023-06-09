@@ -1,8 +1,6 @@
 <%
  ui.decorateWith("kenyaemr", "standardPage", [layout: "sidebar"])
- ui.includeJavascript("ehrconfigs", "emr.js")
  ui.includeJavascript("ehrconfigs", "jquery.dataTables.min.js")
- ui.includeJavascript("ehrconfigs", "bootstrap.min.js")
  ui.includeCss("ehrconfigs", "jquery.dataTables.min.css")
  ui.includeCss("ehrconfigs", "referenceapplication.css")
  def menuItems = [
@@ -32,6 +30,19 @@
                  ui.navigate('initialpatientqueueapp', 'viewAppointments', { scheduledDate: dateText });
              }
          });
+         jq("#appointmentsList").DataTable({
+             searchPanes: true,
+                 searching: true,
+                 "pagingType": 'simple_numbers',
+                 'dom': 'flrtip',
+                 "oLanguage": {
+                     "oPaginate": {
+                         "sNext": '<i class="fa fa-chevron-right py-1" ></i>',
+                         "sPrevious": '<i class="fa fa-chevron-left py-1" ></i>'
+                     }
+                 }
+            });
+            jq('#authdialog').hide();
      });
  </script>
  <div class="ke-page-sidebar">
@@ -39,5 +50,34 @@
      ${ ui.decorate("kenyaui", "panel", [ heading: "Select scheduled date " ], """<div id="calendar"></div>""") }
  </div>
  <div class="ke-page-content">
- 	${ ui.includeFragment("initialpatientqueueapp", "viewAppointments", [ pageProvider: "initialpatientqueueapp", page: "viewScheduledAppointmentList", scheduledDate: scheduledDate ]) }
+ <br />
+ <br />
+ <div>
+ 	<table id="appointmentsList">
+        <thead>
+            <tr>
+                <th>Patient Name</th>
+                <th>Appointment type</th>
+                <th>Provider</th>
+                <th>Scheduled start date and time</th>
+                <th>Scheduled end date and time</th>
+                <td>Appointment Reason</td>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% getTodaysAppointments.each { appointment -> %>
+            <tr>
+                <td>${appointment.patient.givenName} ${appointment.patient.familyName}</td>
+                <td>${appointment.appointmentType}</td>
+                <td>${appointment.provider}</td>
+                <td>${appointment.startTime}</td>
+                <td>${appointment.endTime}</td>
+                <td>${appointment.appointmentReason}</td>
+                <td>${appointment.Status}</td>
+            </tr>
+        <% } %>
+    </tbody>
+    <table>
+   </div>
  </div>
