@@ -1,10 +1,10 @@
 <%
     ui.decorateWith("kenyaemr", "standardPage",[ patient: currentPatient ])
-    ui.includeCss("ehrconfigs", "referenceapplication.css")
     ui.includeCss("ehrconfigs", "jquery.dataTables.min.css")
     ui.includeCss("ehrconfigs", "onepcssgrid.css")
     ui.includeJavascript("ehrconfigs", "jquery.dataTables.min.js")
     ui.includeJavascript("uicommons", "handlebars/handlebars.min.js")
+    ui.includeCss("ehrconfigs", "referenceapplication.css")
 %>
 <script type="text/javascript">
    var jq = jQuery.noConflict();
@@ -20,25 +20,36 @@
               jq('#resetSickOff').on( 'click',function () {
                   location.reload();
               });
-             var tbl =  jq("#sickOffTbl").DataTable();
+             var tbl =  jq("#sickOffTbl").DataTable({
+                 searchPanes: true,
+                 searching: true,
+                 "pagingType": 'simple_numbers',
+                 'dom': 'flrtip',
+                 "oLanguage": {
+                     "oPaginate": {
+                         "sNext": '<i class="fa fa-chevron-right py-1" ></i>',
+                         "sPrevious": '<i class="fa fa-chevron-left py-1" ></i>'
+                     }
+                 }
+             });
 
               jq('#sickOffTbl tbody').on( 'click', 'tr', function () {
                         var trData = tbl.row(this).data();
-                 console.log(trData);
+                  ui.navigate('initialpatientqueueapp', 'sickOffDetailsForPatient', {sickOffId:trData[0]});
               });
           });
           function saveSickOff() {
-                              jq.getJSON('${ ui.actionLink("initialpatientqueueapp", "scheduleAppointment", "saveSickOff") }', {
-                                  patientId:jq("#patientId").val(),
-                                  provider: jq("#provider").val(),
-                                  sickOffStartDate: jq("#sickOffStartDate").val(),
-                                  sickOffEndDate: jq("#sickOffEndDate").val(),
-                                  clinicianNotes: jq("#clinicianNotes").val(),
-                              }).success(function(data) {
-                                  jq().toastmessage('showSuccessToast', "Patient's Sick leave created successfully");
-                                  location.reload();
-                              });
-                  }
+                  jq.getJSON('${ ui.actionLink("initialpatientqueueapp", "scheduleAppointment", "saveSickOff") }', {
+                      patientId:jq("#patientId").val(),
+                      provider: jq("#provider").val(),
+                      sickOffStartDate: jq("#sickOffStartDate").val(),
+                      sickOffEndDate: jq("#sickOffEndDate").val(),
+                      clinicianNotes: jq("#clinicianNotes").val(),
+                  }).success(function(data) {
+                      jq().toastmessage('showSuccessToast', "Patient's Sick leave created successfully");
+                      location.reload();
+                  });
+      }
   </script>
 <div class="ke-page-content">
     <input type="hidden" id="patientId" name="patientId" value=${patientId} />
@@ -95,6 +106,8 @@
 
     </div>
     <div>
+    <br />
+    <br />
         <section>
             <div>
                 <table border="0" cellpadding="0" cellspacing="0" width="100%" id="sickOffTbl">
@@ -132,7 +145,9 @@
                                     <td>${it.sickOffStartDate}</td>
                                     <td>${it.sickOffEndDate}</td>
                                     <td>${it.notes}</td>
-                                    <td>Print | Edit</td>
+                                    <td>
+                                        <button id="printSickOff" class="button task">Print</button>
+                                    </td>
                                 </tr>
                             <%}%>
                         <%}%>

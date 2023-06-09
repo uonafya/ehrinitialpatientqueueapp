@@ -4,20 +4,25 @@
  <script type="text/javascript">
      var jq = jQuery;
          jq(function () {
-            jq("#sickOffs").DataTable();
-            jq('#printSickOff').on( 'click', function () {
-                printSickOff();
+           var tbl = jq("#sickOffs").DataTable({
+            searchPanes: true,
+                 searching: true,
+                 "pagingType": 'simple_numbers',
+                 'dom': 'flrtip',
+                 "oLanguage": {
+                     "oPaginate": {
+                         "sNext": '<i class="fa fa-chevron-right py-1" ></i>',
+                         "sPrevious": '<i class="fa fa-chevron-left py-1" ></i>'
+                     }
+                 }
             });
-            jq('#editSickOff').on( 'click', function () {
-                editSickOff();
-            });
+
+            jq('#sickOffs tbody').on( 'click', 'tr', function () {
+                     var trData = tbl.row(this).data();
+              ui.navigate('initialpatientqueueapp', 'sickOffDetailsForPatient', {sickOffId:trData[0]});
+           });
          });
-         function printSickOff() {
-            alert("Printing of this record under development");
-         }
-         function editSickOff() {
-            alert("Editing of this record under development");
-         }
+
  </script>
 <div class="ke-panel-frame">
     <div class="ke-panel-heading">Sick Off Listing for Patients</div>
@@ -58,8 +63,7 @@
                                     <td>${it.sickOffEndDate}</td>
                                     <td>${it.notes}</td>
                                     <td>
-                                            <button id="printSickOff" class="button task">Print</button>|
-                                            <button id="editSickOff" class="button task">Edit</button>
+                                       <button id="printSickOff" class="button task">Print</button>
                                     </td>
                                 </tr>
                             <%}%>
