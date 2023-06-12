@@ -19,13 +19,13 @@
     });
 
     function printSickOff() {
-        jq("#sick-off-detail").print({
-            globalStyles: false,
-            mediaPrint: false,
-            iframe: false,
-            width: 600,
-            height: 700
-        });
+        var printDiv = jq("#sick-off-detail").html();
+        var printWindow = window.open('', '', 'height=400,width=800');
+        printWindow.document.write('<html><head><title>Patient Sick Off Information</title>');
+        printWindow.document.write(printDiv);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.print();
     }
 </script>
 <style>
@@ -89,8 +89,14 @@
                    </center>
                    ${ui.includeFragment("patientdashboardapp", "printHeader")}
                </div>
+               <div>
+                   <center>
+                        <h3>Patient SickOff Sheet</h3>
+                        <hr />
+                   </center>
+               </div>
                <div id="biodata">
-                    <h3>PATIENT BIO DATA</h3>
+                    <h4>PATIENT BIO DATA</h4>
 
                     <label>
                         <span class='status active'></span>
@@ -103,7 +109,7 @@
                         <span class='status active'></span>
                         Full Names:
                     </label>
-                    <span>${currentPatient.givenName} ${currentPatient.familyName} ${currentPatient.middleName ? patient.middleName : ''}</span>
+                    <span>${names}</span>
                     <br/>
 
                     <label>
@@ -142,6 +148,10 @@
                         <tr>
                             <td colspan="2">Authorizing Doctor</td>
                             <td colspan="2">${sickOffProvider}</td>
+                        </tr>
+                        <tr>
+                             <td colspan="2">Date and timestamp</td>
+                            <td colspan="2">${timestamp}</td>
                         </tr>
                     </table>
                <div>
