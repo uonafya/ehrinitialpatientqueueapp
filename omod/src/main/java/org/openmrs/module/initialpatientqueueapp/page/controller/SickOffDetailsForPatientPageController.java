@@ -28,24 +28,24 @@ public class SickOffDetailsForPatientPageController {
 		pageModel.addAttribute("sickOffProvider", sickOffObj.getProvider().getPerson().getGivenName() + " "
 		        + sickOffObj.getProvider().getPerson().getFamilyName());
 		pageModel.addAttribute("timestamp", EhrRegistrationUtils.formatDateTime(new Date()));
-
+		
 		Patient patient = sickOffObj.getPatient();
 		String middleName = "";
 		String givenName = "";
 		String familyName = "";
-
-		if(patient != null) {
-			if(patient.getFamilyName() != null) {
+		
+		if (patient != null) {
+			if (patient.getFamilyName() != null) {
 				familyName = patient.getFamilyName();
 			}
-			if(patient.getGivenName() != null) {
+			if (patient.getGivenName() != null) {
 				givenName = patient.getGivenName();
 			}
-			if(patient.getMiddleName() != null) {
+			if (patient.getMiddleName() != null) {
 				middleName = patient.getMiddleName();
 			}
 		}
-
-		pageModel.addAttribute("names", givenName+" "+familyName+" "+middleName);
+		
+		pageModel.addAttribute("names", givenName + " " + familyName + " " + middleName);
 	}
 }

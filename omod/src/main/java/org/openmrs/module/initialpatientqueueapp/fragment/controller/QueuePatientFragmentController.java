@@ -667,6 +667,10 @@ public class QueuePatientFragmentController {
 		        .getConceptByUuid(InitialPatientQueueConstants.MOPC_REVISIT_FEE);
 		Concept mopcTriage = Context.getConceptService().getConceptByUuid("98f596cc-5ad1-4c58-91e8-d1ea0329c89d");
 		Concept mopcopd = Context.getConceptService().getConceptByUuid("66710a6d-5894-4f7d-a874-b449df77314d");
+		Concept childUnder5RegistrationFees = Context.getConceptService().getConceptByUuid(
+		    InitialPatientQueueConstants.UNDER_5_REG_FEE);
+		Concept childUnder5RevisitFees = Context.getConceptService().getConceptByUuid(
+		    InitialPatientQueueConstants.UNDER_5_REVISIT_FEE);
 		//find the special clinic
 		int roomToVisit = Integer.parseInt(parameters.get("rooms1"));
 		if (payCat == 1) {
@@ -686,6 +690,10 @@ public class QueuePatientFragmentController {
 						saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Special clinic revisit fee",
 						    specialClinicRevisitFeeConcept.getConceptId(), "Special clinic revisit fee");
 					}
+				} else if (encounter.getPatient().getAge(new Date()) < 5) {
+					sendPatientsToBilling(childUnder5RevisitFees, encounter);
+					saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Under 5 revisit fee",
+					    childUnder5RevisitFees.getConceptId(), "Under 5 revisit fee");
 				} else {
 					//just bill everyone else the same revisit fee
 					if (actualDatePlusBuffer.compareTo(new Date()) <= 0) {
@@ -705,6 +713,10 @@ public class QueuePatientFragmentController {
 					sendPatientsToBilling(specialClinicFeeConcept, encounter);
 					saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Speciial Clinic fees",
 					    specialClinicFeeConcept.getConceptId(), "Special clinic fees");
+				} else if (encounter.getPatient().getAge(new Date()) < 5) {
+					sendPatientsToBilling(childUnder5RegistrationFees, encounter);
+					saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Under 5 revisit fee",
+					    childUnder5RegistrationFees.getConceptId(), "Under 5 revisit fee");
 				} else {
 					sendPatientsToBilling(registrationFeesConcept, encounter);
 					saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Registration fees",

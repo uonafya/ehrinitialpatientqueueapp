@@ -115,4 +115,8 @@ public class InitialPatientQueueConstants {
 	
 	public static final String MOPC_REVISIT_FEE = "509a7862-de5a-47e4-8837-4851024dbccf";
 	
+	public static final String UNDER_5_REG_FEE = "9ecd0c9e-37ab-4449-923b-8cfebaecd1ce";
+	
+	public static final String UNDER_5_REVISIT_FEE = "870cd706-44bc-4410-8abf-c14d65bf0de0";
+	
 }
