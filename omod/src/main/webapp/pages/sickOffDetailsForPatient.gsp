@@ -84,9 +84,6 @@
         <div class="page">
             <div class="subpage" id="sick-off-detail">
                <div style="text-align: center;" id="header">
-                   <center>
-                       <img src="/openmrs/ms/uiframework/resource/ehrinventoryapp/images/kenya_logo.bmp" width="60" height="60" align="middle">
-                   </center>
                    ${ui.includeFragment("patientdashboardapp", "printHeader")}
                </div>
                <div>
