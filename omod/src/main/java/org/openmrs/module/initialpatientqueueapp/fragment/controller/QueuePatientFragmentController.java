@@ -12,7 +12,16 @@ package org.openmrs.module.initialpatientqueueapp.fragment.controller;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.ConceptAnswer;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Obs;
+import org.openmrs.Patient;
+import org.openmrs.PersonAttribute;
+import org.openmrs.PersonAttributeType;
+import org.openmrs.Provider;
+import org.openmrs.Visit;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
@@ -50,7 +59,13 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 4 Fragment to process the queueing information for a patient return processed patients
@@ -676,52 +691,58 @@ public class QueuePatientFragmentController {
 		if (payCat == 1) {
 			//check if is a revisit or a new patient
 			if (hasRevisits(encounter.getPatient())) {
-				//check if the patient is having an MOPC clinic either at triage or opd
-				if (Context.getConceptService().getConcept(department).equals(mopcTriage)
-				        || Context.getConceptService().getConcept(department).equals(mopcopd)) {
-					if (actualDatePlusBuffer.compareTo(new Date()) <= 0) {
-						sendPatientsToBilling(mopcRevisitFess, encounter);
-						saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "MOPC Revisit",
-						    mopcRevisitFess.getConceptId(), "MOPC Revisit");
-					}
-				} else if (roomToVisit == 3 && EhrRegistrationUtils.hasSpecialClinicVisit(encounter.getPatient())) {
-					if (actualDatePlusBuffer.compareTo(new Date()) <= 0) {
-						sendPatientsToBilling(specialClinicRevisitFeeConcept, encounter);
-						saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Special clinic revisit fee",
-						    specialClinicRevisitFeeConcept.getConceptId(), "Special clinic revisit fee");
-					}
-				} else if (encounter.getPatient().getAge(new Date()) < 5) {
+				if (encounter.getPatient().getAge(new Date()) < 5) {
 					sendPatientsToBilling(childUnder5RevisitFees, encounter);
 					saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Under 5 revisit fee",
 					    childUnder5RevisitFees.getConceptId(), "Under 5 revisit fee");
 				} else {
-					//just bill everyone else the same revisit fee
-					if (actualDatePlusBuffer.compareTo(new Date()) <= 0) {
-						sendPatientsToBilling(revisitFeeConcept, encounter);
-						saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Revisit fee",
-						    revisitFeeConcept.getConceptId(), "Revisit fee");
+					//check if the patient is having an MOPC clinic either at triage or opd
+					if (Context.getConceptService().getConcept(department).equals(mopcTriage)
+					        || Context.getConceptService().getConcept(department).equals(mopcopd)) {
+						if (actualDatePlusBuffer.compareTo(new Date()) <= 0) {
+							sendPatientsToBilling(mopcRevisitFess, encounter);
+							saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "MOPC Revisit",
+							    mopcRevisitFess.getConceptId(), "MOPC Revisit");
+						}
+					} else if (roomToVisit == 3 && EhrRegistrationUtils.hasSpecialClinicVisit(encounter.getPatient())) {
+						if (actualDatePlusBuffer.compareTo(new Date()) <= 0) {
+							sendPatientsToBilling(specialClinicRevisitFeeConcept, encounter);
+							saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Special clinic revisit fee",
+							    specialClinicRevisitFeeConcept.getConceptId(), "Special clinic revisit fee");
+						}
+					} else {
+						//just bill everyone else the same revisit fee
+						if (actualDatePlusBuffer.compareTo(new Date()) <= 0) {
+							sendPatientsToBilling(revisitFeeConcept, encounter);
+							saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Revisit fee",
+							    revisitFeeConcept.getConceptId(), "Revisit fee");
+						}
 					}
 				}
+				
 			} else {
 				//check if the patient is having an MOPC clinic either at triage or opd
-				if (Context.getConceptService().getConcept(department).equals(mopcTriage)
-				        || Context.getConceptService().getConcept(department).equals(mopcopd)) {
-					sendPatientsToBilling(mopcRegistartionFess, encounter);
-					saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "MOPC Registaration fees",
-					    mopcRegistartionFess.getConceptId(), "MOPC Registaration fees");
-				} else if (roomToVisit == 3 && !EhrRegistrationUtils.hasSpecialClinicVisit(encounter.getPatient())) {
-					sendPatientsToBilling(specialClinicFeeConcept, encounter);
-					saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Speciial Clinic fees",
-					    specialClinicFeeConcept.getConceptId(), "Special clinic fees");
-				} else if (encounter.getPatient().getAge(new Date()) < 5) {
+				if (encounter.getPatient().getAge(new Date()) < 5) {
 					sendPatientsToBilling(childUnder5RegistrationFees, encounter);
 					saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Under 5 revisit fee",
 					    childUnder5RegistrationFees.getConceptId(), "Under 5 revisit fee");
 				} else {
-					sendPatientsToBilling(registrationFeesConcept, encounter);
-					saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Registration fees",
-					    registrationFeesConcept.getConceptId(), "Registration fees");
+					if (Context.getConceptService().getConcept(department).equals(mopcTriage)
+					        || Context.getConceptService().getConcept(department).equals(mopcopd)) {
+						sendPatientsToBilling(mopcRegistartionFess, encounter);
+						saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "MOPC Registaration fees",
+						    mopcRegistartionFess.getConceptId(), "MOPC Registaration fees");
+					} else if (roomToVisit == 3 && !EhrRegistrationUtils.hasSpecialClinicVisit(encounter.getPatient())) {
+						sendPatientsToBilling(specialClinicFeeConcept, encounter);
+						saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Speciial Clinic fees",
+						    specialClinicFeeConcept.getConceptId(), "Special clinic fees");
+					} else {
+						sendPatientsToBilling(registrationFeesConcept, encounter);
+						saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Registration fees",
+						    registrationFeesConcept.getConceptId(), "Registration fees");
+					}
 				}
+				
 			}
 		}
 		

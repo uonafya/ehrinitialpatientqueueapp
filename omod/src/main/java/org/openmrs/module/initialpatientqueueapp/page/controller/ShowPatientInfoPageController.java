@@ -93,12 +93,21 @@ public class ShowPatientInfoPageController {
 		    InitialPatientQueueConstants.MOPC_REGISTARTION_FEE);
 		Concept mopcRevisitFeesConcept = Context.getConceptService().getConceptByUuid(
 		    InitialPatientQueueConstants.MOPC_REVISIT_FEE);
+		Concept under5RegistrationFees = Context.getConceptService().getConceptByUuid(
+		    InitialPatientQueueConstants.UNDER_5_REG_FEE);
+		Concept under5RevisitFess = Context.getConceptService().getConceptByUuid(
+		    InitialPatientQueueConstants.UNDER_5_REG_FEE);
 		
 		BillableService mopcRegistrationFee = Context.getService(BillingService.class).getServiceByConceptId(
 		    mopcRegistartionFess.getId());
 		
 		BillableService mopcRevisitFee = Context.getService(BillingService.class).getServiceByConceptId(
 		    mopcRevisitFeesConcept.getId());
+		
+		BillableService under5RegistrationFeeBill = Context.getService(BillingService.class).getServiceByConceptId(
+		    under5RegistrationFees.getId());
+		BillableService under5RevisitFeeBill = Context.getService(BillingService.class).getServiceByConceptId(
+		    under5RevisitFess.getId());
 		
 		String WhatToBePaid = "";
 		String specialClinicFees = "";
@@ -107,37 +116,43 @@ public class ShowPatientInfoPageController {
 		Date previousVisitDate = EhrRegistrationUtils.getPreviousVisitDate(patient);
 		Date actualDatePlusBuffer = EhrRegistrationUtils.requiredDate(previousVisitDate, revisitCriteria);
 		if (!visit) {
-			
-			if (Context.getConceptService().getConcept(Integer.parseInt(departiment)).equals(mopcTriage)
-			        || Context.getConceptService().getConcept(Integer.parseInt(departiment)).equals(mopcopd)) {
-				WhatToBePaid = "Registration fees:		" + mopcRegistrationFee.getPrice();
-			} else if (roomToVisit == 3 && !EhrRegistrationUtils.hasSpecialClinicVisit(patient)) {
-				WhatToBePaid = "Registration fees:		" + specialClinicFeesAmount.getPrice();
+			if (patient.getAge(new Date()) < 5) {
+				WhatToBePaid = "Registration fees:		" + under5RegistrationFeeBill.getPrice();
 			} else {
-				//This a new patient and might be required to pay registration fees
-				WhatToBePaid = "Registration fees:		" + registrationFee.getPrice();
+				if (Context.getConceptService().getConcept(Integer.parseInt(departiment)).equals(mopcTriage)
+				        || Context.getConceptService().getConcept(Integer.parseInt(departiment)).equals(mopcopd)) {
+					WhatToBePaid = "Registration fees:		" + mopcRegistrationFee.getPrice();
+				} else if (roomToVisit == 3 && !EhrRegistrationUtils.hasSpecialClinicVisit(patient)) {
+					WhatToBePaid = "Registration fees:		" + specialClinicFeesAmount.getPrice();
+				} else {
+					//This a new patient and might be required to pay registration fees
+					WhatToBePaid = "Registration fees:		" + registrationFee.getPrice();
+				}
 			}
 		} else {
-			
-			if (Context.getConceptService().getConcept(Integer.parseInt(departiment)).equals(mopcTriage)
-			        || Context.getConceptService().getConcept(Integer.parseInt(departiment)).equals(mopcopd)) {
-				if (actualDatePlusBuffer.compareTo(new Date()) <= 0) {
-					WhatToBePaid = "Revisit fees:		" + mopcRevisitFee.getPrice();
-				} else {
-					WhatToBePaid = "Revisit fees:		0";
-				}
-			} else if (roomToVisit == 3 && EhrRegistrationUtils.hasSpecialClinicVisit(patient)) {
-				if (actualDatePlusBuffer.compareTo(new Date()) <= 0) {
-					WhatToBePaid = "Revisit fees:		" + specialClinicRevisitFeesAmount.getPrice();
-				} else {
-					WhatToBePaid = "Revisit fees:		0";
-				}
+			if (patient.getAge(new Date()) < 5) {
+				WhatToBePaid = "Revisit fees:		" + under5RevisitFeeBill.getPrice();
 			} else {
-				//This a new patient and might be required to pay registration fees
-				if (actualDatePlusBuffer.compareTo(new Date()) <= 0) {
-					WhatToBePaid = "Revisit fees:		" + revisitFees.getPrice();
+				if (Context.getConceptService().getConcept(Integer.parseInt(departiment)).equals(mopcTriage)
+				        || Context.getConceptService().getConcept(Integer.parseInt(departiment)).equals(mopcopd)) {
+					if (actualDatePlusBuffer.compareTo(new Date()) <= 0) {
+						WhatToBePaid = "Revisit fees:		" + mopcRevisitFee.getPrice();
+					} else {
+						WhatToBePaid = "Revisit fees:		0";
+					}
+				} else if (roomToVisit == 3 && EhrRegistrationUtils.hasSpecialClinicVisit(patient)) {
+					if (actualDatePlusBuffer.compareTo(new Date()) <= 0) {
+						WhatToBePaid = "Revisit fees:		" + specialClinicRevisitFeesAmount.getPrice();
+					} else {
+						WhatToBePaid = "Revisit fees:		0";
+					}
 				} else {
-					WhatToBePaid = "Revisit fees:		0";
+					//This a new patient and might be required to pay registration fees
+					if (actualDatePlusBuffer.compareTo(new Date()) <= 0) {
+						WhatToBePaid = "Revisit fees:		" + revisitFees.getPrice();
+					} else {
+						WhatToBePaid = "Revisit fees:		0";
+					}
 				}
 			}
 			
