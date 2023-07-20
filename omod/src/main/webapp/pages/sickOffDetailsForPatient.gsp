@@ -84,71 +84,46 @@
         <div class="page">
             <div class="subpage" id="sick-off-detail">
                <div style="text-align: center;" id="header">
-                   ${ui.includeFragment("patientdashboardapp", "printHeader")}
-               </div>
-               <div>
-                   <center>
-                        <h3>Patient SickOff Sheet</h3>
-                        <hr />
-                   </center>
-               </div>
-               <div id="biodata">
-                    <h4>PATIENT BIO DATA</h4>
-
-                    <label>
-                        <span class='status active'></span>
-                        Identifier:
-                    </label>
-                    <span>${currentPatient.getPatientIdentifier()}</span>
-                    <br/>
-
-                    <label>
-                        <span class='status active'></span>
-                        Full Names:
-                    </label>
-                    <span>${names}</span>
-                    <br/>
-
-                    <label>
-                        <span class='status active'></span>
-                        Age:
-                    </label>
-                    <span>${currentPatient.age} (${ui.formatDatePretty(currentPatient.birthdate)})</span>
-                    <br/>
-
-                    <label>
-                        <span class='status active'></span>
-                        Gender:
-                    </label>
-                    <span>${currentPatient.gender}</span>
+                   ${ui.includeFragment("patientdashboardapp", "printHeader", [currentPatient: currentPatient])}
                </div>
                <div id="sickOffInfo">
                     <table id="sickOffDetails">
                         <tr>
+                            <td colspan="2"><h3>Patient Sick Off Sheet</h3></td>
+                        </tr>
+                        <tr>
                             <td>Start Date</td>
                             <td>${sickOffStartDate}
+                        </tr>
+                        <tr>
                             <td>End Date</td>
                             <td>${sickOffEndDate}</td>
                         </tr>
                         <tr>
+                            <td>Number of days</td>
+                            <td>${numberOfDays}</td>
+                        </tr>
+                        <tr>
                             <td>Created On</td>
                             <td>${sickOffCreatedDate}</td>
+                        </tr>
+                        <tr>
                             <td>Created By</td>
                             <td>${sickOffCreator}</td>
                         </tr>
                         <tr>
-                            <td colspan="4">Clinical notes</td>
+                            <td colspan="2">Clinical notes</td>
                         </tr>
                         <tr>
-                            <td colspan="4">${notes}</td>
+                            <td colspan="2">${notes}</td>
                         </tr>
                         <tr>
-                            <td colspan="2">Authorizing Doctor</td>
-                            <td colspan="2">${sickOffProvider}</td>
+                            <td>Authorizing Doctor</td>
+                            <td>${sickOffProvider}</td>
                         </tr>
                         <tr>
-                             <td colspan="2">Date and timestamp</td>
-                            <td colspan="2">${timestamp}</td>
+                             <td>Date and timestamp</td>
+                            <td>${timestamp}</td>
                         </tr>
                     </table>
                <div>

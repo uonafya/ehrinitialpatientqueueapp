@@ -28,6 +28,9 @@ public class SickOffDetailsForPatientPageController {
 		pageModel.addAttribute("sickOffProvider", sickOffObj.getProvider().getPerson().getGivenName() + " "
 		        + sickOffObj.getProvider().getPerson().getFamilyName());
 		pageModel.addAttribute("timestamp", EhrRegistrationUtils.formatDateTime(new Date()));
+		pageModel
+		        .addAttribute("numberOfDays", EhrRegistrationUtils.unitsSinceInteger(sickOffObj.getSickOffEndDate(),
+		            sickOffObj.getSickOffStartDate(), "days"));
 		
 		Patient patient = sickOffObj.getPatient();
 		String middleName = "";

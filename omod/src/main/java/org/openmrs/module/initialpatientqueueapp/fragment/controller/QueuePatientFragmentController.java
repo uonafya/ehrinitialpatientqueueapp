@@ -724,8 +724,8 @@ public class QueuePatientFragmentController {
 				//check if the patient is having an MOPC clinic either at triage or opd
 				if (encounter.getPatient().getAge(new Date()) < 5) {
 					sendPatientsToBilling(childUnder5RegistrationFees, encounter);
-					saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Under 5 revisit fee",
-					    childUnder5RegistrationFees.getConceptId(), "Under 5 revisit fee");
+					saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Under 5 registration  fee",
+					    childUnder5RegistrationFees.getConceptId(), "Under 5 registration fee");
 				} else {
 					if (Context.getConceptService().getConcept(department).equals(mopcTriage)
 					        || Context.getConceptService().getConcept(department).equals(mopcopd)) {

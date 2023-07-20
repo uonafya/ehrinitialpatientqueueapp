@@ -24,9 +24,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.joda.time.Hours;
 import org.joda.time.Minutes;
+import org.joda.time.Months;
 import org.joda.time.Seconds;
+import org.joda.time.Weeks;
+import org.joda.time.Years;
 import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.Obs;
@@ -410,6 +414,28 @@ public class EhrRegistrationUtils {
 		}
 		
 		return diff;
+	}
+	
+	public static int unitsSinceInteger(Date date1, Date date2, String type) {
+		int value = 0;
+		DateTime d1 = new DateTime(date1.getTime());
+		DateTime d2 = new DateTime(date2.getTime());
+		if (type.equals("days")) {
+			value = Math.abs(Days.daysBetween(d1, d2).getDays());
+		} else if (type.equals("hours")) {
+			value = Math.abs(Hours.hoursBetween(d1, d2).getHours());
+		} else if (type.equals("minutes")) {
+			value = Math.abs(Minutes.minutesBetween(d1, d2).getMinutes());
+		} else if (type.equals("seconds")) {
+			value = Math.abs(Seconds.secondsBetween(d1, d2).getSeconds());
+		} else if (type.equals("years")) {
+			value = Math.abs(Years.yearsBetween(d1, d2).getYears());
+		} else if (type.equals("weeks")) {
+			value = Math.abs(Weeks.weeksBetween(d1, d2).getWeeks());
+		} else if (type.equals("months")) {
+			value = Math.abs(Months.monthsBetween(d1, d2).getMonths());
+		}
+		return value;
 	}
 	
 }
