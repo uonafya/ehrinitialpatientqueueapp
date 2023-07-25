@@ -6,6 +6,7 @@
         emrMessages = {};
     var oRegX = /^[a-zA-Z-` ]*\$/;
     emrMessages["requiredField"] = "Required";
+    jq(".queue-tabs").tabs();
     jq(document).ready(function () {
         if (!${visitType}){
             jq("#visitType").append("<option value='1'>New Patient</option>");
@@ -1579,252 +1580,260 @@ a.tooltip span {
     box-shadow: 5px 5px 8px #CCC;
 }
 </style>
-<div id="content" class="container">
-    <div class="ke-panelbar" style="text-align: right">
-        <button type="button" onclick="ui.navigate('${ ui.pageLink("initialpatientqueueapp", "sickOff", [ patientId: currentPatient ])}')">
-                        <img src="${ ui.resourceLink("kenyaui", "images/buttons/admin_update.png") }" /> Apply Sick Off
-                    </button>
+<div class="queue-tabs">
+        <ul>
+			<li id="queue"><a href="#content">Queue Patient</a></li>
+			<li id="history"><a href="#history">Queue history</a></li>
+		</ul>
+        <div id="content" class="container">
+            <div class="ke-panelbar" style="text-align: right">
+                <button type="button" onclick="ui.navigate('${ ui.pageLink("initialpatientqueueapp", "sickOff", [ patientId: currentPatient ])}')">
+                                <img src="${ ui.resourceLink("kenyaui", "images/buttons/admin_update.png") }" /> Apply Sick Off
+                            </button>
 
-        <button type="button" onclick="ui.navigate('${ ui.pageLink("initialpatientqueueapp", "scheduleAppointments", [ patientId: currentPatient ])}')">
-                <img src="${ ui.resourceLink("kenyaui", "images/buttons/visit_end.png") }" /> Book Appointment
-        </button>
-    </div>
-    <form class="simple-form-ui" id="patientRegistrationForm" method="post">
-        <table cellpadding="0" cellspacing="0" border="0">
-            <tr>
-                <td valign="top">
-                    <div class="col4">
-                        <div class="tasks">
-                            <header class="tasks-header">
-                                <span class="tasks-title">Patients Category</span>
-                                <a class="tasks-lists"></a>
-                            </header>
+                <button type="button" onclick="ui.navigate('${ ui.pageLink("initialpatientqueueapp", "scheduleAppointments", [ patientId: currentPatient ])}')">
+                        <img src="${ ui.resourceLink("kenyaui", "images/buttons/visit_end.png") }" /> Book Appointment
+                </button>
+            </div>
+            <form class="simple-form-ui" id="patientRegistrationForm" method="post">
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td valign="top">
+                            <div class="col4">
+                                <div class="tasks">
+                                    <header class="tasks-header">
+                                        <span class="tasks-title">Patients Category</span>
+                                        <a class="tasks-lists"></a>
+                                    </header>
 
-                            <div class="tasks-list parent-items">
-                                <label class="tasks-list-item">
-                                    <input style="display:none!important" type="radio" name="paym_1" value="1"
-                                           class="tasks-list-cb">
-                                    <span class="tasks-list-mark"></span>
-                                    <span class="tasks-list-desc">PAYING</span>
-                                </label>
+                                    <div class="tasks-list parent-items">
+                                        <label class="tasks-list-item">
+                                            <input style="display:none!important" type="radio" name="paym_1" value="1"
+                                                   class="tasks-list-cb">
+                                            <span class="tasks-list-mark"></span>
+                                            <span class="tasks-list-desc">PAYING</span>
+                                        </label>
 
-                                <label class="tasks-list-item">
-                                    <input style="display:none!important" type="radio" name="paym_1" value="2"
-                                           class="tasks-list-cb">
-                                    <span class="tasks-list-mark"></span>
-                                    <span class="tasks-list-desc">NON-PAYING</span>
-                                </label>
+                                        <label class="tasks-list-item">
+                                            <input style="display:none!important" type="radio" name="paym_1" value="2"
+                                                   class="tasks-list-cb">
+                                            <span class="tasks-list-mark"></span>
+                                            <span class="tasks-list-desc">NON-PAYING</span>
+                                        </label>
 
-                                <label class="tasks-list-item">
-                                    <input style="display:none!important" type="radio" name="paym_1" value="3"
-                                           class="tasks-list-cb">
-                                    <span class="tasks-list-mark"></span>
-                                    <span class="tasks-list-desc">SPECIAL SCHEMES</span>
-                                </label>
+                                        <label class="tasks-list-item">
+                                            <input style="display:none!important" type="radio" name="paym_1" value="3"
+                                                   class="tasks-list-cb">
+                                            <span class="tasks-list-mark"></span>
+                                            <span class="tasks-list-desc">SPECIAL SCHEMES</span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
+                        </td>
+                        <td valign="top">
+
+                            <div class="col4">
+                                <div class="tasks">
+                                    <header class="tasks-header">
+                                        <span id="tasktitle" class="tasks-title">Paying Category</span>
+                                        <a class="tasks-lists"></a>
+                                    </header>
+
+                                    <div class="tasks-list" id="paycatgs">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td valign="top">
+                            <div class="col4 last">
+                                <div class="tasks">
+                                    <header class="tasks-header">
+                                        <span id="summtitle1" class="tasks-title">Details</span>
+                                        <input type="hidden" id="nhifNumber" name="nhifNumber"/>
+                                        <input type="hidden" id="studentId" name="studentId"/>
+                                        <input type="hidden" id="waiverNumber" name="waiverNumber"/>
+                                        <a class="tasks-lists"></a>
+                                    </header>
+                                </div>
+
+                                <span id="universitydiv" class="select-arrow" style="width: 100%">
+                                    <field><select style="width: 101%;" name="university"
+                                                   id="university">&nbsp;</select></field>
+                                </span>
+
+                                <field><input type="text" id="modesummary" name="modesummary" value="N/A"
+                                              placeholder="WAIVER NUMBER" readonly="" style="width: 101%!important"/>
+                                </field>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h2>Visit type</h2></td>
+                        <td><div>
+                            <select id="visitType" name="visitType">
+
+                            </select>
                         </div>
+                        </td>
+                    </tr>
+
+
+                    <tr><td colspan="2"><h2>Room to Visit</h2></td></tr>
+                    <tr>
+
+                        <div class="onerow" style="margin-top:10px;">
+                            <td valign="top">
+                                <div class="col4">
+                                    <label for="rooms1" id="froom1" style="margin:0px;">Room to Visit<span>*</span></label>
+                                </div>
+                            </td>
+                            <td valign="top">
+                                <div class="col4">
+                                    <span class="select-arrow" style="width: 100%">
+                                        <field>
+                                            <select id="rooms1" name="rooms1" onchange="LoadRoomsTypes();"
+                                                    class="required form-combo1">
+                                                <option value="">Select Room</option>
+                                                <option value="1">TRIAGE ROOM</option>
+                                                <option value="2">OPD ROOM</option>
+                                                <option value="3">SPECIAL CLINIC</option>
+                                            </select>
+                                        </field>
+                                    </span>
+                                </div>
+                            </td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class="onerow" style="margin-top:10px;">
+                            <td valign="top">
+                                <div class="col4">
+                                    <label for="rooms2" id="froom2" style="margin:0px;">Room Type<span>*</span></label>
+                                </div>
+                            </td>
+                            <td valign="top">
+                                <div class="col4">
+                                    <span class="select-arrow" style="width: 100%">
+                                        <field>
+                                            <select id="rooms2" name="rooms2" class="required form-combo1">
+                                            </select>
+                                        </field>
+                                    </span>
+                                </div>
+                            </td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <td valign="top">
+                            <div class="col4 last">
+                                <label for="rooms3" id="froom3" style="margin:0px;">File Number</label>
+                            </div>
+                        </td>
+                        <td valign="top">
+                            <div class="col4 last">
+                                <field><input type="text" id="rooms3" name="rooms3" value="N/A" placeholder="FILE NUMBER"
+                                              readonly=""/></field>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="provider-to-visit">Provider(optional)</label></td>
+                        <td>
+                            <div id="provider-tr">
+                                <select id="provider-to-visit" name="providerToVisit">
+                                    <option value="">-Please select-</option>
+                                    <% listProviders.each { prod -> %>
+                                    <option value="${prod.providerId }">${prod.names}</option>
+                                    <% } %>
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                ${ui.includeFragment("initialpatientqueueapp","referralInfo")}
+
+
+                <div class="onerow" style="display:none!important;">
+                    <div class="col4">
+                        <input id="paying" type="checkbox" name="person.attribute.14" value="Paying"
+                               checked/> Paying
                     </div>
-                </td>
-                <td valign="top">
 
                     <div class="col4">
-                        <div class="tasks">
-                            <header class="tasks-header">
-                                <span id="tasktitle" class="tasks-title">Paying Category</span>
-                                <a class="tasks-lists"></a>
-                            </header>
-
-                            <div class="tasks-list" id="paycatgs">
-
-                            </div>
-                        </div>
+                        <input id="nonPaying" type="checkbox" name="person.attribute.14"
+                               value="Non-Paying"/> Non-Paying
                     </div>
-                </td>
-                <td valign="top">
+
                     <div class="col4 last">
-                        <div class="tasks">
-                            <header class="tasks-header">
-                                <span id="summtitle1" class="tasks-title">Details</span>
-                                <input type="hidden" id="nhifNumber" name="nhifNumber"/>
-                                <input type="hidden" id="studentId" name="studentId"/>
-                                <input type="hidden" id="waiverNumber" name="waiverNumber"/>
-                                <a class="tasks-lists"></a>
-                            </header>
-                        </div>
+                        <input id="specialSchemes" type="checkbox" name="person.attribute.14"
+                               value="Special Schemes"/> Special Schemes
+                    </div>
 
-                        <span id="universitydiv" class="select-arrow" style="width: 100%">
-                            <field><select style="width: 101%;" name="university"
-                                           id="university">&nbsp;</select></field>
+                    <label><input type="checkbox" name="mlcCaseYes" id="mlcCaseYes">MLC Yes</label>
+                    <label><input id="mlcCaseNo" type="checkbox" name="mlcCaseNo"/>MLC No</label>
+
+                    <label><input id="referredYes" type="checkbox" name="referredYes"/>Refer Yes</label>
+                    <label><input id="referredNo" type="checkbox" name="referredNo"/>Refer No</label>
+
+                    <input id="triageRoom" type="checkbox" name="triageRoom"/>
+                    <input id="opdRoom" type="checkbox" name="opdRoom"/>
+                    <input id="specialClinicRoom" type="checkbox" name="specialClinicRoom"/>
+                    <input id="birthdateEstimated" type="text" name="patient.birthdateEstimate"/>
+                    <input id="chiefdom" class="form-textbox1 focused" type="text" name="person.attribute.41">
+                </div>
+
+                <div class="onerow" style="display:none!important;">
+                    <div class="col4">&nbsp;
+                        <span id="payingCategoryField">
+                            <span class="select-arrow" style="width: 100%">
+                                <select id="payingCategory" name="person.attribute.44"
+                                        onchange="payingCategorySelection();"
+                                        class="form-combo1" style="display:block!important"></select></span>
                         </span>
 
-                        <field><input type="text" id="modesummary" name="modesummary" value="N/A"
-                                      placeholder="WAIVER NUMBER" readonly="" style="width: 101%!important"/>
-                        </field>
                     </div>
-                </td>
-            </tr>
-            <tr>
-                <td><h2>Visit type</h2></td>
-                <td><div>
-                    <select id="visitType" name="visitType">
 
-                    </select>
-                </div>
-                </td>
-            </tr>
-
-
-            <tr><td colspan="2"><h2>Room to Visit</h2></td></tr>
-            <tr>
-
-                <div class="onerow" style="margin-top:10px;">
-                    <td valign="top">
-                        <div class="col4">
-                            <label for="rooms1" id="froom1" style="margin:0px;">Room to Visit<span>*</span></label>
-                        </div>
-                    </td>
-                    <td valign="top">
-                        <div class="col4">
+                    <div class="col4">&nbsp;
+                        <span id="nonPayingCategoryField">
                             <span class="select-arrow" style="width: 100%">
-                                <field>
-                                    <select id="rooms1" name="rooms1" onchange="LoadRoomsTypes();"
-                                            class="required form-combo1">
-                                        <option value="">Select Room</option>
-                                        <option value="1">TRIAGE ROOM</option>
-                                        <option value="2">OPD ROOM</option>
-                                        <option value="3">SPECIAL CLINIC</option>
-                                    </select>
-                                </field>
-                            </span>
-                        </div>
-                    </td>
-                </div>
-            </tr>
-            <tr>
-                <div class="onerow" style="margin-top:10px;">
-                    <td valign="top">
-                        <div class="col4">
-                            <label for="rooms2" id="froom2" style="margin:0px;">Room Type<span>*</span></label>
-                        </div>
-                    </td>
-                    <td valign="top">
-                        <div class="col4">
+                                <select id="nonPayingCategory" name="person.attribute.45"
+                                        onchange="nonPayingCategorySelection();"
+                                        class="form-combo1" style="display:block!important"></select></span>
+                        </span>
+
+                    </div>
+
+                    <div class="col4 last">&nbsp;
+                        <span id="specialSchemeCategoryField">
                             <span class="select-arrow" style="width: 100%">
-                                <field>
-                                    <select id="rooms2" name="rooms2" class="required form-combo1">
-                                    </select>
-                                </field>
+                                <select id="specialScheme" name="person.attribute.46"
+                                        onchange="specialSchemeSelection();"
+                                        class="form-combo1" style="display:block!important"></select>
                             </span>
-                        </div>
-                    </td>
+
+                        </span>
+                    </div>
                 </div>
-            </tr>
-            <tr>
-                <td valign="top">
-                    <div class="col4 last">
-                        <label for="rooms3" id="froom3" style="margin:0px;">File Number</label>
-                    </div>
-                </td>
-                <td valign="top">
-                    <div class="col4 last">
-                        <field><input type="text" id="rooms3" name="rooms3" value="N/A" placeholder="FILE NUMBER"
-                                      readonly=""/></field>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td><label for="provider-to-visit">Provider(optional)</label></td>
-                <td>
-                    <div id="provider-tr">
-                        <select id="provider-to-visit" name="providerToVisit">
-                            <option value="">-Please select-</option>
-                            <% listProviders.each { prod -> %>
-                            <option value="${prod.providerId }">${prod.names}</option>
-                            <% } %>
-                        </select>
-                    </div>
-                </td>
-            </tr>
-        </table>
 
-        ${ui.includeFragment("initialpatientqueueapp","referralInfo")}
+                <div class="onerow" style="margin-top: 60px">
 
+                    <a class="button confirm" onclick="PAGE.submit();"
+                       style="float:right; display:inline-block; margin-left: 5px;">
+                        <span>FINISH</span>
+                    </a>
 
-        <div class="onerow" style="display:none!important;">
-            <div class="col4">
-                <input id="paying" type="checkbox" name="person.attribute.14" value="Paying"
-                       checked/> Paying
-            </div>
-
-            <div class="col4">
-                <input id="nonPaying" type="checkbox" name="person.attribute.14"
-                       value="Non-Paying"/> Non-Paying
-            </div>
-
-            <div class="col4 last">
-                <input id="specialSchemes" type="checkbox" name="person.attribute.14"
-                       value="Special Schemes"/> Special Schemes
-            </div>
-
-            <label><input type="checkbox" name="mlcCaseYes" id="mlcCaseYes">MLC Yes</label>
-            <label><input id="mlcCaseNo" type="checkbox" name="mlcCaseNo"/>MLC No</label>
-
-            <label><input id="referredYes" type="checkbox" name="referredYes"/>Refer Yes</label>
-            <label><input id="referredNo" type="checkbox" name="referredNo"/>Refer No</label>
-
-            <input id="triageRoom" type="checkbox" name="triageRoom"/>
-            <input id="opdRoom" type="checkbox" name="opdRoom"/>
-            <input id="specialClinicRoom" type="checkbox" name="specialClinicRoom"/>
-            <input id="birthdateEstimated" type="text" name="patient.birthdateEstimate"/>
-            <input id="chiefdom" class="form-textbox1 focused" type="text" name="person.attribute.41">
+                    <a class="button cancel" onclick="window.location.href = window.location.href"
+                       style="float:right; display:inline-block;"/>
+                        <span>RESET</span>
+                    </a>
+                </div>
+            </form>
         </div>
 
-        <div class="onerow" style="display:none!important;">
-            <div class="col4">&nbsp;
-                <span id="payingCategoryField">
-                    <span class="select-arrow" style="width: 100%">
-                        <select id="payingCategory" name="person.attribute.44"
-                                onchange="payingCategorySelection();"
-                                class="form-combo1" style="display:block!important"></select></span>
-                </span>
-
-            </div>
-
-            <div class="col4">&nbsp;
-                <span id="nonPayingCategoryField">
-                    <span class="select-arrow" style="width: 100%">
-                        <select id="nonPayingCategory" name="person.attribute.45"
-                                onchange="nonPayingCategorySelection();"
-                                class="form-combo1" style="display:block!important"></select></span>
-                </span>
-
-            </div>
-
-            <div class="col4 last">&nbsp;
-                <span id="specialSchemeCategoryField">
-                    <span class="select-arrow" style="width: 100%">
-                        <select id="specialScheme" name="person.attribute.46"
-                                onchange="specialSchemeSelection();"
-                                class="form-combo1" style="display:block!important"></select>
-                    </span>
-
-                </span>
-            </div>
         </div>
-
-        <div class="onerow" style="margin-top: 60px">
-
-            <a class="button confirm" onclick="PAGE.submit();"
-               style="float:right; display:inline-block; margin-left: 5px;">
-                <span>FINISH</span>
-            </a>
-
-            <a class="button cancel" onclick="window.location.href = window.location.href"
-               style="float:right; display:inline-block;"/>
-                <span>RESET</span>
-            </a>
+        <div id="history">
         </div>
-    </form>
-</div>
-
 </div>

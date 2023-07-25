@@ -129,7 +129,7 @@ public class QueuePatientFragmentController {
 		model.addAttribute("specialSchemeMap", specialSchemeMap);
 		model.addAttribute("initialRegFee",
 		    GlobalPropertyUtil.getString(InitialPatientQueueConstants.PROPERTY_INITIAL_REGISTRATION_FEE, ""));
-		model.addAttribute("visitType", hasRevisits(patient));
+		model.addAttribute("visitType", hasRevisits(patient, 2));
 		model.addAttribute("childLessThanFiveYearRegistrationFee",
 		    GlobalPropertyUtil.getString(InitialPatientQueueConstants.PROPERTY_CHILDLESSTHANFIVEYEAR_REGISTRATION_FEE, ""));
 		model.addAttribute("specialClinicRegFee",
@@ -165,6 +165,7 @@ public class QueuePatientFragmentController {
 	        @RequestParam(value = "rooms1", required = false) String room1Options,
 	        @RequestParam(value = "rooms2", required = false) String department,
 	        @RequestParam(value = "providerToVisit", required = false) Provider provider,
+	        @RequestParam(value = "visitType", required = false) Integer visitType,
 	        @RequestParam(value = "rooms3", required = false) String fileNumber) throws IOException, ParseException {
 		
 		Map<String, String> parameters = RegistrationWebUtils.optimizeParameters(request);
@@ -183,7 +184,7 @@ public class QueuePatientFragmentController {
 			savePatientSearch(patient);
 			// create encounter for the visit here
 			Visit visit = hasActiveVisit(patientVisit, patient);
-			Encounter encounter = createEncounter(patient, parameters, visit, provider);
+			Encounter encounter = createEncounter(patient, parameters, visit, provider, visitType);
 			//save the encounter here
 			Context.getEncounterService().saveEncounter(encounter);
 			//save patient details categories
@@ -191,7 +192,7 @@ public class QueuePatientFragmentController {
 			//save waiver information
 			saveHospitalWaivers(patient);
 			
-			sendToBillingDependingOnTheBill(parameters, encounter, payCat, Integer.parseInt(department));
+			sendToBillingDependingOnTheBill(parameters, encounter, payCat, Integer.parseInt(department), visitType);
 			//update the appointment in consultation if scheduled
 			EhrAppointmentService ehrAppointmentService = Context.getService(EhrAppointmentService.class);
 			EhrAppointment ehrAppointment = ehrAppointmentService.getLastEhrAppointment(patient);
@@ -216,7 +217,7 @@ public class QueuePatientFragmentController {
 		}
 		return "redirect:"
 		        + uiUtils.pageLink("initialpatientqueueapp", "showPatientInfo?patientId=" + patient.getPatientId()
-		                + "&visit=" + hasRevisits(patient) + "&payCategory=" + paymentCategory + "&roomToVisit="
+		                + "&visit=" + hasRevisits(patient, visitType) + "&payCategory=" + paymentCategory + "&roomToVisit="
 		                + roomToVisit + "&departiment=" + department + "&fileNumber=" + fileNumber);
 	}
 	
@@ -227,8 +228,8 @@ public class QueuePatientFragmentController {
 	 * @param parameters
 	 * @return
 	 */
-	private Encounter createEncounter(Patient patient, Map<String, String> parameters, Visit visit, Provider provider)
-	        throws ParseException {
+	private Encounter createEncounter(Patient patient, Map<String, String> parameters, Visit visit, Provider provider,
+	        Integer visitType) throws ParseException {
 		int rooms1 = Integer.parseInt(parameters.get("rooms1"));
 		int paymt1 = Integer.parseInt(parameters.get("paym_1"));
 		int paymt2 = Integer.parseInt(parameters.get("paym_2"));
@@ -317,7 +318,7 @@ public class QueuePatientFragmentController {
 			}
 		}
 		
-		Encounter encounterObs = RegistrationWebUtils.createEncounter(patient, hasRevisits(patient), visit);
+		Encounter encounterObs = RegistrationWebUtils.createEncounter(patient, hasRevisits(patient, visitType), visit);
 		
 		if (StringUtils.isNotBlank(tNTriage)) {
 			
@@ -329,7 +330,8 @@ public class QueuePatientFragmentController {
 			triageObs.setConcept(triageConcept);
 			triageObs.setValueCoded(selectedTRIAGEConcept);
 			encounterObs.addObs(triageObs);
-			RegistrationWebUtils.sendPatientToTriageQueue(patient, selectedTRIAGEConcept, hasRevisits(patient), paymt3);
+			RegistrationWebUtils.sendPatientToTriageQueue(patient, selectedTRIAGEConcept, hasRevisits(patient, visitType),
+			    paymt3);
 		}
 		if (StringUtils.isNotBlank(oNOpd)) {
 			Concept opdConcept = Context.getConceptService().getConceptByUuid("03880388-07ce-4961-abe7-0e58f787dd23");
@@ -338,7 +340,8 @@ public class QueuePatientFragmentController {
 			opdObs.setConcept(opdConcept);
 			opdObs.setValueCoded(selectedOPDConcept);
 			encounterObs.addObs(opdObs);
-			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedOPDConcept, hasRevisits(patient), paymt3, provider);
+			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedOPDConcept, hasRevisits(patient, visitType), paymt3,
+			    provider);
 			
 		}
 		if (StringUtils.isNotBlank(sNSpecial)) {
@@ -349,8 +352,8 @@ public class QueuePatientFragmentController {
 			opdObs.setConcept(specialClinicConcept);
 			opdObs.setValueCoded(selectedSpecialClinicConcept);
 			encounterObs.addObs(opdObs);
-			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedSpecialClinicConcept, hasRevisits(patient), paymt3,
-			    provider);
+			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedSpecialClinicConcept,
+			    hasRevisits(patient, visitType), paymt3, provider);
 		}
 		
 		//if mlc is not empty then is a mlc otherwise NOT an mlc
@@ -430,7 +433,7 @@ public class QueuePatientFragmentController {
 		return encounterObs;
 	}
 	
-	private boolean hasRevisits(Patient patient) throws ParseException {
+	private boolean hasRevisits(Patient patient, Integer visitType) throws ParseException {
 		boolean found = false;
 		KenyaEmrService kenyaEmrService = Context.getService(KenyaEmrService.class);
 		
@@ -449,7 +452,7 @@ public class QueuePatientFragmentController {
 		if (filteredVisits.size() > 0) {
 			Encounter encounterVisit = filteredVisits.get(0);
 			if (EhrRegistrationUtils.parseDate(EhrRegistrationUtils.formatDate(encounterVisit.getEncounterDatetime()))
-			        .before(EhrRegistrationUtils.parseDate(EhrRegistrationUtils.formatDate(new Date())))) {
+			        .before(EhrRegistrationUtils.parseDate(EhrRegistrationUtils.formatDate(new Date()))) || visitType == 2) {
 				found = true;
 			}
 		}
@@ -663,7 +666,7 @@ public class QueuePatientFragmentController {
 	}
 	
 	private void sendToBillingDependingOnTheBill(Map<String, String> parameters, Encounter encounter, int payCat,
-	        int department) throws ParseException {
+	        int department, int visitType) throws ParseException {
 		Integer revisitCriteria = Integer.valueOf(Context.getAdministrationService().getGlobalProperty(
 		    "initialpatientqueueapp.revisit.fee.criteria"));
 		Date previousVisitDate = EhrRegistrationUtils.getPreviousVisitDate(encounter.getPatient());
@@ -690,7 +693,7 @@ public class QueuePatientFragmentController {
 		int roomToVisit = Integer.parseInt(parameters.get("rooms1"));
 		if (payCat == 1) {
 			//check if is a revisit or a new patient
-			if (hasRevisits(encounter.getPatient())) {
+			if (hasRevisits(encounter.getPatient(), visitType)) {
 				if (encounter.getPatient().getAge(new Date()) < 5) {
 					sendPatientsToBilling(childUnder5RevisitFees, encounter);
 					saveFeesCollectedAtRegistrationDesk(encounter.getPatient(), "Under 5 revisit fee",
