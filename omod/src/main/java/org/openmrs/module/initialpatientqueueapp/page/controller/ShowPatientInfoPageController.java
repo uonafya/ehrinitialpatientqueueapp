@@ -96,7 +96,7 @@ public class ShowPatientInfoPageController {
 		Concept under5RegistrationFees = Context.getConceptService().getConceptByUuid(
 		    InitialPatientQueueConstants.UNDER_5_REG_FEE);
 		Concept under5RevisitFess = Context.getConceptService().getConceptByUuid(
-		    InitialPatientQueueConstants.UNDER_5_REG_FEE);
+		    InitialPatientQueueConstants.UNDER_5_REVISIT_FEE);
 		
 		BillableService mopcRegistrationFee = Context.getService(BillingService.class).getServiceByConceptId(
 		    mopcRegistartionFess.getId());
