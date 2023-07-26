@@ -76,7 +76,7 @@ form textarea:focus, .form textarea:focus{
     <div class="dashboard-tabs">
             <ul>
                 <li id="queue"><a href="#content">Queue Patient</a></li>
-                <li id="history"><a href="#history">Queue history</a></li>
+                <li id="queue-history"><a href="#history">Queue history</a></li>
             </ul>
             <div id="content">
                 <table cellpadding="0" cellspacing="0" border="0" width="100%">
