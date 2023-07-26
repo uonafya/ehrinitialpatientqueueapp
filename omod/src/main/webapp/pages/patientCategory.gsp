@@ -3,7 +3,9 @@
     ui.includeCss("ehrconfigs", "referenceapplication.css")
 %>
 <script type="text/javascript">
-jq(".dashboard-tabs").tabs();
+    jq(document).ready(function () {
+        jq("#itabs").tabs();
+    });
 </script>
 <style type="text/css">
 body {
@@ -73,7 +75,7 @@ form textarea:focus, .form textarea:focus{
 </style>
 
 <div class="ke-page-content">
-    <div class="dashboard-tabs">
+    <div id="itabs">
             <ul>
                 <li id="queue"><a href="#content">Queue Patient</a></li>
                 <li id="queue-§history"><a href="#history">Queue history</a></li>
