@@ -2,6 +2,9 @@
     ui.decorateWith("kenyaemr", "standardPage", [ patient: currentPatient ])
     ui.includeCss("ehrconfigs", "referenceapplication.css")
 %>
+<script type="text/javascript">
+jq(".dashboard-tabs").tabs();
+</script>
 <style type="text/css">
 body {
     margin-top: 20px;
@@ -70,14 +73,25 @@ form textarea:focus, .form textarea:focus{
 </style>
 
 <div class="ke-page-content">
-    <table cellpadding="0" cellspacing="0" border="0" width="100%">
-        <tr>
-            <td width="30%" valign="top"></td>
-            <td valign="top" style="padding-left: 5px">
-                <div class="onepcssgrid-1000">
-                ${ ui.includeFragment("initialpatientqueueapp", "queuePatient", [patient: currentPatient])}
+    <div class="dashboard-tabs">
+            <ul>
+                <li id="queue"><a href="#content">Queue Patient</a></li>
+                <li id="history"><a href="#history">Queue history</a></li>
+            </ul>
+            <div id="content">
+                <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                    <tr>
+                        <td width="30%" valign="top"></td>
+                        <td valign="top" style="padding-left: 5px">
+                            <div class="onepcssgrid-1000">
+                            ${ ui.includeFragment("initialpatientqueueapp", "queuePatient", [patient: currentPatient])}
+                        </div>
+                        </td>
+                    </tr>
+                </table>
             </div>
-            </td>
-        </tr>
-    </table>
+          <div id="history">
+                <h4>Visit history will go here</h4>
+          </div>
+    </div>
 </div>
