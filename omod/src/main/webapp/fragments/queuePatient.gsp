@@ -1616,7 +1616,7 @@ a.tooltip span {
 </style>
 <div id="content" class="container">
     <div class="ke-tab-container">
-        <ul class="ke-tabs">
+        <ul class="ke-panelbar" style="text-align: left">
             <li class="ke-tab" onclick="showTab('NewPatient')">New Patient</li>
             <li class="ke-tab" onclick="showTab('RevisitPatient')">Revisit Patient</li>
         </ul>
