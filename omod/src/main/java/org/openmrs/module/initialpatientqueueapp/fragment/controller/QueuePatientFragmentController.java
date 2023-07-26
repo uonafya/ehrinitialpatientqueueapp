@@ -865,7 +865,7 @@ public class QueuePatientFragmentController {
 			bill.setPatientCategory("Paying");
 			bill.setPatientSubCategory("General Patient");
 			bill.setPaymentMode("Cash");
-			bill.setFreeBill(calculator.isFreeBill("free"));
+			bill.setFreeBill(calculator.isFreeBill("paid"));
 			bill.setReceipt(billingService.createReceipt());
 			billingService.savePatientServiceBill(bill);
 		}
