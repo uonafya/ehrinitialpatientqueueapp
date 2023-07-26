@@ -173,6 +173,7 @@ public class QueuePatientFragmentController {
 		int payCat = Integer.parseInt(paymentCategory);
 		
 		KenyaEmrService kenyaEmrService = Context.getService(KenyaEmrService.class);
+		HospitalCoreService hospitalCoreService = Context.getService(HospitalCoreService.class);
 		Visit currentVisit;
 		List<Visit> patientVisit = Context.getVisitService().getActiveVisitsByPatient(patient);
 		
@@ -203,6 +204,7 @@ public class QueuePatientFragmentController {
 				ehrAppointment.setVisit(visit);
 				ehrAppointmentService.saveEhrAppointment(ehrAppointment);
 			}
+			hospitalCoreService.savePatientOpdNumbers(patient);
 			
 			//ADD PERSON ATTRIBUTE SET
 			model.addAttribute("status", "success");
