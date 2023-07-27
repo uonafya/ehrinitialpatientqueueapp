@@ -4,8 +4,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.ehrconfigs.metadata.EhrCommonMetadata;
 import org.openmrs.module.hospitalcore.BillingService;
 import org.openmrs.module.hospitalcore.HospitalCoreService;
 import org.openmrs.module.hospitalcore.model.BillableService;
@@ -42,14 +44,15 @@ public class ShowPatientInfoPageController {
 		model.addAttribute("receiptDate", simpleDate.format(new Date()));
 		
 		Patient patient = Context.getPatientService().getPatient(patientId);
+		PatientIdentifier opdNumber = patient.getPatientIdentifier(Context.getPatientService()
+		        .getPatientIdentifierTypeByUuid(EhrCommonMetadata._EhrIdenifiers.OPD_NUMBER));
 		HospitalCoreService hcs = Context.getService(HospitalCoreService.class);
 		
 		User user = Context.getAuthenticatedUser();
 		
 		model.addAttribute("user", user.getPersonName().getFullName());
 		model.addAttribute("names", Context.getPersonService().getPerson(patientId).getPersonName().getFullName());
-		model.addAttribute("patientId", Context.getPatientService().getPatient(patientId).getPatientIdentifier()
-		        .getIdentifier());
+		model.addAttribute("patientId", opdNumber);
 		model.addAttribute("location", Context.getService(KenyaEmrService.class).getDefaultLocation().getName());
 		model.addAttribute("age", Context.getPatientService().getPatient(patientId).getAge());
 		model.addAttribute("gender", Context.getPatientService().getPatient(patientId).getGender());
