@@ -204,7 +204,7 @@ public class QueuePatientFragmentController {
 				ehrAppointment.setVisit(visit);
 				ehrAppointmentService.saveEhrAppointment(ehrAppointment);
 			}
-			hospitalCoreService.savePatientOpdNumbers(patient);
+			hospitalCoreService.savePatientOpdNumbers(patient, "OPD");
 			
 			//ADD PERSON ATTRIBUTE SET
 			model.addAttribute("status", "success");
