@@ -93,7 +93,7 @@ form textarea:focus, .form textarea:focus{
                 </table>
             </div>
           <div id="history">
-                <h4>Visit history will go here</h4>
+                ${ ui.includeFragment("initialpatientqueueapp", "patientQueueSummary"}
           </div>
     </div>
 </div>
