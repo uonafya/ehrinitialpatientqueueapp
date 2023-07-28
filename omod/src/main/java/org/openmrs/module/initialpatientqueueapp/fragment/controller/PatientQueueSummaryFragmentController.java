@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PatientQueueSummaryFragmentController {
 	
@@ -25,6 +26,7 @@ public class PatientQueueSummaryFragmentController {
 		        null, false));
 		if (!patientEncounters.isEmpty() && patientEncounters.size() > 5) {
 			//filtered = //get the first 5
+			filtered = patientEncounters.stream().limit(5).collect(Collectors.toList());
 		} else {
 			filtered = patientEncounters;
 			
