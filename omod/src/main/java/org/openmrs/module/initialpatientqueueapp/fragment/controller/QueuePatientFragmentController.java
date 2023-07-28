@@ -204,7 +204,12 @@ public class QueuePatientFragmentController {
 				ehrAppointment.setVisit(visit);
 				ehrAppointmentService.saveEhrAppointment(ehrAppointment);
 			}
-			hospitalCoreService.savePatientOpdNumbers(patient, "OPD");
+			//check if the patient has this identifier already has the number generated
+			//if true just skip, else generate one
+			if (patient.getPatientIdentifier(Context.getPatientService().getPatientIdentifierTypeByUuid(
+			    "61A354CB-4F7F-489A-8BE8-09D0ACEDDC63")) == null) {
+				hospitalCoreService.savePatientOpdNumbers(patient, "OPD");
+			}
 			
 			//ADD PERSON ATTRIBUTE SET
 			model.addAttribute("status", "success");
