@@ -119,7 +119,8 @@ public class ShowPatientInfoPageController {
 		Date previousVisitDate = EhrRegistrationUtils.getPreviousVisitDate(patient);
 		Date actualDatePlusBuffer = EhrRegistrationUtils.requiredDate(previousVisitDate, revisitCriteria);
 		if (!visit) {
-			if (patient.getAge(new Date()) < 5) {
+			if (patient.getAge(new Date()) < 5 && under5RegistrationFeeBill != null
+			        && under5RegistrationFeeBill.getPrice() != null) {
 				WhatToBePaid = "Registration fees:		" + under5RegistrationFeeBill.getPrice();
 			} else {
 				if (Context.getConceptService().getConcept(Integer.parseInt(departiment)).equals(mopcTriage)
@@ -133,7 +134,7 @@ public class ShowPatientInfoPageController {
 				}
 			}
 		} else {
-			if (patient.getAge(new Date()) < 5) {
+			if (patient.getAge(new Date()) < 5 && under5RevisitFeeBill != null && under5RevisitFeeBill.getPrice() != null) {
 				WhatToBePaid = "Revisit fees:		" + under5RevisitFeeBill.getPrice();
 			} else {
 				if (Context.getConceptService().getConcept(Integer.parseInt(departiment)).equals(mopcTriage)
