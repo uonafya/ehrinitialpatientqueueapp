@@ -133,11 +133,23 @@ public class ManageAppointmentsTypesFragmentController {
 	}
 	
 	public String createAppointmentServiceType(@RequestParam(value = "name", required = false) String name,
-	        @RequestParam(value = "duration") String duration,
+	        @RequestParam(value = "duration") Integer duration,
 	        @RequestParam(value = "appointmentServiceDefinition", required = false) String appointmentServiceDefinition) {
 		HospitalCoreService hospitalCoreService = Context.getService(HospitalCoreService.class);
+		AppointmentServiceDefinitionService appointmentServiceDefinitionService = Context
+				.getService(AppointmentServiceDefinitionService.class);
 		AppointmentServiceType appointmentServiceType = new AppointmentServiceType();
-		
+		if(StringUtils.isNotBlank(name)) {
+			appointmentServiceType.setName(name);
+			appointmentServiceType.setCreator(Context.getAuthenticatedUser());
+			appointmentServiceType.setDuration(duration);
+			appointmentServiceType.setAppointmentServiceDefinition(appointmentServiceDefinitionService.getAppointmentServiceByUuid(appointmentServiceDefinition));
+			appointmentServiceType.setDateCreated(new Date());
+			appointmentServiceType.setUuid(UUID.randomUUID().toString());
+
+			//save the appointment service type
+			hospitalCoreService.saveAppointmentServiceType(appointmentServiceType);
+		}
 		return "Created appointment service type";
 		
 	}
