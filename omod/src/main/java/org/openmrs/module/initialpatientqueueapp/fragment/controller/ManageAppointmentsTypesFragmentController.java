@@ -4,43 +4,81 @@ import org.apache.commons.lang3.StringUtils;
 import org.openmrs.VisitType;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appointments.model.AppointmentServiceDefinition;
+import org.openmrs.module.appointments.model.AppointmentServiceType;
+import org.openmrs.module.appointments.model.AppointmentStatus;
+import org.openmrs.module.appointments.model.Speciality;
+import org.openmrs.module.appointments.service.AppointmentServiceDefinitionService;
+import org.openmrs.module.appointments.service.SpecialityService;
 import org.openmrs.module.hospitalcore.EhrAppointmentService;
+import org.openmrs.module.hospitalcore.HospitalCoreService;
 import org.openmrs.module.hospitalcore.model.EhrAppointmentType;
+import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class ManageAppointmentsTypesFragmentController {
 	
 	public void controller(FragmentModel model) {
-		VisitService visitService = Context.getVisitService();
-		EhrAppointmentService appointmentService = Context.getService(EhrAppointmentService.class);
-		List<EhrAppointmentType> appointmentTypeList = new ArrayList<EhrAppointmentType>(
-		        appointmentService.getAllEhrAppointmentTypes());
+		SpecialityService specialityService = Context.getService(SpecialityService.class);
+		AppointmentServiceDefinitionService appointmentServiceDefinitionService = Context
+		        .getService(AppointmentServiceDefinitionService.class);
+		List<AppointmentServiceDefinition> appointmentServiceList = new ArrayList<AppointmentServiceDefinition>(
+		        appointmentServiceDefinitionService.getAllAppointmentServices(false));
 		
-		model.addAttribute("types", visitService.getAllVisitTypes());
-		model.addAttribute("appointmentTypes", appointmentTypeList);
+		model.addAttribute("specialityTypes", specialityService.getAllSpecialities());
+		model.addAttribute("appointmentService", appointmentServiceList);
 	}
 	
-	public String createAppointmentType(@RequestParam(value = "name", required = false) String name,
-	        @RequestParam(value = "appointmentVisitType") VisitType appointmentVisitType,
-	        @RequestParam(value = "appointmentDuration", required = false) String appointmentDuration,
-	        @RequestParam(value = "description", required = false) String description) {
+	public String createAppointmentService(@RequestParam(value = "name", required = false) String name,
+	        @RequestParam(value = "description") String description,
+	        @RequestParam(value = "speciality", required = false) String specialityUuid,
+	        @RequestParam(value = "startTime", required = false) Time startTime,
+	        @RequestParam(value = "endTime", required = false) Time endTime,
+	        @RequestParam(value = "maxAppointmentsLimit", required = false) Integer maxAppointmentsLimit,
+	        @RequestParam(value = "durationMins", required = false) Integer durationMins,
+	        @RequestParam(value = "initialAppointmentStatus", required = false) Integer initialAppointmentStatus) {
 		
-		EhrAppointmentService ehrAppointmentService = Context.getService(EhrAppointmentService.class);
-		EhrAppointmentType ehrAppointmentType = new EhrAppointmentType();
-		ehrAppointmentType.setName(name);
-		ehrAppointmentType.setCreator(Context.getAuthenticatedUser());
-		ehrAppointmentType.setDateCreated(new Date());
-		ehrAppointmentType.setVisitType(appointmentVisitType);
-		ehrAppointmentType.setDuration(Integer.valueOf(appointmentDuration));
-		ehrAppointmentType.setDescription(description);
-		//save the appointment type
-		ehrAppointmentService.saveEhrAppointmentType(ehrAppointmentType);
-		
+		AppointmentServiceDefinitionService appointmentServiceDefinitionService = Context
+		        .getService(AppointmentServiceDefinitionService.class);
+		AppointmentServiceDefinition appointmentServiceDefinition = new AppointmentServiceDefinition();
+		SpecialityService specialityService = Context.getService(SpecialityService.class);
+		if (StringUtils.isNotBlank(name)) {
+			appointmentServiceDefinition.setName(name);
+			if (StringUtils.isNotBlank(description)) {
+				appointmentServiceDefinition.setDescription(description);
+			}
+			if (StringUtils.isNotBlank(specialityUuid)) {
+				appointmentServiceDefinition.setSpeciality(specialityService.getSpecialityByUuid(specialityUuid));
+			}
+			if (startTime != null) {
+				appointmentServiceDefinition.setStartTime(startTime);
+			}
+			if (endTime != null) {
+				appointmentServiceDefinition.setStartTime(endTime);
+			}
+			if (maxAppointmentsLimit != null) {
+				appointmentServiceDefinition.setMaxAppointmentsLimit(maxAppointmentsLimit);
+			}
+			if (durationMins != null) {
+				appointmentServiceDefinition.setDurationMins(durationMins);
+			}
+			if (initialAppointmentStatus != null) {
+				appointmentServiceDefinition.setInitialAppointmentStatus(AppointmentStatus.Requested);
+			}
+			appointmentServiceDefinition.setCreator(Context.getAuthenticatedUser());
+			appointmentServiceDefinition.setDateCreated(new Date());
+			appointmentServiceDefinition.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
+			appointmentServiceDefinition.setUuid(UUID.randomUUID().toString());
+			//save the appointment service
+			appointmentServiceDefinitionService.save(appointmentServiceDefinition);
+		}
 		return "Appointment type created";
 	}
 	
@@ -53,15 +91,17 @@ public class ManageAppointmentsTypesFragmentController {
 	        @RequestParam(value = "editAction", required = false) Integer editAction,
 	        @RequestParam(value = "editAppointmentRetire", required = false) String editAppointmentRetire) {
 		
-		EhrAppointmentService ehrAppointmentService = Context.getService(EhrAppointmentService.class);
+		AppointmentServiceDefinitionService appointmentServiceDefinitionService = Context
+		        .getService(AppointmentServiceDefinitionService.class);
 		
-		EhrAppointmentType ehrAppointmentType = ehrAppointmentService.getEhrAppointmentType(appointmentTypeId);
-		ehrAppointmentType.setName(editName);
+		AppointmentServiceDefinition appointmentServiceDefinition = appointmentServiceDefinitionService
+		        .getAppointmentServiceByUuid("");
+		/*ehrAppointmentType.setName(editName);
 		ehrAppointmentType.setVisitType(editAppointmentVisitType);
 		ehrAppointmentType.setDuration(editAppointmentDuration);
-		ehrAppointmentType.setDescription(editDescription);
+		ehrAppointmentType.setDescription(editDescription);*/
 		
-		if (editAction != null) {
+		/*if (editAction != null) {
 			if (editAction == 1) {
 				ehrAppointmentService.saveEhrAppointmentType(ehrAppointmentType);
 			} else if (editAction == 2 && StringUtils.isNotBlank(editAppointmentRetire)) {
@@ -72,8 +112,34 @@ public class ManageAppointmentsTypesFragmentController {
 			} else if (editAction == 3) {
 				ehrAppointmentService.purgeEhrAppointmentType(ehrAppointmentType);
 			}
-		}
+		}*/
 		return "Appointment type edited";
+	}
+	
+	public String createSpecialityType(@RequestParam(value = "specialityName", required = false) String specialityName) {
+		
+		SpecialityService specialityService = Context.getService(SpecialityService.class);
+		Speciality speciality = new Speciality();
+		if (StringUtils.isNotBlank(specialityName)) {
+			speciality.setName(specialityName);
+			speciality.setCreator(Context.getAuthenticatedUser());
+			speciality.setDateCreated(new Date());
+			speciality.setUuid(UUID.randomUUID().toString());
+			//save the speciality type
+			specialityService.save(speciality);
+		}
+		
+		return "Speciality type created";
+	}
+	
+	public String createAppointmentServiceType(@RequestParam(value = "name", required = false) String name,
+	        @RequestParam(value = "duration") String duration,
+	        @RequestParam(value = "appointmentServiceDefinition", required = false) String appointmentServiceDefinition) {
+		HospitalCoreService hospitalCoreService = Context.getService(HospitalCoreService.class);
+		AppointmentServiceType appointmentServiceType = new AppointmentServiceType();
+		
+		return "Created appointment service type";
+		
 	}
 	
 }

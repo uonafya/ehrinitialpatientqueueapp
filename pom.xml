@@ -205,12 +205,16 @@
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-
 				<groupId>org.openmrs.module</groupId>
 				<artifactId>hospitalcore-api</artifactId>
 				<version>${hospitalcoreVersion}</version>
 				<scope>provided</scope>
-
+			</dependency>
+			<dependency>
+				<groupId>org.bahmni.module</groupId>
+				<artifactId>appointments-api</artifactId>
+				<version>${bahmniAppointmentsVersion}</version>
+				<scope>provided</scope>
 			</dependency>
 
 		</dependencies>
@@ -260,5 +264,6 @@
 		<ehrconfigsVersion>2.0.1-SNAPSHOT</ehrconfigsVersion>
 		<legacyUiVersion>1.5.0</legacyUiVersion>
 		<ehrcashierVersion>2.0.1-SNAPSHOT</ehrcashierVersion>
+		<bahmniAppointmentsVersion>1.5.0-SNAPSHOT</bahmniAppointmentsVersion>
     </properties>
 </project>

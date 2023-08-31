@@ -1,12 +1,12 @@
 
 <script type="text/javascript">
    var jq = jQuery.noConflict();
- </script>
+</script>
 <script type="text/javascript">
 var jq = jQuery;
     jq(function () {
         jq('#confirm').on( 'click',function () {
-            saveAppointmentType()
+            saveAppointmentService()
         });
 
         jq('#cancel').on( 'click',function () {
@@ -52,14 +52,18 @@ var jq = jQuery;
                             location.reload();
                         });
     }
-    function saveAppointmentType() {
-                jq.getJSON('${ ui.actionLink("initialpatientqueueapp", "manageAppointmentsTypes", "createAppointmentType") }', {
+    function saveAppointmentService() {
+                jq.getJSON('${ ui.actionLink("initialpatientqueueapp", "manageAppointmentsTypes", "createAppointmentService") }', {
                     name:jq("#appointment-type-name").val(),
-                    appointmentVisitType: jq("#appointment-visit-type").val(),
-                    appointmentDuration: jq("#appointment-duration").val(),
-                    description: jq("#appointment-description").val(),
+                    description: jq("#description").val(),
+                    speciality: jq("#speciality").val(),
+                    startTime: jq("#startTime").val(),
+                    endTime: jq("#endTime").val(),
+                    maxAppointmentsLimit: jq("#maxAppointmentsLimit").val(),
+                    durationMins: jq("#durationMins").val(),
+                    initialAppointmentStatus: jq("#initialAppointmentStatus").val(),
                 }).success(function(data) {
-                    jq().toastmessage('showSuccessToast', "Patient's Appointment type created successfully");
+                    jq().toastmessage('showSuccessToast', "Appointment service created successfully");
                     location.reload();
                 });
     }
@@ -77,15 +81,15 @@ var jq = jQuery;
                 <table border="0">
                     <tr>
                         <td>Name</td>
-                        <td><input type="text" id="appointment-type-name" name="appointmentType" /></td>
+                        <td><input type="text" id="name" name="name" /></td>
                     </tr>
                     <tr>
-                        <td>Visit type</td>
+                        <td>Speciality</td>
                         <td>
-                        <select id="appointment-visit-type" name="appointmentVisitType">
-                            <option value="">Please select visit type</option>
-                            <% types.each { type -> %>
-                                <option value="${type.visitTypeId }">${type.name}</option>
+                        <select id="speciality" name="speciality">
+                            <option value="">Please select speciality type</option>
+                            <% specialityTypes.each { type -> %>
+                                <option value="${type.uuid}">${type.name}</option>
                             <% } %>
                         </select>
                         </td>
@@ -114,92 +118,33 @@ var jq = jQuery;
     <table border="0" cellpadding="0" cellspacing="0" id="appointmentTypesTb" width="100%">
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Name</th>
-                <th>Visit Type</th>
-                <th>Duration</th>
+                <th>Speciality</th>
+                <th>Start Time</th>
+                <th>End Time</th>
                 <th>Description</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            <% if (appointmentTypes.empty) { %>
+            <% if (appointmentService.empty) { %>
                 <tr>
                     <td colspan="5">
                         No records found for specified period
                     </td>
                 </tr>
             <% } %>
-            <% if (appointmentTypes) { %>
-                <% appointmentTypes.each {%>
+            <% if (appointmentService) { %>
+                <% appointmentService.each {%>
                 <tr>
-                    <td>${it.appointmentTypeId}</td>
                     <td>${it.name}</td>
-                    <td>${it.visitType.name}</td>
-                    <td>${it.duration}</td>
+                    <% if(it.speciality) {%>
+                      <td>${it.speciality.name}</td>
+                    <%}%>
+                    <td>${it.startTime}</td>
+                    <td>${it.endTime}</td>
                     <td>${it.description}</td>
-                    <td>
-                        <button id="editAppointmentType" class="button task">Edit</button>
-                    </td>
                 </tr>
                 <%}%>
             <%}%>
         </tbody>
     </table>
-
-    <div id="edit-appointment-type-dialog" class="dialog" style="display:none;">
-        <div class="dialog-header">
-            <i class="icon-folder-open"></i>
-            <h3>Edit Appointment Type</h3>
-        </div>
-        <div class="dialog-content">
-        <input type="hidden" id="edit-appointment-type_id" />
-        <div>
-            <table border="0">
-                <tr>
-                    <td>Name</td>
-                    <td><input type="text" id="edit-appointment-type-name" name="editName" /></td>
-                </tr>
-                <tr>
-                    <td>Visit type</td>
-                    <td>
-                        <select id="edit-appointment-visit-type" name="editAppointmentVisitType">
-                            <option value="">Please select visit type</option>
-                            <% types.each { type -> %>
-                                <option value="${type.visitTypeId }">${type.name}</option>
-                            <% } %>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Duration</td>
-                    <td><input type="text" id="edit-appointment-duration" name="editAppointmentDuration" />
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">Description</td>
-                </tr>
-                <tr>
-                    <td colspan="2"><textarea id="edit-appointment-description" name="editDescription" rows="4" cols="50"></textarea></td>
-                </tr>
-                <tr>
-                    <td>Action</td>
-                    <td><select id="edit-appointment-type-action" name="editAction">
-                       <option value="1">Edit</option>
-                       <option value="2">Retire</option>
-                       <option value="3">Delete</option>
-                    </select></td>
-                </tr>
-                <tr>
-                    <td colspan="2">Retire/Void Reason</td>
-                </tr>
-                <tr>
-                    <td colspan="2"><textarea id="edit-appointment-type-retire" name="editAppointmentRetire" rows="4" cols="50"></textarea></td>
-                </tr>
-            </table>
-        </div>
-        <div class="onerow" style="margin-top:10px;">
-            <button class="button cancel" id="editCancel">Cancel</button>
-            <button class="button confirm right" id="editConfirm">Confirm</button>
-        </div>
-    </div>

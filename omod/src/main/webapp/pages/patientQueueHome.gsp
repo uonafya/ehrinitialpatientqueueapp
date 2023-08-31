@@ -8,7 +8,13 @@
                 label: "Appointment Calendar", extra: "Manage calendar appointments", iconProvider: "kenyaui", icon: "buttons/visit_end.png", href: ui.pageLink("initialpatientqueueapp", "viewAppointments")
             ],
             [
-                label: "Appointment types", extra: "Manage appointments types", iconProvider: "kenyaui", icon: "buttons/developer_overview.png", href: ui.pageLink("initialpatientqueueapp", "manageAppointmentsTypes")
+                label: "Create Speciality", extra: "Manage speciality types", iconProvider: "kenyaui", icon: "buttons/developer_overview.png", href: ui.pageLink("initialpatientqueueapp", "manageSpecialityTypes")
+            ],
+            [
+                label: "Appointment Services", extra: "Manage appointments services", iconProvider: "kenyaui", icon: "buttons/developer_overview.png", href: ui.pageLink("initialpatientqueueapp", "manageAppointmentsTypes")
+            ],
+            [
+                label: "Appointment Services Type", extra: "Manage appointments service types", iconProvider: "kenyaui", icon: "buttons/developer_overview.png", href: ui.pageLink("initialpatientqueueapp", "manageAppointmentsServiceTypes")
             ],
             [
                 label: "Patient Appointments", extra: "Manage Patient appointment", iconProvider: "kenyaui", icon: "buttons/visit_retrospective.png", href: ui.pageLink("initialpatientqueueapp", "managePatientAppointments")
