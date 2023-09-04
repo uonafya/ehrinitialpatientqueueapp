@@ -18,6 +18,7 @@ import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.Provider;
@@ -206,8 +207,11 @@ public class QueuePatientFragmentController {
 			}
 			//check if the patient has this identifier already has the number generated
 			//if true just skip, else generate one
-			if (patient.getPatientIdentifier(Context.getPatientService().getPatientIdentifierTypeByUuid(
-			    "61A354CB-4F7F-489A-8BE8-09D0ACEDDC63")) == null) {
+			List<PatientIdentifier> patientIdentifierList = Context.getPatientService().getPatientIdentifiers(
+			    null,
+			    Arrays.asList(Context.getPatientService().getPatientIdentifierTypeByUuid(
+			        "61A354CB-4F7F-489A-8BE8-09D0ACEDDC63")), null, Arrays.asList(patient), false);
+			if (patientIdentifierList.isEmpty()) {
 				hospitalCoreService.savePatientOpdNumbers(patient, "OPD");
 			}
 			

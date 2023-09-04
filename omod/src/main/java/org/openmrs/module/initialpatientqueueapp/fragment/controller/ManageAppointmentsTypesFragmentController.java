@@ -2,7 +2,6 @@ package org.openmrs.module.initialpatientqueueapp.fragment.controller;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.VisitType;
-import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointments.model.AppointmentServiceDefinition;
 import org.openmrs.module.appointments.model.AppointmentServiceType;
@@ -10,9 +9,7 @@ import org.openmrs.module.appointments.model.AppointmentStatus;
 import org.openmrs.module.appointments.model.Speciality;
 import org.openmrs.module.appointments.service.AppointmentServiceDefinitionService;
 import org.openmrs.module.appointments.service.SpecialityService;
-import org.openmrs.module.hospitalcore.EhrAppointmentService;
 import org.openmrs.module.hospitalcore.HospitalCoreService;
-import org.openmrs.module.hospitalcore.model.EhrAppointmentType;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,7 +34,7 @@ public class ManageAppointmentsTypesFragmentController {
 	}
 	
 	public String createAppointmentService(@RequestParam(value = "name", required = false) String name,
-	        @RequestParam(value = "description") String description,
+	        @RequestParam(value = "description", required = false) String description,
 	        @RequestParam(value = "speciality", required = false) String specialityUuid,
 	        @RequestParam(value = "startTime", required = false) Time startTime,
 	        @RequestParam(value = "endTime", required = false) Time endTime,
@@ -137,16 +134,18 @@ public class ManageAppointmentsTypesFragmentController {
 	        @RequestParam(value = "appointmentServiceDefinition", required = false) String appointmentServiceDefinition) {
 		HospitalCoreService hospitalCoreService = Context.getService(HospitalCoreService.class);
 		AppointmentServiceDefinitionService appointmentServiceDefinitionService = Context
-				.getService(AppointmentServiceDefinitionService.class);
+		        .getService(AppointmentServiceDefinitionService.class);
 		AppointmentServiceType appointmentServiceType = new AppointmentServiceType();
-		if(StringUtils.isNotBlank(name)) {
+		if (StringUtils.isNotBlank(name)) {
+			System.out.println("We aRE IN HWERE");
 			appointmentServiceType.setName(name);
 			appointmentServiceType.setCreator(Context.getAuthenticatedUser());
 			appointmentServiceType.setDuration(duration);
-			appointmentServiceType.setAppointmentServiceDefinition(appointmentServiceDefinitionService.getAppointmentServiceByUuid(appointmentServiceDefinition));
+			appointmentServiceType.setAppointmentServiceDefinition(appointmentServiceDefinitionService
+			        .getAppointmentServiceByUuid(appointmentServiceDefinition));
 			appointmentServiceType.setDateCreated(new Date());
 			appointmentServiceType.setUuid(UUID.randomUUID().toString());
-
+			
 			//save the appointment service type
 			hospitalCoreService.saveAppointmentServiceType(appointmentServiceType);
 		}

@@ -32,10 +32,10 @@
               <table border="0">
                   <tr>
                       <td>Name</td>
-                      <td><input type="text" id="name" name="name" /></td>
+                      <td><input type="text" id="appointment-service-type-name" name="name" /></td>
                   </tr>
                   <tr>
-                      <td>Speciality</td>
+                      <td>Appointment Service</td>
                       <td>
                       <select id="appointmentServiceDefinition" name="appointmentServiceDefinition">
                           <option value="">Please select appointment service</option>

@@ -1,17 +1,21 @@
 package org.openmrs.module.initialpatientqueueapp.fragment.controller;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
-import org.openmrs.api.LocationService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appointments.model.Appointment;
+import org.openmrs.module.appointments.model.AppointmentKind;
+import org.openmrs.module.appointments.model.AppointmentStatus;
+import org.openmrs.module.appointments.service.AppointmentServiceDefinitionService;
+import org.openmrs.module.appointments.service.AppointmentsService;
 import org.openmrs.module.hospitalcore.EhrAppointmentService;
 import org.openmrs.module.hospitalcore.HospitalCoreService;
 import org.openmrs.module.hospitalcore.model.EhrAppointment;
 import org.openmrs.module.hospitalcore.model.EhrAppointmentSimplifier;
 import org.openmrs.module.hospitalcore.model.EhrAppointmentType;
-import org.openmrs.module.hospitalcore.model.EhrTimeSlot;
 import org.openmrs.module.hospitalcore.model.SickOff;
 import org.openmrs.module.initialpatientqueueapp.EhrRegistrationUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
@@ -53,45 +57,39 @@ public class ScheduleAppointmentFragmentController {
 		model.addAttribute("patientId", patient.getPatientId());
 	}
 	
-	public String createAppointment(@RequestParam(value = "appointmentDate") String appointmentDate,
-	        @RequestParam(value = "startTime") String startTime, @RequestParam(value = "endTime") String endTime,
-	        @RequestParam(value = "type") Integer type, @RequestParam(value = "patientId") Patient patient,
-	        @RequestParam(value = "provider") Provider provider,
-	        @RequestParam(value = "notes", required = false) String notes) throws ParseException {
+	public String createAppointment(@RequestParam(value = "appointmentNumber") String appointmentNumber,
+	        @RequestParam(value = "patientId") Patient patient, @RequestParam(value = "service") String service,
+	        @RequestParam(value = "serviceType") String serviceType, @RequestParam(value = "provider") Provider provider,
+	        @RequestParam(value = "startDateTime") Date startDateTime,
+	        @RequestParam(value = "endDateTime") Date endDateTime, @RequestParam(value = "comments") String comments)
+	        throws ParseException {
 		
-		Integer locationId = Context.getService(KenyaEmrService.class).getDefaultLocation().getLocationId();
-		EhrAppointmentService appointmentService = Context.getService(EhrAppointmentService.class);
-		LocationService locationService = Context.getLocationService();
-		EhrAppointmentType ehrAppointmentType = appointmentService.getEhrAppointmentType(type);
-		EhrAppointment appointment = new EhrAppointment();
-		if (StringUtils.isNotBlank(appointmentDate) && StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
-			String[] appointmentDatePart = appointmentDate.split("/");
-			String year = appointmentDatePart[2];
-			String month = appointmentDatePart[0];
-			String day = appointmentDatePart[1];
-			String resultDateString = year + "-" + month + "-" + day;
+		Location location = Context.getService(KenyaEmrService.class).getDefaultLocation();
+		AppointmentsService appointmentsService = Context.getService(AppointmentsService.class);
+		AppointmentServiceDefinitionService appointmentServiceDefinitionService = Context
+		        .getService(AppointmentServiceDefinitionService.class);
+		Appointment appointment = null;
+		if (StringUtils.isNotBlank(service) && StringUtils.isNotBlank(serviceType) && provider != null
+		        && endDateTime != null && startDateTime != null && StringUtils.isNotBlank(appointmentNumber)) {
 			
-			String startDateStr = resultDateString + " " + startTime;
-			String endDateStr = resultDateString + " " + endTime;
-			Date startDate = EhrRegistrationUtils.formatDateFromStringWithTime(startDateStr);
-			Date endDate = EhrRegistrationUtils.formatDateFromStringWithTime(endDateStr);
-			EhrTimeSlot appointmentTimeSlot = EhrRegistrationUtils.getAppointmentTimeSlot(
-			    startDate,
-			    endDate,
-			    provider,
-			    locationId == null ? Context.getService(KenyaEmrService.class).getDefaultLocation() : locationService
-			            .getLocation(locationId), ehrAppointmentType);
-			
-			appointmentService.saveEhrAppointmentBlock(appointmentTimeSlot.getAppointmentBlock());
-			appointmentService.saveEhrTimeSlot(appointmentTimeSlot);
-			appointment.setTimeSlot(appointmentTimeSlot);
+			appointment = new Appointment();
+			appointment.setAppointmentNumber(appointmentNumber);
+			appointment.setService(appointmentServiceDefinitionService.getAppointmentServiceByUuid(service));
+			appointment.setServiceType(appointmentServiceDefinitionService.getAppointmentServiceTypeByUuid(serviceType));
 			appointment.setPatient(patient);
-			appointment.setAppointmentType(ehrAppointmentType);
-			appointment.setStatus(EhrAppointment.EhrAppointmentStatus.SCHEDULED);
-			if (StringUtils.isNotBlank(notes)) {
-				appointment.setReason(notes);
-			}
-			appointmentService.saveEhrAppointment(appointment);
+			appointment.setProvider(provider);
+			appointment.setStartDateTime(startDateTime);
+			appointment.setEndDateTime(endDateTime);
+			appointment.setComments(comments);
+			appointment.setDateCreated(new Date());
+			appointment.setCreator(Context.getAuthenticatedUser());
+			appointment.setLocation(location);
+			appointment.setStatus(AppointmentStatus.Requested);
+			appointment.setAppointmentKind(AppointmentKind.Scheduled);
+			
+			//save the appointment to the DB
+			appointmentsService.validateAndSave(appointment);
+			
 		}
 		return "Appointment Created";
 	}

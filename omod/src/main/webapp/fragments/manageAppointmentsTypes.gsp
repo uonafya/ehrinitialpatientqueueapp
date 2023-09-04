@@ -54,7 +54,7 @@ var jq = jQuery;
     }
     function saveAppointmentService() {
                 jq.getJSON('${ ui.actionLink("initialpatientqueueapp", "manageAppointmentsTypes", "createAppointmentService") }', {
-                    name:jq("#appointment-type-name").val(),
+                    name:jq("#appointment-service-name").val(),
                     description: jq("#description").val(),
                     speciality: jq("#speciality").val(),
                     startTime: jq("#startTime").val(),
@@ -75,13 +75,13 @@ var jq = jQuery;
         }
 </script>
 <div class="ke-panel-frame">
-    <div class="ke-panel-heading">Create Appointment Types</div>
+    <div class="ke-panel-heading">Create Appointment Service</div>
         <div class="ke-panel-content" style="background-color: #F3F9FF">
             <div>
                 <table border="0">
                     <tr>
                         <td>Name</td>
-                        <td><input type="text" id="name" name="name" /></td>
+                        <td><input type="text" id="appointment-service-name" name="name" /></td>
                     </tr>
                     <tr>
                         <td>Speciality</td>
@@ -139,7 +139,10 @@ var jq = jQuery;
                     <td>${it.name}</td>
                     <% if(it.speciality) {%>
                       <td>${it.speciality.name}</td>
-                    <%}%>
+                    <%} else {%>
+                    <td>&nbsp;</td>
+                   <%}%>
+
                     <td>${it.startTime}</td>
                     <td>${it.endTime}</td>
                     <td>${it.description}</td>
