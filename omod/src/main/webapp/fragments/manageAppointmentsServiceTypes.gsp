@@ -58,3 +58,38 @@
         </div>
     </div>
 </div>
+<br />
+<div>
+    <table border="0" cellpadding="0" cellspacing="0" id="appointmentServiceTypesTb" width="100%">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Appointment Service</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (appointmentServicesTypes.empty) { %>
+                <tr>
+                    <td colspan="3">
+                        No records found for specified period
+                    </td>
+                </tr>
+            <% } %>
+            <% if (appointmentServicesTypes) { %>
+                <% appointmentServicesTypes.each {%>
+                <tr>
+                    <td>${it.name}</td>
+                    <% if(it.appointmentServiceDefinition) {%>
+                      <td>${it.appointmentServiceDefinition.name}</td>
+                    <%} else {%>
+                    <td>&nbsp;</td>
+                   <%}%>
+
+                    <td>${it.duration}</td>
+                </tr>
+                <%}%>
+            <%}%>
+        </tbody>
+    </table>
+</div>

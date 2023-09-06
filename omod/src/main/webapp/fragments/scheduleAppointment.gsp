@@ -159,7 +159,7 @@
                                   <td>&nbsp;</td>
                                 <%}%>
                                 <% if(it.providers.response) {%>
-                                  <td>${it.providers.response.}</td>
+                                  <td>${it.providers.response}</td>
                                 <%} else {%>
                                   <td>&nbsp;</td>
                                 <%}%>

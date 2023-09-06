@@ -15,6 +15,7 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,8 +37,10 @@ public class ManageAppointmentsTypesFragmentController {
 	public String createAppointmentService(@RequestParam(value = "name", required = false) String name,
 	        @RequestParam(value = "description", required = false) String description,
 	        @RequestParam(value = "speciality", required = false) String specialityUuid,
-	        @RequestParam(value = "startTime", required = false) Time startTime,
-	        @RequestParam(value = "endTime", required = false) Time endTime,
+	        @RequestParam(value = "hourStartTime", required = false) String hourStartTime,
+	        @RequestParam(value = "minutesStartTime", required = false) String minutesStartTime,
+	        @RequestParam(value = "hourEndTime", required = false) String hourEndTime,
+	        @RequestParam(value = "minutesEndTime", required = false) String minutesEndTime,
 	        @RequestParam(value = "maxAppointmentsLimit", required = false) Integer maxAppointmentsLimit,
 	        @RequestParam(value = "durationMins", required = false) Integer durationMins,
 	        @RequestParam(value = "initialAppointmentStatus", required = false) Integer initialAppointmentStatus) {
@@ -54,11 +57,16 @@ public class ManageAppointmentsTypesFragmentController {
 			if (StringUtils.isNotBlank(specialityUuid)) {
 				appointmentServiceDefinition.setSpeciality(specialityService.getSpecialityByUuid(specialityUuid));
 			}
-			if (startTime != null) {
-				appointmentServiceDefinition.setStartTime(startTime);
+			if (StringUtils.isNotBlank(hourStartTime) && StringUtils.isNotBlank(minutesStartTime)) {
+				String startTime = hourStartTime + ":" + minutesStartTime + ":00";
+				LocalTime time = LocalTime.parse(startTime);
+				System.out.println("The start time is >>" + startTime);
+				appointmentServiceDefinition.setStartTime(Time.valueOf(time));
 			}
-			if (endTime != null) {
-				appointmentServiceDefinition.setStartTime(endTime);
+			if (StringUtils.isNotBlank(hourEndTime) && StringUtils.isNotBlank(minutesEndTime)) {
+				String endTime = hourEndTime + ":" + minutesEndTime + ":00";
+				LocalTime time = LocalTime.parse(endTime);
+				appointmentServiceDefinition.setEndTime(Time.valueOf(time));
 			}
 			if (maxAppointmentsLimit != null) {
 				appointmentServiceDefinition.setMaxAppointmentsLimit(maxAppointmentsLimit);
@@ -137,7 +145,6 @@ public class ManageAppointmentsTypesFragmentController {
 		        .getService(AppointmentServiceDefinitionService.class);
 		AppointmentServiceType appointmentServiceType = new AppointmentServiceType();
 		if (StringUtils.isNotBlank(name)) {
-			System.out.println("We aRE IN HWERE");
 			appointmentServiceType.setName(name);
 			appointmentServiceType.setCreator(Context.getAuthenticatedUser());
 			appointmentServiceType.setDuration(duration);
