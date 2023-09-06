@@ -32,6 +32,7 @@ import org.openmrs.module.ehrconfigs.utils.EhrConfigsUtils;
 import org.openmrs.module.hospitalcore.BillingService;
 import org.openmrs.module.hospitalcore.EhrAppointmentService;
 import org.openmrs.module.hospitalcore.HospitalCoreService;
+import org.openmrs.module.hospitalcore.IdentifierTypes;
 import org.openmrs.module.hospitalcore.PatientDashboardService;
 import org.openmrs.module.hospitalcore.model.BillableService;
 import org.openmrs.module.hospitalcore.model.DepartmentConcept;
@@ -212,7 +213,8 @@ public class QueuePatientFragmentController {
 			    Arrays.asList(Context.getPatientService().getPatientIdentifierTypeByUuid(
 			        "61A354CB-4F7F-489A-8BE8-09D0ACEDDC63")), null, Arrays.asList(patient), false);
 			if (patientIdentifierList.isEmpty()) {
-				hospitalCoreService.savePatientOpdNumbers(patient, "OPD");
+				hospitalCoreService.savePatientOpdNumbers(patient, "OPD", "61A354CB-4F7F-489A-8BE8-09D0ACEDDC63",
+				    IdentifierTypes.IPD.ordinal());
 			}
 			
 			//ADD PERSON ATTRIBUTE SET

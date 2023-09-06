@@ -8,6 +8,8 @@ import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointments.model.Appointment;
 import org.openmrs.module.appointments.model.AppointmentKind;
+import org.openmrs.module.appointments.model.AppointmentProvider;
+import org.openmrs.module.appointments.model.AppointmentProviderResponse;
 import org.openmrs.module.appointments.model.AppointmentStatus;
 import org.openmrs.module.appointments.service.AppointmentServiceDefinitionService;
 import org.openmrs.module.appointments.service.AppointmentsService;
@@ -27,48 +29,39 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ScheduleAppointmentFragmentController {
 	
 	public void controller(FragmentModel model, @FragmentParam(value = "patientId", required = false) Patient patient) {
-		EhrAppointmentService ehrAppointmentService = Context.getService(EhrAppointmentService.class);
 		ProviderService providerService = Context.getProviderService();
-		List<EhrAppointmentType> appointmentTypeList = new ArrayList<>(ehrAppointmentService.getAllEhrAppointmentTypes());
-		List<EhrAppointmentSimplifier> ehrAppointmentSimplifierList = new ArrayList<EhrAppointmentSimplifier>();
-
-		model.addAttribute("appointmentTypes", appointmentTypeList);
+		AppointmentServiceDefinitionService appointmentServiceDefinitionService = Context
+		        .getService(AppointmentServiceDefinitionService.class);
+		HospitalCoreService hospitalCoreService = Context.getService(HospitalCoreService.class);
+		
+		model.addAttribute("appointmentServices", appointmentServiceDefinitionService.getAllAppointmentServices(false));
 		model.addAttribute("providerList", providerService.getAllProviders());
-		model.addAttribute("patientAppointments", ehrAppointmentService.getEhrAppointmentsOfPatient(patient));
+		model.addAttribute("patientAppointments", hospitalCoreService.getPatientAppointments(patient));
 		model.addAttribute("patientId", patient.getPatientId());
-		EhrAppointmentSimplifier ehrAppointmentSimplifier;
-		for(EhrAppointment ehrAppointment : ehrAppointmentService.getEhrAppointmentsOfPatient(patient)) {
-			ehrAppointmentSimplifier = new EhrAppointmentSimplifier();
-			ehrAppointmentSimplifier.setAppointmentType(ehrAppointment.getAppointmentType().getName());
-			ehrAppointmentSimplifier.setProvider(ehrAppointment.getTimeSlot().getAppointmentBlock().getProvider().getName());
-			ehrAppointmentSimplifier.setStatus(ehrAppointment.getStatus().getName());
-			ehrAppointmentSimplifier.setStartTime(EhrRegistrationUtils.formatDateTime(ehrAppointment.getTimeSlot().getStartDate()));
-			ehrAppointmentSimplifier.setAppointmentReason(ehrAppointment.getReason());
-			ehrAppointmentSimplifier.setEndTime(EhrRegistrationUtils.formatDateTime(ehrAppointment.getTimeSlot().getEndDate()));
-			ehrAppointmentSimplifierList.add(ehrAppointmentSimplifier);
-
-		}
-		model.addAttribute("patientAppointments", ehrAppointmentSimplifierList);
-		model.addAttribute("patientId", patient.getPatientId());
+		model.addAttribute("appointmentServicesTypes", hospitalCoreService.getAppointmentServiceType());
 	}
 	
-	public String createAppointment(@RequestParam(value = "appointmentNumber") String appointmentNumber,
-	        @RequestParam(value = "patientId") Patient patient, @RequestParam(value = "service") String service,
-	        @RequestParam(value = "serviceType") String serviceType, @RequestParam(value = "provider") Provider provider,
-	        @RequestParam(value = "startDateTime") Date startDateTime,
-	        @RequestParam(value = "endDateTime") Date endDateTime, @RequestParam(value = "comments") String comments)
-	        throws ParseException {
+	public String createAppointment(@RequestParam(value = "appointmentNumber", required = false) String appointmentNumber,
+	        @RequestParam(value = "patientId", required = false) Patient patient,
+	        @RequestParam(value = "service") String service,
+	        @RequestParam(value = "serviceType", required = false) String serviceType,
+	        @RequestParam(value = "provider") Provider provider,
+	        @RequestParam(value = "startDateTime", required = false) Date startDateTime,
+	        @RequestParam(value = "endDateTime", required = false) Date endDateTime,
+	        @RequestParam(value = "comments", required = false) String comments) throws ParseException {
 		
 		Location location = Context.getService(KenyaEmrService.class).getDefaultLocation();
 		AppointmentsService appointmentsService = Context.getService(AppointmentsService.class);
 		AppointmentServiceDefinitionService appointmentServiceDefinitionService = Context
 		        .getService(AppointmentServiceDefinitionService.class);
-		Appointment appointment = null;
+		Appointment appointment;
 		if (StringUtils.isNotBlank(service) && StringUtils.isNotBlank(serviceType) && provider != null
 		        && endDateTime != null && startDateTime != null && StringUtils.isNotBlank(appointmentNumber)) {
 			
@@ -86,6 +79,17 @@ public class ScheduleAppointmentFragmentController {
 			appointment.setLocation(location);
 			appointment.setStatus(AppointmentStatus.Requested);
 			appointment.setAppointmentKind(AppointmentKind.Scheduled);
+			
+			//AppointmentProvider
+			AppointmentProvider appointmentProvider = new AppointmentProvider();
+			appointmentProvider.setAppointment(appointment);
+			appointmentProvider.setProvider(provider);
+			appointmentProvider.setCreator(Context.getAuthenticatedUser());
+			appointmentProvider.setDateCreated(new Date());
+			appointmentProvider.setResponse(AppointmentProviderResponse.AWAITING);
+			Set<AppointmentProvider> appointmentProviderSet = new HashSet<AppointmentProvider>();
+			appointmentProviderSet.add(appointmentProvider);
+			appointment.setProviders(appointmentProviderSet);
 			
 			//save the appointment to the DB
 			appointmentsService.validateAndSave(appointment);
