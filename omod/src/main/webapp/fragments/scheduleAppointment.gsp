@@ -123,14 +123,14 @@
                         <th>Response</th>
                         <th>Start time</th>
                         <th>End time</th>
+                        <th>Status</th>
                         <th>Comments</th>
-                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% if (patientAppointments.empty) { %>
                         <tr>
-                            <td colspan="9">
+                            <td colspan="8">
                                 No appointments found for specified period for this patient
                             </td>
                         </tr>
@@ -138,49 +138,15 @@
                     <% if (patientAppointments) { %>
                         <% patientAppointments.each {%>
                             <tr>
-                                <% if(it.appointmentNumber) {%>
                                   <td>${it.appointmentNumber}</td>
-                                <%} else {%>
-                                  <td>&nbsp;</td>
-                                <%}%>
-                                <% if(it.service) {%>
-                                  <td>${it.service.name}</td>
-                                <%} else {%>
-                                  <td>&nbsp;</td>
-                                <%}%>
-                                <% if(it.serviceType) {%>
-                                  <td>${it.serviceType.name}</td>
-                                <%} else {%>
-                                  <td>&nbsp;</td>
-                                <%}%>
-                                <% if(it.providers) {%>
-                                  <td>${it.providers.provider.person.names.fullName}</td>
-                                <%} else {%>
-                                  <td>&nbsp;</td>
-                                <%}%>
-                                <% if(it.providers.response) {%>
-                                  <td>${it.providers.response}</td>
-                                <%} else {%>
-                                  <td>&nbsp;</td>
-                                <%}%>
-                                <% if(it.startDateTime) {%>
-                                  <td>${it.startDateTime}</td>
-                                <%} else {%>
-                                  <td>&nbsp;</td>
-                                <%}%>
-                                <% if(it.endDateTime) {%>
-                                  <td>${it.endDateTime}</td>
-                                <%} else {%>
-                                  <td>&nbsp;</td>
-                                <%}%>
-                                <% if(it.comments) {%>
-                                  <td>${it.comments}</td>
-                                <%} else {%>
-                                  <td>&nbsp;</td>
-                                <%}%>
-                                <td>
-                                    <button id="editAppointment" class="button task">Edit</button>
-                                </td>
+                                  <td>${it.appointmentService}</td>
+                                  <td>${it.appointmentServiceType}</td>
+                                  <td>${it.provider}</td>
+                                  <td>${it.response}</td>
+                                  <td>${it.startTime}</td>
+                                  <td>${it.endTime}</td>
+                                  <td>${it.status}</td>
+                                  <td>${it.appointmentReason}</td>
                             </tr>
                         <%}%>
                     <%}%>

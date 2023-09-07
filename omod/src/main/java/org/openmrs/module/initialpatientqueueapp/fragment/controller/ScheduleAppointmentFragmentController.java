@@ -14,7 +14,10 @@ import org.openmrs.module.appointments.model.AppointmentStatus;
 import org.openmrs.module.appointments.service.AppointmentServiceDefinitionService;
 import org.openmrs.module.appointments.service.AppointmentsService;
 import org.openmrs.module.hospitalcore.HospitalCoreService;
+import org.openmrs.module.hospitalcore.model.EhrAppointmentSimplifier;
 import org.openmrs.module.hospitalcore.model.SickOff;
+import org.openmrs.module.hospitalcore.util.DateUtils;
+import org.openmrs.module.hospitalcore.util.HospitalCoreUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
@@ -22,8 +25,10 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class ScheduleAppointmentFragmentController {
@@ -36,9 +41,28 @@ public class ScheduleAppointmentFragmentController {
 		
 		model.addAttribute("appointmentServices", appointmentServiceDefinitionService.getAllAppointmentServices(false));
 		model.addAttribute("providerList", providerService.getAllProviders());
-		model.addAttribute("patientAppointments", hospitalCoreService.getPatientAppointments(patient));
 		model.addAttribute("patientId", patient.getPatientId());
 		model.addAttribute("appointmentServicesTypes", hospitalCoreService.getAppointmentServiceType());
+		
+		EhrAppointmentSimplifier ehrAppointmentSimplifier;
+		List<EhrAppointmentSimplifier> simplifierList = new ArrayList<EhrAppointmentSimplifier>();
+		for (Appointment ehrAppointment : hospitalCoreService.getPatientAppointments(patient)) {
+			ehrAppointmentSimplifier = new EhrAppointmentSimplifier();
+			ehrAppointmentSimplifier.setAppointmentNumber(ehrAppointment.getAppointmentNumber());
+			ehrAppointmentSimplifier.setAppointmentService(ehrAppointment.getService().getName());
+			ehrAppointmentSimplifier.setAppointmentServiceType(ehrAppointment.getServiceType().getName());
+			ehrAppointmentSimplifier.setProvider(HospitalCoreUtils.getProviderNames(ehrAppointment.getProviders()));
+			ehrAppointmentSimplifier.setResponse(HospitalCoreUtils.getProviderResponse(ehrAppointment.getProviders()));
+			ehrAppointmentSimplifier.setStartTime(DateUtils.getDateFromDateAsString(ehrAppointment.getStartDateTime(),
+			    "yyyy-MM-dd HH:mm"));
+			ehrAppointmentSimplifier.setEndTime(DateUtils.getDateFromDateAsString(ehrAppointment.getEndDateTime(),
+			    "yyyy-MM-dd HH:mm"));
+			ehrAppointmentSimplifier.setAppointmentReason(ehrAppointment.getComments());
+			ehrAppointmentSimplifier.setStatus(ehrAppointment.getStatus().name());
+			
+			simplifierList.add(ehrAppointmentSimplifier);
+		}
+		model.addAttribute("patientAppointments", simplifierList);
 	}
 	
 	public String createAppointment(@RequestParam(value = "appointmentNumber", required = false) String appointmentNumber,

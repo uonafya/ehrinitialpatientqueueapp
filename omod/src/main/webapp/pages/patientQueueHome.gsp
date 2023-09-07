@@ -5,9 +5,6 @@
                 label: "View Queued Patients", extra: "Access queued patients for changes", iconProvider: "kenyaui", icon: "buttons/patient_add.png", href: ui.pageLink("initialpatientqueueapp", "viewQueuedPatients")
             ],
             [
-                label: "Appointment Calendar", extra: "Manage calendar appointments", iconProvider: "kenyaui", icon: "buttons/visit_end.png", href: ui.pageLink("initialpatientqueueapp", "viewAppointments")
-            ],
-            [
                 label: "Create Speciality", extra: "Manage speciality types", iconProvider: "kenyaui", icon: "buttons/developer_overview.png", href: ui.pageLink("initialpatientqueueapp", "manageSpecialityTypes")
             ],
             [
@@ -17,7 +14,7 @@
                 label: "Appointment Services Type", extra: "Manage appointments service types", iconProvider: "kenyaui", icon: "buttons/developer_overview.png", href: ui.pageLink("initialpatientqueueapp", "manageAppointmentsServiceTypes")
             ],
             [
-                label: "Patient Appointments", extra: "Manage Patient appointment", iconProvider: "kenyaui", icon: "buttons/visit_retrospective.png", href: ui.pageLink("initialpatientqueueapp", "managePatientAppointments")
+                label: "Patient Appointments", extra: "Manage Patient appointment", iconProvider: "kenyaui", icon: "buttons/visit_end.png", href: ui.pageLink("initialpatientqueueapp", "managePatientAppointments")
             ],
             [
                 label: "Sick Off", extra: "Manage Patient Sick Offs", iconProvider: "kenyaui", icon: "buttons/facility.png", href: ui.pageLink("initialpatientqueueapp", "sickOffList")

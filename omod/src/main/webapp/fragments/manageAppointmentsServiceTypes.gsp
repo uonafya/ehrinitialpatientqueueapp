@@ -66,6 +66,7 @@
                 <th>Name</th>
                 <th>Appointment Service</th>
                 <th>Duration</th>
+                <th>Description</th>
             </tr>
         </thead>
         <tbody>
@@ -85,8 +86,12 @@
                     <%} else {%>
                     <td>&nbsp;</td>
                    <%}%>
-
                     <td>${it.duration}</td>
+                    <% if(it.appointmentServiceDefinition.description) {%>
+                        <td>${it.appointmentServiceDefinition.description}</td>
+                      <%} else {%>
+                      <td>&nbsp;</td>
+                     <%}%>
                 </tr>
                 <%}%>
             <%}%>

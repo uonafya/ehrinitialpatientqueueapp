@@ -26,6 +26,9 @@ import org.openmrs.Visit;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appointments.model.Appointment;
+import org.openmrs.module.appointments.model.AppointmentStatus;
+import org.openmrs.module.appointments.service.AppointmentsService;
 import org.openmrs.module.ehrcashier.billcalculator.BillCalculatorForBDService;
 import org.openmrs.module.ehrconfigs.metadata.EhrCommonMetadata;
 import org.openmrs.module.ehrconfigs.utils.EhrConfigsUtils;
@@ -198,13 +201,14 @@ public class QueuePatientFragmentController {
 			sendToBillingDependingOnTheBill(parameters, encounter, payCat, Integer.parseInt(department), visitType);
 			//update the appointment in consultation if scheduled
 			EhrAppointmentService ehrAppointmentService = Context.getService(EhrAppointmentService.class);
-			EhrAppointment ehrAppointment = ehrAppointmentService.getLastEhrAppointment(patient);
+			AppointmentsService appointmentService = Context.getService(AppointmentsService.class);
+			Appointment ehrAppointment = ehrAppointmentService.getLastEhrAppointment(patient);
 			if (ehrAppointment != null
-			        && (ehrAppointment.getStatus().equals(EhrAppointment.EhrAppointmentStatus.SCHEDULED) || ehrAppointment
-			                .getStatus().equals(EhrAppointment.EhrAppointmentStatus.RESCHEDULED))) {
-				ehrAppointment.setStatus(EhrAppointment.EhrAppointmentStatus.INCONSULTATION);
-				ehrAppointment.setVisit(visit);
-				ehrAppointmentService.saveEhrAppointment(ehrAppointment);
+			        && (ehrAppointment.getStatus().equals(AppointmentStatus.Requested)
+			                || ehrAppointment.getStatus().equals(AppointmentStatus.Rescheduled) || ehrAppointment
+			                .getStatus().equals(AppointmentStatus.Scheduled))) {
+				ehrAppointment.setStatus(AppointmentStatus.CheckedIn);
+				appointmentService.validateAndSave(ehrAppointment);
 			}
 			//check if the patient has this identifier already has the number generated
 			//if true just skip, else generate one

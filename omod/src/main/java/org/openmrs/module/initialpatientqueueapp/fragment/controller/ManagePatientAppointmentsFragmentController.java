@@ -2,16 +2,22 @@ package org.openmrs.module.initialpatientqueueapp.fragment.controller;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appointments.model.Appointment;
+import org.openmrs.module.appointments.service.AppointmentsService;
+import org.openmrs.module.ehrconfigs.utils.EhrConfigsUtils;
 import org.openmrs.module.hospitalcore.EhrAppointmentService;
 import org.openmrs.module.hospitalcore.model.EhrAppointment;
 import org.openmrs.module.hospitalcore.model.EhrAppointmentSimplifier;
-import org.openmrs.module.hospitalcore.model.EhrAppointmentType;
-import org.openmrs.module.initialpatientqueueapp.EhrRegistrationUtils;
+import org.openmrs.module.hospitalcore.util.DateUtils;
+import org.openmrs.module.hospitalcore.util.HospitalCoreUtils;
+import org.openmrs.module.hospitalcore.util.PatientUtils;
+import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,29 +26,49 @@ public class ManagePatientAppointmentsFragmentController {
 	
 	public void controller(FragmentModel model) {
 		
-		EhrAppointmentService ehrAppointmentService = Context.getService(EhrAppointmentService.class);
-		List<EhrAppointmentType> appointmentTypeList = new ArrayList<EhrAppointmentType>(
-		        ehrAppointmentService.getAllEhrAppointmentTypes());
+	}
+	
+	public List<SimpleObject> fetchAppointmentSummariesByDateRange(
+	        @RequestParam(value = "fromDate", required = false) Date startDate,
+	        @RequestParam(value = "toDate", required = false) Date endDate, UiUtils ui) {
 		
+		AppointmentsService appointmentsService = Context.getService(AppointmentsService.class);
+		if (startDate == null) {
+			startDate = DateUtils.getStartOfDay(new Date());
+		} else {
+			startDate = DateUtils.getStartOfDay(startDate);
+		}
+		
+		if (endDate == null) {
+			endDate = DateUtils.getEndOfDay(new Date());
+		} else {
+			endDate = DateUtils.getEndOfDay(endDate);
+		}
 		EhrAppointmentSimplifier ehrAppointmentSimplifier;
 		List<EhrAppointmentSimplifier> simplifierList = new ArrayList<EhrAppointmentSimplifier>();
-		for (EhrAppointment ehrAppointment : ehrAppointmentService.getScheduledEhrAppointmentsForPatients()) {
+		for (Appointment ehrAppointment : appointmentsService.getAllAppointmentsInDateRange(startDate, endDate)) {
 			ehrAppointmentSimplifier = new EhrAppointmentSimplifier();
-			ehrAppointmentSimplifier.setAppointmentType(ehrAppointment.getAppointmentType().getName());
-			ehrAppointmentSimplifier.setPatientId(ehrAppointment.getPatient().getPatientId());
-			ehrAppointmentSimplifier.setAppointmentReason(ehrAppointment.getReason());
-			ehrAppointmentSimplifier.setProvider(ehrAppointment.getTimeSlot().getAppointmentBlock().getProvider().getName());
-			ehrAppointmentSimplifier.setStartTime(EhrRegistrationUtils.formatDateTime(ehrAppointment.getTimeSlot()
-			        .getStartDate()));
-			ehrAppointmentSimplifier.setEndTime(EhrRegistrationUtils.formatDateTime(ehrAppointment.getTimeSlot()
-			        .getEndDate()));
-			ehrAppointmentSimplifier.setStatus(ehrAppointment.getStatus().getName());
-			ehrAppointmentSimplifier.setAppointmentId(ehrAppointment.getAppointmentId());
+			ehrAppointmentSimplifier.setAppointmentNumber(ehrAppointment.getAppointmentNumber());
+			ehrAppointmentSimplifier.setAppointmentService(ehrAppointment.getService().getName());
+			ehrAppointmentSimplifier.setAppointmentServiceType(ehrAppointment.getServiceType().getName());
+			ehrAppointmentSimplifier.setProvider(HospitalCoreUtils.getProviderNames(ehrAppointment.getProviders()));
+			ehrAppointmentSimplifier.setResponse(HospitalCoreUtils.getProviderResponse(ehrAppointment.getProviders()));
+			ehrAppointmentSimplifier.setStartTime(DateUtils.getDateFromDateAsString(ehrAppointment.getStartDateTime(),
+			    "yyyy-MM-dd HH:mm"));
+			ehrAppointmentSimplifier.setEndTime(DateUtils.getDateFromDateAsString(ehrAppointment.getEndDateTime(),
+			    "yyyy-MM-dd HH:mm"));
+			ehrAppointmentSimplifier.setAppointmentReason(ehrAppointment.getComments());
+			ehrAppointmentSimplifier.setPatientNames(PatientUtils.getFullName(ehrAppointment.getPatient()));
+			ehrAppointmentSimplifier.setPatientIdentifier(EhrConfigsUtils.getPreferredPatientIdentifier(ehrAppointment
+			        .getPatient()));
+			ehrAppointmentSimplifier.setStatus(ehrAppointment.getStatus().name());
+			
 			simplifierList.add(ehrAppointmentSimplifier);
 		}
-		model.addAttribute("allPatientAppointments", simplifierList);
-		model.addAttribute("appointmentTypes", appointmentTypeList);
-		model.addAttribute("providerList", Context.getProviderService().getAllProviders());
+		
+		return SimpleObject.fromCollection(simplifierList, ui, "appointmentNumber", "appointmentService",
+		    "appointmentServiceType", "response", "startTime", "endTime", "appointmentReason", "provider", "patientNames",
+		    "patientIdentifier", "status");
 		
 	}
 	
