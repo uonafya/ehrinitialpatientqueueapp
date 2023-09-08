@@ -190,7 +190,7 @@ public class QueuePatientFragmentController {
 			savePatientSearch(patient);
 			// create encounter for the visit here
 			Visit visit = hasActiveVisit(patientVisit, patient);
-			Encounter encounter = createEncounter(patient, parameters, visit, provider, visitType);
+			Encounter encounter = createEncounter(patient, parameters, visit, provider, visitType, payCat);
 			//save the encounter here
 			Context.getEncounterService().saveEncounter(encounter);
 			//save patient details categories
@@ -246,7 +246,7 @@ public class QueuePatientFragmentController {
 	 * @return
 	 */
 	private Encounter createEncounter(Patient patient, Map<String, String> parameters, Visit visit, Provider provider,
-	        Integer visitType) throws ParseException {
+	        Integer visitType, int patientCategory) throws ParseException {
 		int rooms1 = Integer.parseInt(parameters.get("rooms1"));
 		int paymt1 = Integer.parseInt(parameters.get("paym_1"));
 		int paymt2 = Integer.parseInt(parameters.get("paym_2"));
@@ -347,8 +347,13 @@ public class QueuePatientFragmentController {
 			triageObs.setConcept(triageConcept);
 			triageObs.setValueCoded(selectedTRIAGEConcept);
 			encounterObs.addObs(triageObs);
-			RegistrationWebUtils.sendPatientToTriageQueue(patient, selectedTRIAGEConcept, hasRevisits(patient, visitType),
-			    paymt3);
+			if (patientCategory == 2 || patientCategory == 3) {
+				RegistrationWebUtils.sendPatientToTriageQueue(patient, selectedTRIAGEConcept,
+				    hasRevisits(patient, visitType), paymt3, true);
+			} else {
+				RegistrationWebUtils.sendPatientToTriageQueue(patient, selectedTRIAGEConcept,
+				    hasRevisits(patient, visitType), paymt3, false);
+			}
 		}
 		if (StringUtils.isNotBlank(oNOpd)) {
 			Concept opdConcept = Context.getConceptService().getConceptByUuid("03880388-07ce-4961-abe7-0e58f787dd23");
@@ -357,8 +362,13 @@ public class QueuePatientFragmentController {
 			opdObs.setConcept(opdConcept);
 			opdObs.setValueCoded(selectedOPDConcept);
 			encounterObs.addObs(opdObs);
-			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedOPDConcept, hasRevisits(patient, visitType), paymt3,
-			    provider);
+			if (patientCategory == 2 || patientCategory == 3) {
+				RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedOPDConcept, hasRevisits(patient, visitType),
+				    paymt3, provider, true);
+			} else {
+				RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedOPDConcept, hasRevisits(patient, visitType),
+				    paymt3, provider, false);
+			}
 			
 		}
 		if (StringUtils.isNotBlank(sNSpecial)) {
@@ -369,8 +379,13 @@ public class QueuePatientFragmentController {
 			opdObs.setConcept(specialClinicConcept);
 			opdObs.setValueCoded(selectedSpecialClinicConcept);
 			encounterObs.addObs(opdObs);
-			RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedSpecialClinicConcept,
-			    hasRevisits(patient, visitType), paymt3, provider);
+			if (patientCategory == 2 || patientCategory == 3) {
+				RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedSpecialClinicConcept,
+				    hasRevisits(patient, visitType), paymt3, provider, true);
+			} else {
+				RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedSpecialClinicConcept,
+				    hasRevisits(patient, visitType), paymt3, provider, false);
+			}
 		}
 		
 		//if mlc is not empty then is a mlc otherwise NOT an mlc
@@ -953,5 +968,13 @@ public class QueuePatientFragmentController {
 			hospitalCoreService.saveEhrHospitalWaiver(ehrHospitalWaiver);
 		}
 		
+	}
+	
+	private boolean checkIfPatientIsClearedToTheNextServicePoint(Integer patientCategory, Integer totalFees) {
+		boolean pass = false;
+		if (patientCategory == 2 || totalFees == 0) {
+			pass = true;
+		}
+		return pass;
 	}
 }

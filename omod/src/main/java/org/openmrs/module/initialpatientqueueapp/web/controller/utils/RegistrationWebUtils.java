@@ -105,7 +105,7 @@ public class RegistrationWebUtils {
 	 * @param revisit
 	 */
 	public static void sendPatientToOPDQueue(Patient patient, Concept selectedOPDConcept, boolean revisit,
-	        String selectedCategory, Provider provider) {
+	        String selectedCategory, Provider provider, boolean flag) {
 		Concept visitStatus = null;
 		if (!revisit) {
 			visitStatus = Context.getConceptService().getConceptByUuid("164144AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -139,6 +139,7 @@ public class RegistrationWebUtils {
 				queue.setProvider(provider.getIdentifier());
 			}
 			queue.setVisitStatus(visitStatus.getName().getName());
+			queue.setClearedToNextServicePoint(flag);
 			PatientQueueService queueService = Context.getService(PatientQueueService.class);
 			queueService.saveOpdPatientQueue(queue);
 			
@@ -147,7 +148,7 @@ public class RegistrationWebUtils {
 	}
 	
 	public static void sendPatientToTriageQueue(Patient patient, Concept selectedTriageConcept, boolean revisit,
-	        String selectedCategory) {
+	        String selectedCategory, boolean flag) {
 		Concept visitStatus = null;
 		if (!revisit) {
 			visitStatus = Context.getConceptService().getConceptByUuid("164144AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -176,6 +177,7 @@ public class RegistrationWebUtils {
 			queue.setSex(patient.getGender());
 			queue.setCategory(selectedCategory);
 			queue.setVisitStatus(visitStatus.getName().getName());
+			queue.setClearedToNextServicePoint(flag);
 			PatientQueueService queueService = Context.getService(PatientQueueService.class);
 			queueService.saveTriagePatientQueue(queue);
 			
