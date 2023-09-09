@@ -105,7 +105,7 @@ public class RegistrationWebUtils {
 	 * @param revisit
 	 */
 	public static void sendPatientToOPDQueue(Patient patient, Concept selectedOPDConcept, boolean revisit,
-	        String selectedCategory, Provider provider, boolean flag) {
+	        String selectedCategory, Provider provider, Integer flag) {
 		Concept visitStatus = null;
 		if (!revisit) {
 			visitStatus = Context.getConceptService().getConceptByUuid("164144AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -148,7 +148,7 @@ public class RegistrationWebUtils {
 	}
 	
 	public static void sendPatientToTriageQueue(Patient patient, Concept selectedTriageConcept, boolean revisit,
-	        String selectedCategory, boolean flag) {
+	        String selectedCategory, Integer flag) {
 		Concept visitStatus = null;
 		if (!revisit) {
 			visitStatus = Context.getConceptService().getConceptByUuid("164144AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");

@@ -349,10 +349,10 @@ public class QueuePatientFragmentController {
 			encounterObs.addObs(triageObs);
 			if (patientCategory == 2 || patientCategory == 3) {
 				RegistrationWebUtils.sendPatientToTriageQueue(patient, selectedTRIAGEConcept,
-				    hasRevisits(patient, visitType), paymt3, true);
+				    hasRevisits(patient, visitType), paymt3, 1);
 			} else {
 				RegistrationWebUtils.sendPatientToTriageQueue(patient, selectedTRIAGEConcept,
-				    hasRevisits(patient, visitType), paymt3, false);
+				    hasRevisits(patient, visitType), paymt3, 0);
 			}
 		}
 		if (StringUtils.isNotBlank(oNOpd)) {
@@ -364,10 +364,10 @@ public class QueuePatientFragmentController {
 			encounterObs.addObs(opdObs);
 			if (patientCategory == 2 || patientCategory == 3) {
 				RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedOPDConcept, hasRevisits(patient, visitType),
-				    paymt3, provider, true);
+				    paymt3, provider, 1);
 			} else {
 				RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedOPDConcept, hasRevisits(patient, visitType),
-				    paymt3, provider, false);
+				    paymt3, provider, 0);
 			}
 			
 		}
@@ -381,10 +381,10 @@ public class QueuePatientFragmentController {
 			encounterObs.addObs(opdObs);
 			if (patientCategory == 2 || patientCategory == 3) {
 				RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedSpecialClinicConcept,
-				    hasRevisits(patient, visitType), paymt3, provider, true);
+				    hasRevisits(patient, visitType), paymt3, provider, 1);
 			} else {
 				RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedSpecialClinicConcept,
-				    hasRevisits(patient, visitType), paymt3, provider, false);
+				    hasRevisits(patient, visitType), paymt3, provider, 0);
 			}
 		}
 		
