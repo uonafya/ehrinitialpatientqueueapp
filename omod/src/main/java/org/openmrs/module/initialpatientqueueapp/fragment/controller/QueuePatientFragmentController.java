@@ -218,7 +218,7 @@ public class QueuePatientFragmentController {
 			        "61A354CB-4F7F-489A-8BE8-09D0ACEDDC63")), null, Arrays.asList(patient), false);
 			if (patientIdentifierList.isEmpty()) {
 				hospitalCoreService.savePatientOpdNumbers(patient, "OPD", "61A354CB-4F7F-489A-8BE8-09D0ACEDDC63",
-				    IdentifierTypes.IPD.ordinal());
+				    IdentifierTypes.OPD);
 			}
 			
 			//ADD PERSON ATTRIBUTE SET
