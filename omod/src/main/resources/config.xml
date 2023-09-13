@@ -65,9 +65,9 @@
 	</globalProperty>
 	<globalProperty>
 		<property>${project.parent.artifactId}.revisit.fee.criteria</property>
-		<defaultValue>0</defaultValue>
+		<defaultValue>1</defaultValue>
 		<description>
-			Specifies whether a patient need to pay for the revisit fees. O=patient has to pay, >0 means a comparison need to be made based on today
+			Specifies whether a patient need to pay for the revisit fees. O=patient has to pay, >0 means a comparison need to be made based on today default is 1 day(24 hours)
 		</description>
 	</globalProperty>
 	
