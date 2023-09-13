@@ -702,7 +702,7 @@ public class QueuePatientFragmentController {
 		Integer revisitCriteria = Integer.valueOf(Context.getAdministrationService().getGlobalProperty(
 		    "initialpatientqueueapp.revisit.fee.criteria"));
 		Date previousVisitDate = EhrRegistrationUtils.getPreviousVisitDate(encounter.getPatient());
-		Date actualDatePlusBuffer = EhrRegistrationUtils.requiredDate(previousVisitDate, revisitCriteria);
+		Date actualDatePlusBuffer = EhrRegistrationUtils.requiredDate(previousVisitDate, Calendar.DATE, revisitCriteria);
 		Concept registrationFeesConcept = Context.getConceptService().getConcept(
 		    InitialPatientQueueConstants.CONCEPT_NAME_REGISTRATION_FEE);
 		Concept revisitFeeConcept = Context.getConceptService().getConcept(

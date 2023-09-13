@@ -293,10 +293,17 @@ public class EhrRegistrationUtils {
 		return hasSecondSpecialClinicVisit;
 	}
 	
-	public static Date requiredDate(Date date, Integer weight) {
+	/**
+	 * Get the date based on the value passed for the manipulation
+	 * 
+	 * @param date
+	 * @param weight
+	 * @return
+	 */
+	public static Date requiredDate(Date date, Integer units, Integer weight) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		calendar.add(Calendar.MONTH, weight);
+		calendar.add(units, weight);
 		return calendar.getTime();
 		
 	}

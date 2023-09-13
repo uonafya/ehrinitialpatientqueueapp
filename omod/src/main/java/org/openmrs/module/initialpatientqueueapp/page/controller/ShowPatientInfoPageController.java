@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 @AppPage(InitialPatientQueueConstants.APP_PATIENT_QUEUE)
@@ -117,7 +118,7 @@ public class ShowPatientInfoPageController {
 		Integer revisitCriteria = Integer.valueOf(Context.getAdministrationService().getGlobalProperty(
 		    "initialpatientqueueapp.revisit.fee.criteria"));
 		Date previousVisitDate = EhrRegistrationUtils.getPreviousVisitDate(patient);
-		Date actualDatePlusBuffer = EhrRegistrationUtils.requiredDate(previousVisitDate, revisitCriteria);
+		Date actualDatePlusBuffer = EhrRegistrationUtils.requiredDate(previousVisitDate, Calendar.DATE, revisitCriteria);
 		if (!visit) {
 			if (patient.getAge(new Date()) < 5 && under5RegistrationFeeBill != null
 			        && under5RegistrationFeeBill.getPrice() != null) {
