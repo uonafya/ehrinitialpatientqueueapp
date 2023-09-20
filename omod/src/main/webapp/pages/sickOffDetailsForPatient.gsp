@@ -131,7 +131,7 @@
         </div>
     </div>
     <div class="onerow" style="margin-top:10px;">
-        <button id="printSickOffBtn"  onclick="printSickOff()" class="button confirm right">
+        <button id="printSickOffBtn"  onclick="printSickOff()" class="confirm right">
             <i class="btn-info"></i>
             Print Sick Off
         </button>

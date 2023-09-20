@@ -63,7 +63,7 @@
                                     <td>${it.sickOffEndDate}</td>
                                     <td>${it.notes}</td>
                                     <td>
-                                       <button id="printSickOff" class="button task">Print</button>
+                                       <button id="printSickOff" class="task task">Print</button>
                                     </td>
                                 </tr>
                             <%}%>

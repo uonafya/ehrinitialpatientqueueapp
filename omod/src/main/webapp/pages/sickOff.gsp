@@ -91,7 +91,7 @@
                     </div>
                     <div class="onerow" style="margin-top: 100px">
 
-                        <button id="submitSickOff" class="button confirm" type="submit"
+                        <button id="submitSickOff" class="confirm" type="submit"
                                 style="float:right; display:inline-block; margin-left: 5px;">
                             <span>FINISH</span>
                         </button>
@@ -146,7 +146,7 @@
                                     <td>${it.sickOffEndDate}</td>
                                     <td>${it.notes}</td>
                                     <td>
-                                        <button id="printSickOff" class="button task">Print</button>
+                                        <button id="printSickOff" class="task">Print</button>
                                     </td>
                                 </tr>
                             <%}%>
