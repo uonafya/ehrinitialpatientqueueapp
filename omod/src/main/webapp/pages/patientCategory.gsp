@@ -78,16 +78,18 @@ form textarea:focus, .form textarea:focus{
     <div id="itabs">
             <ul>
                 <li id="queue"><a href="#content">Queue Patient</a></li>
-                <li id="queue-§history"><a href="#history">Queue history</a></li>
+                <li id="queue-history"><a href="#history">Queue history</a></li>
             </ul>
             <div id="content">
                 <table cellpadding="0" cellspacing="0" border="0" width="100%">
                     <tr>
-                        <td width="30%" valign="top"></td>
+                        <td width="30%" valign="top">
+                          ${ ui.includeFragment("initialpatientqueueapp", "patientSummary", [ patient: currentPatient ]) }
+                        </td>
                         <td valign="top" style="padding-left: 5px">
                             <div class="onepcssgrid-1000">
-                            ${ ui.includeFragment("initialpatientqueueapp", "queuePatient", [patient: currentPatient])}
-                        </div>
+                              ${ ui.includeFragment("initialpatientqueueapp", "queuePatient", [patient: currentPatient])}
+                            </div>
                         </td>
                     </tr>
                 </table>
