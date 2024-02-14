@@ -39,7 +39,6 @@ import org.openmrs.module.hospitalcore.IdentifierTypes;
 import org.openmrs.module.hospitalcore.PatientDashboardService;
 import org.openmrs.module.hospitalcore.model.BillableService;
 import org.openmrs.module.hospitalcore.model.DepartmentConcept;
-import org.openmrs.module.hospitalcore.model.EhrAppointment;
 import org.openmrs.module.hospitalcore.model.EhrHospitalWaiver;
 import org.openmrs.module.hospitalcore.model.OpdTestOrder;
 import org.openmrs.module.hospitalcore.model.PatientCategoryDetails;
@@ -204,9 +203,8 @@ public class QueuePatientFragmentController {
 			AppointmentsService appointmentService = Context.getService(AppointmentsService.class);
 			Appointment ehrAppointment = ehrAppointmentService.getLastEhrAppointment(patient);
 			if (ehrAppointment != null
-			        && (ehrAppointment.getStatus().equals(AppointmentStatus.Requested)
-			                || ehrAppointment.getStatus().equals(AppointmentStatus.Rescheduled) || ehrAppointment
-			                .getStatus().equals(AppointmentStatus.Scheduled))) {
+			        && (ehrAppointment.getStatus().equals(AppointmentStatus.Requested) || ehrAppointment.getStatus().equals(
+			            AppointmentStatus.Scheduled))) {
 				ehrAppointment.setStatus(AppointmentStatus.CheckedIn);
 				appointmentService.validateAndSave(ehrAppointment);
 			}
@@ -336,6 +334,7 @@ public class QueuePatientFragmentController {
 		}
 		
 		Encounter encounterObs = RegistrationWebUtils.createEncounter(patient, hasRevisits(patient, visitType), visit);
+		String toPaySettings = Context.getAdministrationService().getGlobalProperty("initialpatientqueueapp.send.to.paying");
 		
 		if (StringUtils.isNotBlank(tNTriage)) {
 			
@@ -347,7 +346,7 @@ public class QueuePatientFragmentController {
 			triageObs.setConcept(triageConcept);
 			triageObs.setValueCoded(selectedTRIAGEConcept);
 			encounterObs.addObs(triageObs);
-			if (patientCategory == 2 || patientCategory == 3) {
+			if (patientCategory == 2 || patientCategory == 3 || Integer.parseInt(toPaySettings) == 0) {
 				RegistrationWebUtils.sendPatientToTriageQueue(patient, selectedTRIAGEConcept,
 				    hasRevisits(patient, visitType), paymt3, 1);
 			} else {
@@ -362,7 +361,7 @@ public class QueuePatientFragmentController {
 			opdObs.setConcept(opdConcept);
 			opdObs.setValueCoded(selectedOPDConcept);
 			encounterObs.addObs(opdObs);
-			if (patientCategory == 2 || patientCategory == 3) {
+			if (patientCategory == 2 || patientCategory == 3 || Integer.parseInt(toPaySettings) == 0) {
 				RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedOPDConcept, hasRevisits(patient, visitType),
 				    paymt3, provider, 1);
 			} else {
@@ -379,7 +378,7 @@ public class QueuePatientFragmentController {
 			opdObs.setConcept(specialClinicConcept);
 			opdObs.setValueCoded(selectedSpecialClinicConcept);
 			encounterObs.addObs(opdObs);
-			if (patientCategory == 2 || patientCategory == 3) {
+			if (patientCategory == 2 || patientCategory == 3 || Integer.parseInt(toPaySettings) == 0) {
 				RegistrationWebUtils.sendPatientToOPDQueue(patient, selectedSpecialClinicConcept,
 				    hasRevisits(patient, visitType), paymt3, provider, 1);
 			} else {
@@ -690,6 +689,7 @@ public class QueuePatientFragmentController {
 			
 			if (StringUtils.isNotBlank(toPaySettings) && Integer.parseInt(toPaySettings) == 0) {
 				opdTestOrder.setBillingStatus(1);
+				//update the triage queue or the OPD queue
 			} else if (StringUtils.isNotBlank(toPaySettings) && Integer.parseInt(toPaySettings) == 1) {
 				opdTestOrder.setBillingStatus(0);
 			}

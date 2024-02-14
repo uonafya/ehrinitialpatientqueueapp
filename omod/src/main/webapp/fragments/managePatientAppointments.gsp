@@ -4,7 +4,25 @@
 <script type="text/javascript">
    var jq = jQuery;
  jq(function () {
-     var table = jq("#appointmentsTb").DataTable();
+     var table = jq("#appointmentsTb").DataTable(
+     {
+          searching: true,
+          lengthChange: false,
+          pageLength: 10,
+          jQueryUI: true,
+          pagingType: 'full_numbers',
+          sort: false,
+          dom: 't<"fg-toolbar ui-toolbar ui-corner-bl ui-corner-br ui-helper-clearfix datatables-info-and-pg"ip>',
+          language: {
+              zeroRecords: 'No patient appointments recorded.',
+              paginate: {
+                  first: 'First',
+                  previous: 'Previous',
+                  next: 'Next',
+                  last: 'Last'
+              }
+          }
+      });
       populateAppointmentDetails();
       jq("#filterAppointments").click(function () {
         populateAppointmentDetails();
@@ -66,7 +84,7 @@
                  </div>
              </div>
              <br />
-            <table border="0" cellpadding="0" cellspacing="0" id="appointmentsTb" width="100%">
+            <table id="appointmentsTb">
                 <thead>
                     <tr>
                         <th>Appointment Number</th>

@@ -31,17 +31,25 @@
              }
          });
          jq("#appointmentsList").DataTable({
-             searchPanes: true,
-                 searching: true,
-                 "pagingType": 'simple_numbers',
-                 'dom': 'flrtip',
-                 "oLanguage": {
-                     "oPaginate": {
-                         "sNext": '<i class="fa fa-chevron-right py-1" ></i>',
-                         "sPrevious": '<i class="fa fa-chevron-left py-1" ></i>'
-                     }
-                 }
-            });
+         {
+              searching: true,
+              lengthChange: false,
+              pageLength: 10,
+              jQueryUI: true,
+              pagingType: 'full_numbers',
+              sort: false,
+              dom: 't<"fg-toolbar ui-toolbar ui-corner-bl ui-corner-br ui-helper-clearfix datatables-info-and-pg"ip>',
+              language: {
+                  zeroRecords: 'No Sick leave recorded.',
+                  paginate: {
+                      first: 'First',
+                      previous: 'Previous',
+                      next: 'Next',
+                      last: 'Last'
+                  }
+              }
+          }
+         });
             jq('#authdialog').hide();
      });
  </script>

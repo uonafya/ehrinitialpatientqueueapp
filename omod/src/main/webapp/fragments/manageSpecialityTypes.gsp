@@ -11,7 +11,25 @@
           jq('#cancel').on( 'click',function () {
                       location.reload();
           });
-          var tbl = jq("#specialityTb").DataTable();
+          var tbl = jq("#specialityTb").DataTable(
+          {
+           searching: true,
+           lengthChange: false,
+           pageLength: 10,
+           jQueryUI: true,
+           pagingType: 'full_numbers',
+           sort: false,
+           dom: 't<"fg-toolbar ui-toolbar ui-corner-bl ui-corner-br ui-helper-clearfix datatables-info-and-pg"ip>',
+           language: {
+               zeroRecords: 'No speciality recorded.',
+               paginate: {
+                   first: 'First',
+                   previous: 'Previous',
+                   next: 'Next',
+                   last: 'Last'
+               }
+           }
+       });
       });
 
       function saveSpecialityType() {
@@ -44,7 +62,7 @@
 
 <br />
 
-<table border="0" cellpadding="0" cellspacing="0" id="specialityTb" width="100%">
+<table id="specialityTb">
     <thead>
         <tr>
             <th>Name</th>
@@ -53,13 +71,6 @@
         </tr>
     </thead>
     <tbody>
-        <% if (specialityTypes.empty) { %>
-            <tr>
-                <td colspan="5">
-                    No records found for specified period
-                </td>
-            </tr>
-        <% } %>
         <% if (specialityTypes) { %>
             <% specialityTypes.each {%>
             <tr>

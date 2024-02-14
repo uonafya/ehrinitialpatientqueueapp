@@ -20,18 +20,24 @@
               jq('#resetSickOff').on( 'click',function () {
                   location.reload();
               });
-             var tbl =  jq("#sickOffTbl").DataTable({
-                 searchPanes: true,
-                 searching: true,
-                 "pagingType": 'simple_numbers',
-                 'dom': 'flrtip',
-                 "oLanguage": {
-                     "oPaginate": {
-                         "sNext": '<i class="fa fa-chevron-right py-1" ></i>',
-                         "sPrevious": '<i class="fa fa-chevron-left py-1" ></i>'
-                     }
-                 }
-             });
+             var tbl =  jq("#sickOffTbl").DataTable({{
+                    searching: true,
+                    lengthChange: false,
+                    pageLength: 10,
+                    jQueryUI: true,
+                    pagingType: 'full_numbers',
+                    sort: false,
+                    dom: 't<"fg-toolbar ui-toolbar ui-corner-bl ui-corner-br ui-helper-clearfix datatables-info-and-pg"ip>',
+                    language: {
+                        zeroRecords: 'No Sick leave recorded.',
+                        paginate: {
+                            first: 'First',
+                            previous: 'Previous',
+                            next: 'Next',
+                            last: 'Last'
+                        }
+                    }
+                }});
 
               jq('#sickOffTbl tbody').on( 'click', 'tr', function () {
                         var trData = tbl.row(this).data();
@@ -110,7 +116,7 @@
     <br />
         <section>
             <div>
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" id="sickOffTbl">
+                <table id="sickOffTbl">
                     <thead>
                         <tr>
                             <th>Sick off ID</th>
@@ -126,13 +132,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% if (sickOffs.empty) { %>
-                            <tr align="center">
-                                <td colspan="10">
-                                    No records found for specified period
-                                </td>
-                            </tr>
-                        <% } %>
+
                         <% if (sickOffs) { %>
                             <% sickOffs.each {%>
                                 <tr>

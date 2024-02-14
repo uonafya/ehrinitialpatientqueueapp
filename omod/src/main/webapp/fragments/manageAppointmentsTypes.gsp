@@ -12,7 +12,25 @@ var jq = jQuery;
         jq('#cancel').on( 'click',function () {
                     location.reload();
         });
-        var tbl = jq("#appointmentTypesTb").DataTable();
+        var tbl = jq("#appointmentTypesTb").DataTable(
+        {
+           searching: true,
+           lengthChange: false,
+           pageLength: 10,
+           jQueryUI: true,
+           pagingType: 'full_numbers',
+           sort: false,
+           dom: 't<"fg-toolbar ui-toolbar ui-corner-bl ui-corner-br ui-helper-clearfix datatables-info-and-pg"ip>',
+           language: {
+               zeroRecords: 'No appointment types recorded.',
+               paginate: {
+                   first: 'First',
+                   previous: 'Previous',
+                   next: 'Next',
+                   last: 'Last'
+               }
+           }
+       });
         jq('#appointmentTypesTb tbody').on( 'click', 'tr', function () {
             var trData = tbl.row(this).data();
             jq("#edit-appointment-type_id").val(trData[0]);
@@ -175,7 +193,7 @@ var jq = jQuery;
 </div>
     <br />
 
-    <table border="0" cellpadding="0" cellspacing="0" id="appointmentTypesTb" width="100%">
+    <table id="appointmentTypesTb">
         <thead>
             <tr>
                 <th>Name</th>
@@ -186,13 +204,6 @@ var jq = jQuery;
             </tr>
         </thead>
         <tbody>
-            <% if (appointmentService.empty) { %>
-                <tr>
-                    <td colspan="5">
-                        No records found for specified period
-                    </td>
-                </tr>
-            <% } %>
             <% if (appointmentService) { %>
                 <% appointmentService.each {%>
                 <tr>

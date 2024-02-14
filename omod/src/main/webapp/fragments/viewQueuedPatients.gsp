@@ -2,7 +2,25 @@
 var MODEL;
     var jq = jQuery;
     jq(function () {
-       var table = jq("#detailsTb").DataTable();
+       var table = jq("#detailsTb").DataTable(
+       {
+            searching: true,
+            lengthChange: false,
+            pageLength: 10,
+            jQueryUI: true,
+            pagingType: 'full_numbers',
+            sort: false,
+            dom: 't<"fg-toolbar ui-toolbar ui-corner-bl ui-corner-br ui-helper-clearfix datatables-info-and-pg"ip>',
+            language: {
+                zeroRecords: 'No queued yet.',
+                paginate: {
+                    first: 'First',
+                    previous: 'Previous',
+                    next: 'Next',
+                    last: 'Last'
+                }
+            }
+        });
         var editroomDialog = emr.setupConfirmationDialog({
                     dialogOpts: {
                         overlayClose: false,
@@ -117,7 +135,7 @@ var MODEL;
 <div class="ke-panel-frame">
     <div class="ke-panel-heading">Scheduled Patients</div>
     <div class="ke-panel-content">
-        <table border="0" cellpadding="0" cellspacing="0" id="detailsTb" width="100%">
+        <table id="detailsTb">
             <thead>
                 <tr>
                     <th>Queue Id</th>
@@ -135,13 +153,6 @@ var MODEL;
                 </tr>
             </thead>
             <tbody>
-                <% if (viewQueuedPatientsList.empty) { %>
-                    <tr>
-                        <td colspan="12">
-                            No records found for specified period
-                        </td>
-                    </tr>
-                <% } %>
                 <% if (viewQueuedPatientsList) { %>
                     <% viewQueuedPatientsList.each {%>
                         <tr>

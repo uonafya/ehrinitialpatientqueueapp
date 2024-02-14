@@ -11,7 +11,25 @@
         jq('#cancel').on( 'click',function () {
                     location.reload();
         });
-        var tbl = jq("#appointmentServiceTypesTb").DataTable();
+        var tbl = jq("#appointmentServiceTypesTb").DataTable(
+        {
+             searching: true,
+             lengthChange: false,
+             pageLength: 10,
+             jQueryUI: true,
+             pagingType: 'full_numbers',
+             sort: false,
+             dom: 't<"fg-toolbar ui-toolbar ui-corner-bl ui-corner-br ui-helper-clearfix datatables-info-and-pg"ip>',
+             language: {
+                 zeroRecords: 'No appointment types recorded.',
+                 paginate: {
+                     first: 'First',
+                     previous: 'Previous',
+                     next: 'Next',
+                     last: 'Last'
+                 }
+             }
+         });
     });
 
     function saveAppointmentServiceTypes() {
@@ -70,13 +88,6 @@
             </tr>
         </thead>
         <tbody>
-            <% if (appointmentServicesTypes.empty) { %>
-                <tr>
-                    <td colspan="3">
-                        No records found for specified period
-                    </td>
-                </tr>
-            <% } %>
             <% if (appointmentServicesTypes) { %>
                 <% appointmentServicesTypes.each {%>
                 <tr>

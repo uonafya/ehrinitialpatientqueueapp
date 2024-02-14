@@ -29,6 +29,7 @@
 		<require_module version="${hospitalcoreVersion}">org.openmrs.module.hospitalcore</require_module>
 		<require_module version="${ehrconfigsVersion}">org.openmrs.module.ehrconfigs</require_module>
 		<require_module>org.openmrs.module.ehrcashier</require_module>
+		<require_module>org.bahmni.module.appointments</require_module>
 	</require_modules>
 	<aware_of_modules>
 		<aware_of_module>org.openmrs.module.legacyui</aware_of_module>

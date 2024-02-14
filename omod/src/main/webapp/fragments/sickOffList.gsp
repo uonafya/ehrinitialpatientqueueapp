@@ -4,18 +4,24 @@
  <script type="text/javascript">
      var jq = jQuery;
          jq(function () {
-           var tbl = jq("#sickOffs").DataTable({
-            searchPanes: true,
+           var tbl = jq("#sickOffs").DataTable({{
                  searching: true,
-                 "pagingType": 'simple_numbers',
-                 'dom': 'flrtip',
-                 "oLanguage": {
-                     "oPaginate": {
-                         "sNext": '<i class="fa fa-chevron-right py-1" ></i>',
-                         "sPrevious": '<i class="fa fa-chevron-left py-1" ></i>'
+                 lengthChange: false,
+                 pageLength: 10,
+                 jQueryUI: true,
+                 pagingType: 'full_numbers',
+                 sort: false,
+                 dom: 't<"fg-toolbar ui-toolbar ui-corner-bl ui-corner-br ui-helper-clearfix datatables-info-and-pg"ip>',
+                 language: {
+                     zeroRecords: 'No Sick leave recorded.',
+                     paginate: {
+                         first: 'First',
+                         previous: 'Previous',
+                         next: 'Next',
+                         last: 'Last'
                      }
                  }
-            });
+             });
 
             jq('#sickOffs tbody').on( 'click', 'tr', function () {
                      var trData = tbl.row(this).data();
@@ -27,7 +33,7 @@
 <div class="ke-panel-frame">
     <div class="ke-panel-heading">Sick Off Listing for Patients</div>
             <div class="ke-panel-content">
-                <table border="0" cellpadding="0" cellspacing="0" id="sickOffs" width="75%">
+                <table id="sickOffs">
                     <thead>
                         <tr>
                             <th>Sick off ID</th>
@@ -43,13 +49,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% if (sickOffsList.empty) { %>
-                            <tr align="center">
-                                <td colspan="10">
-                                    No records found for specified period
-                                </td>
-                            </tr>
-                        <% } %>
                         <% if (sickOffsList) { %>
                             <% sickOffsList.each {%>
                                 <tr>

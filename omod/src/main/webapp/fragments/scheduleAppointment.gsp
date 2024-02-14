@@ -16,7 +16,25 @@
                         });
 
             jq('#appointmentDate').datepicker();
-            jq("#typesTb").DataTable();
+            jq("#typesTb").DataTable(
+            {
+               searching: true,
+               lengthChange: false,
+               pageLength: 10,
+               jQueryUI: true,
+               pagingType: 'full_numbers',
+               sort: false,
+               dom: 't<"fg-toolbar ui-toolbar ui-corner-bl ui-corner-br ui-helper-clearfix datatables-info-and-pg"ip>',
+               language: {
+                   zeroRecords: 'No scheduled appointments recorded.',
+                   paginate: {
+                       first: 'First',
+                       previous: 'Previous',
+                       next: 'Next',
+                       last: 'Last'
+                   }
+               }
+           });
         });
         function saveAppointment() {
                     jq.getJSON('${ ui.actionLink("initialpatientqueueapp", "scheduleAppointment", "createAppointment") }', {
@@ -113,7 +131,7 @@
         </div>
         <br />
         <div class="ke-panel-content">
-            <table border="0" cellpadding="0" cellspacing="0" id="typesTb" width="100%">
+            <table id="typesTb">
                 <thead>
                     <tr>
                         <th>Appointment Number</th>
@@ -128,13 +146,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% if (patientAppointments.empty) { %>
-                        <tr>
-                            <td colspan="8">
-                                No appointments found for specified period for this patient
-                            </td>
-                        </tr>
-                    <% } %>
                     <% if (patientAppointments) { %>
                         <% patientAppointments.each {%>
                             <tr>
