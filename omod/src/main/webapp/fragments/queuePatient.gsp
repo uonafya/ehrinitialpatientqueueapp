@@ -453,6 +453,7 @@
         /** SUBMIT */
         submit: function () {
             // Validate and submit
+            jq('#queuePatientBtn').prop('disabled', true);
             if (this.validateRegisterForm()) {
                 // print();
                 jq("#patientRegistrationForm").submit();
@@ -1815,10 +1816,10 @@ a.tooltip span {
 
         <div class="onerow" style="margin-top: 60px">
 
-            <a class="button confirm" onclick="PAGE.submit();"
+            <button id="queuePatientBtn" class="confirm" onclick="PAGE.submit();"
                style="float:right; display:inline-block; margin-left: 5px;">
                 <span>FINISH</span>
-            </a>
+            </button>
 
             <a class="button cancel" onclick="window.location.href = window.location.href"
                style="float:right; display:inline-block;"/>
