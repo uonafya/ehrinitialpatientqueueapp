@@ -18,6 +18,9 @@
             ],
             [
                 label: "Sick Off", extra: "Manage Patient Sick Offs", iconProvider: "kenyaui", icon: "buttons/facility.png", href: ui.pageLink("initialpatientqueueapp", "sickOffList")
+            ],
+            [
+                label: "Metabase", extra: "Test metabase requests here", iconProvider: "kenyaui", icon: "buttons/facility.png", href: ui.pageLink("initialpatientqueueapp", "metabase")
             ]
     ]
 %>
