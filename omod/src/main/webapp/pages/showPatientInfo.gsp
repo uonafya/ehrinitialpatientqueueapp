@@ -18,9 +18,6 @@
 
     }
 
-
-
-
 </script>
 <style>
 
@@ -44,6 +41,14 @@
 
         <h3><center><u><b>${location}</b></u></center></h3>
         <h4 style="font-size: 1.4em;"><center><b>Registration Receipt</b></center></h4>
+
+          <h6 class="col2" style="font-size: 0.8em;">
+             <center>
+              <b># ${patientId}</b>
+             </center>
+          </h6>
+          <br>
+
         <div style="display: block;	margin-left: auto; margin-right: auto; width: 350px">
             <% if(previousVisit) { %>
             <div>
@@ -57,7 +62,7 @@
             </div>
             <%}%>
             <div>
-            <div class="col2" align="float" style="display:inline-block; width: 150px">
+            <div class="col2" align="float" style="display:inline-block; width: 151px">
                     <b>Payment category:</b>
                 </div>
 
@@ -79,11 +84,6 @@
                     <b>Name:</b></div>
                     <div class="col2" align="left" style="display:inline-block;"><span id="patientName">${names}</span></div>
             </div>
-            <div>
-                <div class="col2" align="float" style="display:inline-block; width: 150px">
-                    <b>Patient ID:</b></div>
-                    <div class="col2" align="left" style="display:inline-block;"><span id="identifier">${patientId}</span></div>
-             </div>
             <div>
                 <div class="col2" align="float" style="display:inline-block; width: 150px">
                     <b>Age:</b></div>
