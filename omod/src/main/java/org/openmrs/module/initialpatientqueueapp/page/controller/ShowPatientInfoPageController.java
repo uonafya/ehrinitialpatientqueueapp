@@ -8,6 +8,7 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ehrconfigs.metadata.EhrCommonMetadata;
+import org.openmrs.module.ehrconfigs.utils.EhrConfigsUtils;
 import org.openmrs.module.hospitalcore.BillingService;
 import org.openmrs.module.hospitalcore.HospitalCoreService;
 import org.openmrs.module.hospitalcore.model.BillableService;
@@ -45,8 +46,7 @@ public class ShowPatientInfoPageController {
 		model.addAttribute("receiptDate", simpleDate.format(new Date()));
 		
 		Patient patient = Context.getPatientService().getPatient(patientId);
-		PatientIdentifier opdNumber = patient.getPatientIdentifier(Context.getPatientService()
-		        .getPatientIdentifierTypeByUuid(EhrCommonMetadata._EhrIdenifiers.OPD_NUMBER));
+		String opdNumber = EhrConfigsUtils.getPreferredPatientIdentifier(patient);
 		HospitalCoreService hcs = Context.getService(HospitalCoreService.class);
 		
 		User user = Context.getAuthenticatedUser();
